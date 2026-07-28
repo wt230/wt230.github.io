@@ -1,134 +1,35 @@
 ---
 /**
- * Rotating annular UV reactor, with the degradation curve it produces.
+ * Left  : the annular LP-UV reactor, geometry and materials lifted from
+ *         the group's parametric reactor model (cut-away view, 20 cm
+ *         diameter, 34 cm chamber, 29.5 cm arc in a 6 cm quartz sleeve).
+ *         The fluence-field shading and bubble cloud are left out here
+ *         because they need the solver; everything structural is as-is.
  *
- * The curve is computed live from src/lib/aop.js. The tint of the water
- * in the annulus tracks the background absorbance slider, so the two
- * halves of the figure are showing the same water.
- *
- * Three.js is imported dynamically and only once the figure scrolls
- * into view, so it never blocks first paint.
+ * Right : C/C0 for atrazine at 500 mJ cm-2 with 10 mg/L H2O2, over
+ *         background scavenging capacity and A254. Both spin; neither
+ *         is interactive.
  */
-import { COMPOUNDS } from "../lib/aop.js";
-
-const defaults = {
-  dose: 10,
-  absorbance: 0.1,
-  scavenging: 1.0e5,
-  compound: "atrazine",
-};
 ---
 
 <div class="rig" data-rig>
-  <div class="rig__stage">
+  <figure class="rig__cell">
     <canvas data-reactor aria-hidden="true"></canvas>
-    <p class="rig__fallback" data-fallback hidden>
-      Annular UV reactor: a low-pressure lamp inside a quartz sleeve, with
-      water flowing through the surrounding gap.
-    </p>
-  </div>
+    <figcaption>Annular low-pressure UV reactor, shown in section</figcaption>
+  </figure>
 
-  <div class="rig__panel">
-    <svg
-      class="rig__plot"
-      viewBox="0 0 420 300"
-      role="img"
-      aria-labelledby="plot-title"
-      data-plot
-    >
-      <title id="plot-title">
-        Micropollutant degradation against UV fluence
-      </title>
+  <figure class="rig__cell">
+    <canvas data-surface aria-hidden="true"></canvas>
+    <figcaption>
+      Atrazine remaining after 500 mJ cm⁻², 10 mg L⁻¹ H₂O₂
+    </figcaption>
+  </figure>
 
-      <g class="rig__grid">
-        <line x1="54" y1="20" x2="54" y2="248"></line>
-        <line x1="54" y1="248" x2="406" y2="248"></line>
-        <line x1="54" y1="191" x2="406" y2="191" class="rig__gridline"></line>
-        <line x1="54" y1="134" x2="406" y2="134" class="rig__gridline"></line>
-        <line x1="54" y1="77" x2="406" y2="77" class="rig__gridline"></line>
-      </g>
-
-      <text x="46" y="24" class="rig__tick" text-anchor="end">1.0</text>
-      <text x="46" y="138" class="rig__tick" text-anchor="end">0.5</text>
-      <text x="46" y="252" class="rig__tick" text-anchor="end">0</text>
-      <text x="54" y="270" class="rig__tick">0</text>
-      <text x="406" y="270" class="rig__tick" text-anchor="end">1000</text>
-      <text x="230" y="288" class="rig__axis" text-anchor="middle">
-        UV fluence (mJ cm⁻²)
-      </text>
-      <text
-        x="0"
-        y="0"
-        class="rig__axis"
-        text-anchor="middle"
-        transform="translate(16,134) rotate(-90)">C / C₀</text>
-
-      <path class="rig__ref" data-ref fill="none"></path>
-      <path class="rig__curve" data-curve fill="none"></path>
-      <circle class="rig__marker" data-marker r="4"></circle>
-      <text class="rig__readout" data-readout x="406" y="42" text-anchor="end"
-      ></text>
-    </svg>
-
-    <div class="rig__controls">
-      <label>
-        <span class="rig__label">
-          Compound
-        </span>
-        <select data-compound>
-          {
-            COMPOUNDS.map((c) => (
-              <option value={c.id} selected={c.id === defaults.compound}>
-                {c.name}
-              </option>
-            ))
-          }
-        </select>
-      </label>
-
-      <label>
-        <span class="rig__label">
-          H₂O₂ dose <b data-out="dose">{defaults.dose} mg L⁻¹</b>
-        </span>
-        <input
-          type="range"
-          data-dose
-          min="0"
-          max="60"
-          step="1"
-          value={defaults.dose}
-        />
-      </label>
-
-      <label>
-        <span class="rig__label">
-          Background A₂₅₄ <b data-out="absorbance">{defaults.absorbance} cm⁻¹</b>
-        </span>
-        <input
-          type="range"
-          data-absorbance
-          min="0.01"
-          max="0.60"
-          step="0.01"
-          value={defaults.absorbance}
-        />
-      </label>
-
-      <label>
-        <span class="rig__label">
-          Scavenging capacity <b data-out="scavenging">1.0 × 10⁵ s⁻¹</b>
-        </span>
-        <input
-          type="range"
-          data-scavenging
-          min="4.3"
-          max="6.2"
-          step="0.02"
-          value={Math.log10(defaults.scavenging)}
-        />
-      </label>
-    </div>
-  </div>
+  <p class="rig__fallback" data-fallback hidden>
+    An annular low-pressure UV reactor, and the surface describing how much
+    micropollutant survives it as the water's radical scavenging capacity
+    and UV absorbance change.
+  </p>
 </div>
 
 <script>
@@ -136,250 +37,478 @@ const defaults = {
 
   const rig = document.querySelector("[data-rig]");
   if (rig) {
-    const els = {
-      canvas: rig.querySelector("[data-reactor]"),
-      fallback: rig.querySelector("[data-fallback]"),
-      curve: rig.querySelector("[data-curve]"),
-      ref: rig.querySelector("[data-ref]"),
-      marker: rig.querySelector("[data-marker]"),
-      readout: rig.querySelector("[data-readout]"),
-      dose: rig.querySelector("[data-dose]"),
-      absorbance: rig.querySelector("[data-absorbance]"),
-      scavenging: rig.querySelector("[data-scavenging]"),
-      compound: rig.querySelector("[data-compound]"),
-      outDose: rig.querySelector('[data-out="dose"]'),
-      outAbs: rig.querySelector('[data-out="absorbance"]'),
-      outScav: rig.querySelector('[data-out="scavenging"]'),
-    };
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const PI = Math.PI;
 
-    const MAX_H = 1000;
-    const X0 = 54, X1 = 406, Y0 = 20, Y1 = 248;
-    const sx = (H) => X0 + (H / MAX_H) * (X1 - X0);
-    const sy = (v) => Y1 - v * (Y1 - Y0);
+    // reactor constants, as in the source model
+    const SLEEVE_R = 3.0;
+    const LAMP_ARC = 29.5;
+    const LAMP_OAL = 35.7;
+    const DIAMETER = 20;
+    const HEIGHT = 34;
+    const R = DIAMETER / 2;
+    const gap = R - SLEEVE_R;
 
-    const state = () => ({
-      doseMgL: Number(els.dose.value),
-      absorbance: Number(els.absorbance.value),
-      scavenging: Math.pow(10, Number(els.scavenging.value)),
-      compound: COMPOUNDS.find((c) => c.id === els.compound.value),
-    });
-
-    function pathFor(fn) {
-      let d = "";
-      for (let i = 0; i <= 100; i++) {
-        const H = (MAX_H * i) / 100;
-        d += `${i ? "L" : "M"}${sx(H).toFixed(1)},${sy(fn(H)).toFixed(1)}`;
-      }
-      return d;
+    function fail() {
+      rig.querySelectorAll("canvas").forEach((c) => (c.hidden = true));
+      rig.querySelector("[data-fallback]").hidden = false;
     }
-
-    function sciNotation(v) {
-      const exp = Math.floor(Math.log10(v));
-      const mant = v / Math.pow(10, exp);
-      return `${mant.toFixed(1)} × 10${String(exp)
-        .split("")
-        .map((d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[Number(d)])
-        .join("")} s⁻¹`;
-    }
-
-    function render() {
-      const s = state();
-      const m = model(s);
-
-      els.curve.setAttribute("d", pathFor((H) => m.survival(H)));
-      // reference: the same water with no peroxide, i.e. photolysis alone
-      const bare = model({ ...s, doseMgL: 0 });
-      els.ref.setAttribute("d", pathFor((H) => bare.survival(H)));
-
-      const at500 = m.survival(500);
-      els.marker.setAttribute("cx", sx(500));
-      els.marker.setAttribute("cy", sy(at500));
-      els.readout.textContent = `${Math.round((1 - at500) * 100)}% removed at 500 mJ cm⁻²`;
-
-      els.outDose.textContent = `${s.doseMgL} mg L⁻¹`;
-      els.outAbs.textContent = `${s.absorbance.toFixed(2)} cm⁻¹`;
-      els.outScav.textContent = sciNotation(s.scavenging);
-
-      if (window.__reactorTint) window.__reactorTint(s.absorbance);
-    }
-
-    [els.dose, els.absorbance, els.scavenging, els.compound].forEach((el) =>
-      el.addEventListener("input", render)
-    );
-    render();
-
-    // ---- 3D reactor, loaded only when visible ----------------------
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     async function boot() {
       let THREE;
       try {
         THREE = await import("three");
       } catch {
-        els.canvas.hidden = true;
-        els.fallback.hidden = false;
-        return;
+        return fail();
       }
 
-      const canvas = els.canvas;
-      let renderer;
-      try {
-        renderer = new THREE.WebGLRenderer({
-          canvas,
-          antialias: true,
-          alpha: true,
+      /* ------------------------------------------------ shared helpers */
+
+      function annulus(ri, ro, t, phiStart, phiLength) {
+        const pts = [
+          new THREE.Vector2(ri, 0), new THREE.Vector2(ro, 0),
+          new THREE.Vector2(ro, t), new THREE.Vector2(ri, t),
+          new THREE.Vector2(ri, 0),
+        ];
+        return new THREE.LatheGeometry(pts, 72, phiStart, phiLength);
+      }
+
+      function makeEnvTexture() {
+        const cv = document.createElement("canvas");
+        cv.width = 512; cv.height = 256;
+        const ctx = cv.getContext("2d");
+        const g = ctx.createLinearGradient(0, 0, 0, 256);
+        g.addColorStop(0, "#5C6B78"); g.addColorStop(0.42, "#2A3542");
+        g.addColorStop(0.52, "#151C24"); g.addColorStop(1, "#070A0E");
+        ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 256);
+        ctx.fillStyle = "rgba(215,235,255,0.85)";
+        ctx.fillRect(60, 26, 90, 60); ctx.fillRect(300, 34, 54, 46);
+        const tex = new THREE.CanvasTexture(cv);
+        tex.mapping = THREE.EquirectangularReflectionMapping;
+        return tex;
+      }
+
+      function textSprite(text, color, px) {
+        const m = document.createElement("canvas").getContext("2d");
+        const font = `500 ${px}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+        m.font = font;
+        const w = Math.ceil(m.measureText(text).width) + 10;
+        const h = px + 12;
+        const cv = document.createElement("canvas");
+        cv.width = w; cv.height = h;
+        const ctx = cv.getContext("2d");
+        ctx.font = font;
+        ctx.fillStyle = color;
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, 4, h / 2);
+        const tex = new THREE.CanvasTexture(cv);
+        tex.minFilter = THREE.LinearFilter;
+        const sp = new THREE.Sprite(
+          new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false })
+        );
+        sp.userData.aspect = w / h;
+        return sp;
+      }
+
+      function mount(canvas, fov, near, far) {
+        const renderer = new THREE.WebGLRenderer({
+          canvas, antialias: true, alpha: true,
         });
-      } catch {
-        canvas.hidden = true;
-        els.fallback.hidden = false;
-        return;
+        renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+        if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(fov, 1, near, far);
+        const resize = () => {
+          const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        };
+        new ResizeObserver(resize).observe(canvas);
+        resize();
+        return { renderer, scene, camera };
       }
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-      camera.position.set(0, 1.1, 8.2);
-      camera.lookAt(0, 0, 0);
+      /* ------------------------------------------------------- reactor */
 
-      const rig3d = new THREE.Group();
-      scene.add(rig3d);
+      function buildReactor(canvas) {
+        const { renderer, scene, camera } = mount(canvas, 38, 0.5, 3000);
+        const env = makeEnvTexture();
 
-      const H = 3.4;
+        scene.add(new THREE.HemisphereLight(0x9fc4dd, 0x0b1016, 0.55));
+        const key = new THREE.DirectionalLight(0xffffff, 0.85);
+        key.position.set(60, 90, 70);
+        const rimL = new THREE.DirectionalLight(0x8fa8ff, 0.5);
+        rimL.position.set(-80, 40, -60);
+        const fl = new THREE.DirectionalLight(0xffe6c0, 0.25);
+        fl.position.set(30, -40, 60);
+        scene.add(key, rimL, fl);
 
-      // water annulus — tinted by the absorbance slider
-      const waterMat = new THREE.MeshStandardMaterial({
-        color: 0x2c5fc4,
-        transparent: true,
-        opacity: 0.28,
-        roughness: 0.15,
-        metalness: 0,
-      });
-      const water = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.95, 0.95, H - 0.1, 64, 1, true),
-        waterMat
-      );
-      rig3d.add(water);
+        const grid = new THREE.GridHelper(300, 30, 0x2a3a48, 0x18242e);
+        grid.material.transparent = true;
+        grid.material.opacity = 0.35;
+        grid.position.y = -6;
+        scene.add(grid);
 
-      // outer wall
-      const wall = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.02, 1.02, H, 64, 1, true),
-        new THREE.MeshStandardMaterial({
-          color: 0xdbe6f5,
-          transparent: true,
-          opacity: 0.22,
-          roughness: 0.08,
-          metalness: 0.1,
-          side: THREE.DoubleSide,
-        })
-      );
-      rig3d.add(wall);
+        const root = new THREE.Group();
+        scene.add(root);
 
-      // quartz sleeve
-      const sleeve = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.38, 0.38, H + 0.2, 48, 1, true),
-        new THREE.MeshStandardMaterial({
-          color: 0xf2f7ff,
-          transparent: true,
-          opacity: 0.34,
-          roughness: 0.02,
-          side: THREE.DoubleSide,
-        })
-      );
-      rig3d.add(sleeve);
+        const H = HEIGHT;
+        const steel = new THREE.MeshStandardMaterial({ color: 0xc3ced7, metalness: 0.92, roughness: 0.26, envMap: env, side: THREE.DoubleSide });
+        const steelDark = new THREE.MeshStandardMaterial({ color: 0x7d8b96, metalness: 0.85, roughness: 0.4, envMap: env });
+        const ptfe = new THREE.MeshStandardMaterial({ color: 0xe8ebe6, metalness: 0.05, roughness: 0.65 });
+        const glass = new THREE.MeshStandardMaterial({ color: 0xcfe8ff, metalness: 0.1, roughness: 0.05, envMap: env, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false });
+        const yellow = new THREE.MeshStandardMaterial({ color: 0xf2b705, metalness: 0.45, roughness: 0.42, envMap: env });
+        const motorGreen = new THREE.MeshStandardMaterial({ color: 0x5f8f7a, metalness: 0.5, roughness: 0.45, envMap: env });
 
-      // lamp
-      const lamp = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.25, 0.25, H - 0.2, 40),
-        new THREE.MeshBasicMaterial({ color: 0xe4dcff })
-      );
-      rig3d.add(lamp);
+        const g = new THREE.Group();
+        const ts = PI / 2;      // section view
+        const tl = PI;
+        const wall = 0.4;
 
-      const halo = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.33, 0.33, H - 0.15, 40, 1, true),
-        new THREE.MeshBasicMaterial({
-          color: 0x9d86ec,
-          transparent: true,
-          opacity: 0.35,
-          blending: THREE.AdditiveBlending,
-          side: THREE.DoubleSide,
-          depthWrite: false,
-        })
-      );
-      rig3d.add(halo);
+        const shell = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 128, 1, true, ts, tl), steel);
+        shell.position.y = H / 2; g.add(shell);
+        const rimTop = new THREE.Mesh(annulus(R - wall, R, wall, ts, tl), steelDark);
+        rimTop.position.y = H; g.add(rimTop);
+        const lid = new THREE.Mesh(annulus(SLEEVE_R + 0.3, R + 1.4, 1.0, ts, tl), steel);
+        lid.position.y = H; g.add(lid);
+        const collar = new THREE.Mesh(annulus(SLEEVE_R, SLEEVE_R + 2.6, 1.0, 0, PI * 2), ptfe);
+        collar.position.y = H + 1.0; g.add(collar);
 
-      // flanges and ports
-      const steel = new THREE.MeshStandardMaterial({
-        color: 0x8e9bb2,
-        roughness: 0.42,
-        metalness: 0.55,
-      });
-      [-1, 1].forEach((s) => {
-        const flange = new THREE.Mesh(
-          new THREE.CylinderGeometry(1.12, 1.12, 0.16, 64),
-          steel
+        const boltGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.8, 8);
+        for (let i = 0; i < 16; i++) {
+          const ang = (i / 16) * PI * 2;
+          if (ang < ts || ang > ts + tl) continue;
+          const b = new THREE.Mesh(boltGeo, steelDark);
+          b.position.set((R + 0.7) * Math.sin(ang), H + 1.4, (R + 0.7) * Math.cos(ang));
+          g.add(b);
+        }
+        const base = new THREE.Mesh(annulus(4.3, R + 1.4, 1.2, ts, tl), steel);
+        base.position.y = -1.2; g.add(base);
+        const feet = new THREE.Mesh(annulus(R * 0.55, R * 0.72, 3.2, 0, PI * 2), steelDark);
+        feet.position.y = -4.4; g.add(feet);
+
+        // sparger ring and feed line
+        const diffR = SLEEVE_R + gap * 0.5;
+        const diffGroup = new THREE.Group();
+        const torus = new THREE.Mesh(
+          new THREE.TorusGeometry(diffR, 0.5, 10, 56, PI), steelDark
         );
-        flange.position.y = (s * H) / 2;
-        rig3d.add(flange);
+        torus.rotation.x = PI / 2;
+        diffGroup.add(torus);
+        diffGroup.rotation.y = PI;
+        diffGroup.position.y = 1.1;
+        g.add(diffGroup);
+        const feed = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 6.5, 14), steelDark);
+        feed.position.set(0, -2.0, -diffR);
+        g.add(feed);
 
-        const port = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.16, 0.16, 0.85, 28),
-          steel
+        const sleeve = new THREE.Mesh(new THREE.CylinderGeometry(SLEEVE_R, SLEEVE_R, H + 8, 64, 1, true), glass);
+        sleeve.position.y = H / 2 - 2; g.add(sleeve);
+
+        const arcBottom = (H - LAMP_ARC) / 2;
+        const arcCentre = H / 2;
+        const tube = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.15, 1.15, LAMP_OAL, 40, 1, true),
+          new THREE.MeshStandardMaterial({ color: 0xd8ecff, metalness: 0.1, roughness: 0.08, envMap: env, transparent: true, opacity: 0.35, side: THREE.DoubleSide, depthWrite: false })
         );
-        port.rotation.z = Math.PI / 2;
-        port.position.set(s * 1.35, (-s * H) / 2 + s * 0.5, 0);
-        rig3d.add(port);
-      });
-
-      scene.add(new THREE.AmbientLight(0xffffff, 1.15));
-      const key = new THREE.DirectionalLight(0xffffff, 1.5);
-      key.position.set(3, 5, 6);
-      scene.add(key);
-      const rim = new THREE.DirectionalLight(0xa9c2ee, 0.85);
-      rim.position.set(-5, -1, -4);
-      scene.add(rim);
-      scene.add(new THREE.PointLight(0xb9a6ff, 2.4, 8));
-
-      // absorbance -> how dark and how green-brown the water reads
-      window.__reactorTint = (a) => {
-        const t = Math.min(a / 0.6, 1);
-        waterMat.opacity = 0.18 + t * 0.5;
-        waterMat.color.setRGB(
-          0.17 + t * 0.28,
-          0.37 + t * 0.16,
-          0.77 - t * 0.5
+        tube.position.y = arcCentre;
+        const arcMesh = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.92, 0.92, LAMP_ARC, 36),
+          new THREE.MeshBasicMaterial({ color: 0xdfe8ff })
         );
-      };
-      window.__reactorTint(Number(els.absorbance.value));
+        arcMesh.position.y = arcCentre;
+        const glow = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.9, 1.9, LAMP_ARC, 36, 1, true),
+          new THREE.MeshBasicMaterial({ color: 0x8f7bff, transparent: true, opacity: 0.26, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false })
+        );
+        glow.position.y = arcCentre;
+        g.add(tube, arcMesh, glow);
 
-      function resize() {
-        const w = canvas.clientWidth || 1;
-        const h = canvas.clientHeight || 1;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
+        const capGeo = new THREE.CylinderGeometry(1.3, 1.3, 2.4, 20);
+        const capA = new THREE.Mesh(capGeo, steelDark);
+        capA.position.y = arcCentre + LAMP_OAL / 2 - 1.2;
+        const capB = new THREE.Mesh(capGeo, steelDark);
+        capB.position.y = arcCentre - LAMP_OAL / 2 + 1.2;
+        g.add(capA, capB);
+        for (let i = 0; i < 4; i++) {
+          const ang = (i / 4) * PI * 2;
+          const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.6, 8), steelDark);
+          pin.position.set(0.55 * Math.sin(ang), arcCentre - LAMP_OAL / 2 - 0.8, 0.55 * Math.cos(ang));
+          g.add(pin);
+        }
+        [0.3, 0.7].forEach((f) => {
+          const pl = new THREE.PointLight(0x8f9bff, 1.1, R * 6, 2);
+          pl.position.set(0, arcBottom + LAMP_ARC * f, 0);
+          g.add(pl);
+        });
+
+        // shutter, fully open (parked below the arc)
+        const shLen = LAMP_ARC + 3;
+        const shutterGroup = new THREE.Group();
+        shutterGroup.add(new THREE.Mesh(
+          new THREE.CylinderGeometry(1.95, 1.95, shLen, 48, 1, true, ts, tl),
+          new THREE.MeshStandardMaterial({ color: 0xa9b6c1, metalness: 0.9, roughness: 0.34, envMap: env, side: THREE.DoubleSide })
+        ));
+        const shRing = new THREE.Mesh(annulus(1.95, 2.45, 0.9, 0, PI * 2), steelDark);
+        shRing.position.y = -shLen / 2;
+        const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 16, 16), steelDark);
+        rod.position.y = -shLen / 2 - 8;
+        const knob = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 1.2, 24), steelDark);
+        knob.position.y = -shLen / 2 - 16;
+        shutterGroup.add(shRing, rod, knob);
+        shutterGroup.position.y = arcCentre - (shLen + 4);
+        g.add(shutterGroup);
+
+        // quartz window
+        const wW = Math.min(11, Math.max(5, R * 0.9));
+        const wH = Math.min(14, Math.max(6, H * 0.35));
+        const win = new THREE.Group();
+        win.add(new THREE.Mesh(new THREE.BoxGeometry(wW + 3, wH + 3, 0.9), steelDark));
+        win.add(new THREE.Mesh(new THREE.BoxGeometry(wW, wH, 1.3), glass));
+        win.position.set(0, H * 0.45, -R);
+        g.add(win);
+
+        const makeValve = (angDeg, y) => {
+          const v = new THREE.Group();
+          const pipe = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 5, 20), steelDark);
+          pipe.rotation.x = PI / 2; pipe.position.z = 2.2;
+          const body = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.8, 3.0), yellow);
+          body.position.z = 5.4;
+          const lever = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 5.4), yellow);
+          lever.position.set(0, 2.4, 5.4); lever.rotation.x = -0.25;
+          const barb = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.95, 3.4, 16), steelDark);
+          barb.rotation.x = PI / 2; barb.position.z = 8.2;
+          v.add(pipe, body, lever, barb);
+          const ang = (angDeg * PI) / 180;
+          v.position.set((R - 0.5) * Math.sin(ang), y, (R - 0.5) * Math.cos(ang));
+          v.rotation.y = ang;
+          return v;
+        };
+        g.add(makeValve(235, H - 3.5), makeValve(110, H * 0.62), makeValve(110, H * 0.2));
+
+        // overhead mixer
+        const mx = -R * 0.45;
+        const mixer = new THREE.Group();
+        const plate = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.2, 0.6, 24), steel);
+        plate.position.set(mx, H + 9.5, 0); mixer.add(plate);
+        for (let i = 0; i < 3; i++) {
+          const ang = (i / 3) * PI * 2 + 0.4;
+          const leg = new THREE.Mesh(new THREE.BoxGeometry(0.5, 9.4, 1.4), steelDark);
+          leg.position.set(mx + 3.6 * Math.sin(ang), H + 5.0, 3.6 * Math.cos(ang));
+          leg.rotation.y = ang; mixer.add(leg);
+        }
+        const motor = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.4, 9, 32), steel);
+        motor.position.set(mx, H + 14.4, 0);
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.6, 4, 32), motorGreen);
+        cap.position.set(mx, H + 20.6, 0);
+        const capTop = new THREE.Mesh(new THREE.SphereGeometry(3.6, 32, 16, 0, PI * 2, 0, PI / 2), motorGreen);
+        capTop.position.set(mx, H + 22.6, 0);
+        mixer.add(motor, cap, capTop);
+        const impY = H * 0.34;
+        const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, H + 9.5 - impY, 16), steelDark);
+        shaft.position.set(mx, impY + (H + 9.5 - impY) / 2, 0);
+        const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 1.6, 16), steelDark);
+        hub.position.set(mx, impY, 0);
+        mixer.add(shaft, hub);
+        const bladeLen = Math.max(2.6, R * 0.32);
+        for (let i = 0; i < 4; i++) {
+          const ang = (i / 4) * PI * 2;
+          const blade = new THREE.Mesh(new THREE.BoxGeometry(bladeLen, 0.25, bladeLen * 0.55), steel);
+          blade.position.set(mx + (bladeLen / 2 + 0.6) * Math.cos(ang), impY, (bladeLen / 2 + 0.6) * Math.sin(ang));
+          blade.rotation.y = -ang; blade.rotation.z = 0.6;
+          mixer.add(blade);
+        }
+        g.add(mixer);
+
+        root.add(g);
+
+        const target = new THREE.Vector3(0, H / 2, 0);
+        const dist = Math.max(H * 1.75, DIAMETER * 2.6, 70);
+        let az = 0.32;
+        const polar = 1.16;
+
+        return {
+          renderer, scene, camera,
+          step(dt) {
+            az += dt * 0.28;
+            const sp = Math.sin(polar);
+            camera.position.set(
+              target.x + dist * sp * Math.sin(az),
+              target.y + dist * Math.cos(polar),
+              target.z + dist * sp * Math.cos(az)
+            );
+            camera.lookAt(target);
+          },
+        };
       }
-      new ResizeObserver(resize).observe(canvas);
-      resize();
 
-      rig3d.rotation.x = 0.16;
+      /* ----------------------------------------------- response surface */
+
+      function buildSurface(canvas) {
+        const { renderer, scene, camera } = mount(canvas, 34, 0.1, 400);
+        scene.add(new THREE.HemisphereLight(0x9fc4dd, 0x0b1016, 0.8));
+        const key = new THREE.DirectionalLight(0xffffff, 1.05);
+        key.position.set(50, 80, 60); scene.add(key);
+        const rimL = new THREE.DirectionalLight(0x8fa8ff, 0.5);
+        rimL.position.set(-60, 30, -50); scene.add(rimL);
+
+        const root = new THREE.Group();
+        scene.add(root);
+
+        const N = 56;
+        const SPAN = 40;
+        const HGT = 22;
+        const logSmin = 4, logSmax = 6;
+        const Amin = 0.01, Amax = 0.6;
+        const atrazine = COMPOUNDS.find((c) => c.id === "atrazine");
+
+        const zAt = (u, v) => {
+          const S = Math.pow(10, logSmin + u * (logSmax - logSmin));
+          const A = Amin + v * (Amax - Amin);
+          return model({
+            doseMgL: 10, absorbance: A, scavenging: S, compound: atrazine,
+          }).survival(500);
+        };
+
+        const geo = new THREE.PlaneGeometry(SPAN, SPAN, N - 1, N - 1);
+        const pos = geo.attributes.position;
+        const colors = new Float32Array(pos.count * 3);
+        const cLow = new THREE.Color(0x7c6bff);
+        const cHigh = new THREE.Color(0xbfe9ff);
+
+        for (let i = 0; i < pos.count; i++) {
+          const u = pos.getX(i) / SPAN + 0.5;
+          const v = pos.getY(i) / SPAN + 0.5;
+          const z = zAt(u, v);
+          pos.setZ(i, z * HGT);
+          const c = cLow.clone().lerp(cHigh, z);
+          colors[3 * i] = c.r;
+          colors[3 * i + 1] = c.g;
+          colors[3 * i + 2] = c.b;
+        }
+        geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        geo.computeVertexNormals();
+
+        const surf = new THREE.Mesh(
+          geo,
+          new THREE.MeshStandardMaterial({
+            vertexColors: true, roughness: 0.55, metalness: 0.05,
+            side: THREE.DoubleSide,
+          })
+        );
+        surf.rotation.x = -PI / 2;
+        root.add(surf);
+
+        const wire = new THREE.Mesh(
+          geo.clone(),
+          new THREE.MeshBasicMaterial({
+            color: 0x0a1018, wireframe: true, transparent: true, opacity: 0.16,
+          })
+        );
+        wire.rotation.x = -PI / 2;
+        wire.position.y = 0.12;
+        root.add(wire);
+
+        const gridH = new THREE.GridHelper(SPAN, 8, 0x33465a, 0x223040);
+        gridH.material.transparent = true;
+        gridH.material.opacity = 0.5;
+        gridH.position.y = -0.4;
+        root.add(gridH);
+
+        const axMat = new THREE.LineBasicMaterial({ color: 0x5f7488 });
+        const h = SPAN / 2;
+        [
+          [[-h, -0.4, h], [h, -0.4, h]],
+          [[-h, -0.4, h], [-h, -0.4, -h]],
+          [[-h, -0.4, h], [-h, HGT, h]],
+        ].forEach(([a, b]) => {
+          const lg = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(a[0], a[1], a[2]),
+            new THREE.Vector3(b[0], b[1], b[2]),
+          ]);
+          root.add(new THREE.Line(lg, axMat));
+        });
+
+        [
+          ["scavenging  10\u2074 \u2192 10\u2076 s\u207B\u00B9", [0, -3.6, h + 3]],
+          ["A\u2082\u2085\u2084  0.01 \u2192 0.6 cm\u207B\u00B9", [-h - 3, -3.6, 0]],
+          ["C / C\u2080", [-h - 2, HGT + 3, h]],
+        ].forEach(([txt, at]) => {
+          const sp = textSprite(txt, "#9FB4C4", 26);
+          const s = 5.2;
+          sp.scale.set(s * sp.userData.aspect, s, 1);
+          sp.position.set(at[0], at[1], at[2]);
+          root.add(sp);
+        });
+
+        const target = new THREE.Vector3(0, HGT * 0.42, 0);
+        const dist = 92;
+        let az = 0.9;
+        const polar = 1.06;
+
+        return {
+          renderer, scene, camera,
+          step(dt) {
+            az += dt * 0.2;
+            const sp = Math.sin(polar);
+            camera.position.set(
+              target.x + dist * sp * Math.sin(az),
+              target.y + dist * Math.cos(polar),
+              target.z + dist * sp * Math.cos(az)
+            );
+            camera.lookAt(target);
+          },
+        };
+      }
+
+      /* -------------------------------------------------------- run it */
+
+      let scenes;
+      try {
+        scenes = [
+          buildReactor(rig.querySelector("[data-reactor]")),
+          buildSurface(rig.querySelector("[data-surface]")),
+        ];
+      } catch (err) {
+        console.error(err);
+        return fail();
+      }
+
+      const clock = new THREE.Clock();
       let raf = null;
-      function frame() {
-        if (!reduced) rig3d.rotation.y += 0.0042;
-        renderer.render(scene, camera);
-        raf = requestAnimationFrame(frame);
-      }
-      frame();
 
-      // stop the loop when the figure is off screen
+      function draw(dt) {
+        scenes.forEach((s) => {
+          s.step(dt);
+          s.renderer.render(s.scene, s.camera);
+        });
+      }
+
+      function loop() {
+        raf = requestAnimationFrame(loop);
+        draw(clock.getDelta());
+      }
+
+      clock.getDelta();
+      if (reduced) {
+        draw(0); // one static frame, correctly framed
+      } else {
+        loop();
+      }
+
       new IntersectionObserver((entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting && raf === null) frame();
-          else if (!e.isIntersecting && raf !== null) {
+          if (reduced) return;
+          if (e.isIntersecting && raf === null) {
+            clock.getDelta();
+            loop();
+          } else if (!e.isIntersecting && raf !== null) {
             cancelAnimationFrame(raf);
             raf = null;
           }
         });
-      }).observe(canvas);
+      }).observe(rig);
     }
 
     new IntersectionObserver((entries, obs) => {
@@ -387,140 +516,55 @@ const defaults = {
         obs.disconnect();
         boot();
       }
-    }, { rootMargin: "200px" }).observe(rig);
+    }, { rootMargin: "250px" }).observe(rig);
   }
 </script>
 
 <style>
   .rig {
     display: grid;
-    gap: clamp(1.5rem, 4vw, 3rem);
+    gap: 1px;
     grid-template-columns: 1fr;
-    align-items: center;
+    background: #1e2a36;
+    border: 1px solid #1e2a36;
+    border-radius: 4px;
+    overflow: hidden;
   }
 
-  @media (min-width: 62rem) {
+  @media (min-width: 52rem) {
     .rig {
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      grid-template-columns: 1fr 1fr;
     }
   }
 
-  .rig__stage {
-    position: relative;
-    aspect-ratio: 1 / 1.05;
-    min-height: 240px;
+  .rig__cell {
+    margin: 0;
+    background: #0a0e13;
+    padding: 0 0 0.9rem;
   }
 
-  .rig__stage canvas {
+  .rig__cell canvas {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 1 / 1;
     display: block;
+  }
+
+  .rig__cell figcaption {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: #7e8f9c;
+    padding: 0 1.1rem;
+    max-width: 40ch;
   }
 
   .rig__fallback {
+    grid-column: 1 / -1;
+    background: #0a0e13;
+    color: #7e8f9c;
     font-family: var(--data);
-    font-size: 0.78rem;
-    color: var(--ink-45);
-    max-width: 32ch;
-  }
-
-  .rig__plot {
-    width: 100%;
-    height: auto;
-    display: block;
-    overflow: visible;
-  }
-
-  .rig__grid line {
-    stroke: var(--ink-45);
-    stroke-width: 1;
-  }
-
-  .rig__gridline {
-    stroke: var(--rule);
-  }
-
-  .rig__tick,
-  .rig__axis {
-    font-family: var(--data);
-    font-size: 11px;
-    fill: var(--ink-45);
-  }
-
-  .rig__axis {
-    letter-spacing: 0.06em;
-  }
-
-  .rig__curve {
-    stroke: var(--mb-700);
-    stroke-width: 2.6;
-    stroke-linecap: round;
-  }
-
-  .rig__ref {
-    stroke: var(--ink-45);
-    stroke-width: 1.4;
-    stroke-dasharray: 4 4;
-    opacity: 0.7;
-  }
-
-  .rig__marker {
-    fill: var(--paper);
-    stroke: var(--mb-700);
-    stroke-width: 2.4;
-  }
-
-  .rig__readout {
-    font-family: var(--data);
-    font-size: 12px;
-    fill: var(--mb-700);
-  }
-
-  .rig__controls {
-    display: grid;
-    gap: 0.9rem;
-    margin-top: 1.4rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--rule);
-  }
-
-  @media (min-width: 40rem) {
-    .rig__controls {
-      grid-template-columns: 1fr 1fr;
-      gap: 0.9rem 2rem;
-    }
-  }
-
-  .rig__label {
-    display: block;
-    font-family: var(--data);
-    font-size: 0.7rem;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--ink-45);
-    margin-bottom: 0.35rem;
-  }
-
-  .rig__label b {
-    color: var(--ink);
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .rig__controls input[type="range"] {
-    width: 100%;
-    accent-color: var(--mb-500);
-  }
-
-  .rig__controls select {
-    width: 100%;
-    font-family: var(--body);
-    font-size: 0.95rem;
-    padding: 0.35rem 0.4rem;
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    background: var(--paper);
-    color: var(--ink);
+    font-size: 0.8rem;
+    padding: 1.5rem;
+    margin: 0;
   }
 </style>
