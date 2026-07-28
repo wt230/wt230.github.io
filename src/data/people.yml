@@ -25,7 +25,6 @@ pi:
 
 current:
   - name: Duy Khen Tran
-    short_name: Khen
     role: PhD Student
     co_advisor: Feiyue Wang
     co_advisor_unit: Centre for Earth Observation Science
