@@ -1,4 +1,8 @@
 ---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/newsreader";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
 import "../styles/global.css";
 import fs from "node:fs";
 import yaml from "js-yaml";
@@ -24,12 +28,6 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? `${title} — ${site.group_name}` : `${site.group_name} — ${site.tagline}`}</title>
     <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=IBM+Plex+Mono:wght@400;500&display=swap"
-    />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
