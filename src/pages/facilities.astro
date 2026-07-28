@@ -1,10 +1,31 @@
 ---
 import fs from "node:fs";
 import yaml from "js-yaml";
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
-const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
+const isTodo = (v) =>
+  typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
+
+/**
+ * Photos live in src/assets/facilities/. Importing them through the
+ * glob (rather than putting them in public/) lets Astro resize and
+ * convert them to webp at build time, so a phone photo dropped in here
+ * doesn't ship as a 4 MB download.
+ */
+const photos = import.meta.glob(
+  "../assets/facilities/*.{jpg,jpeg,png,webp,avif}",
+  { eager: true }
+);
+
+function photoFor(filename) {
+  if (!filename) return null;
+  const hit = Object.entries(photos).find(([path]) =>
+    path.endsWith(`/${filename}`)
+  );
+  return hit ? hit[1].default : null;
+}
 ---
 
 <Base title="Facilities" wide={true}>
@@ -27,12 +48,28 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
       <div>
         <ul class="plain kit">
           {
-            site.facilities.map((f) => (
-              <li>
-                <h3>{f.name}</h3>
-                {!isTodo(f.detail) ? <p>{f.detail}</p> : null}
-              </li>
-            ))
+            site.facilities.map((f) => {
+              const img = photoFor(f.photo);
+              return (
+                <li>
+                  <h3>{f.name}</h3>
+                  {f.short ? <p class="kit__short data">{f.short}</p> : null}
+                  {img ? (
+                    <figure class="kit__figure">
+                      <Image
+                        src={img}
+                        alt={f.caption ?? f.name}
+                        widths={[600, 900, 1400]}
+                        sizes="(min-width: 56rem) 46rem, 92vw"
+                        loading="lazy"
+                      />
+                      {f.caption ? <figcaption>{f.caption}</figcaption> : null}
+                    </figure>
+                  ) : null}
+                  {!isTodo(f.detail) ? <p>{f.detail}</p> : null}
+                </li>
+              );
+            })
           }
         </ul>
         <p class="fund">{site.funding_note}</p>
@@ -46,16 +83,42 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
     padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
   }
   .kit li {
-    padding-block: 1.5rem;
+    padding-block: 1.75rem;
     border-top: 1px solid var(--rule);
   }
   .kit h3 {
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.2rem;
+  }
+  .kit__short {
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-45);
+    margin: 0 0 0.9rem;
   }
   .kit p {
     color: var(--ink-70);
     font-size: 0.98rem;
     margin: 0;
+  }
+  .kit__figure {
+    margin: 0 0 1.1rem;
+  }
+  .kit__figure :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--paper-sunk);
+  }
+  .kit__figure figcaption {
+    font-family: var(--data);
+    font-size: 0.74rem;
+    line-height: 1.55;
+    color: var(--ink-45);
+    margin-top: 0.65rem;
+    max-width: 48ch;
   }
   .fund {
     margin-top: 2.5rem;

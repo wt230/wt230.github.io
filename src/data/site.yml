@@ -86,10 +86,17 @@ openings:
     - Your expected start date and whether you have applied to UM yet
 
 facilities:
-  - name: Triple quadrupole LC-MS/MS
+  - name: Thermo Scientific TSQ Quantis Plus with Vanquish Flex LC
+    short: Triple quadrupole LC-MS/MS
+    photo: lcmsms.jpg
+    caption: >-
+      The Vanquish Flex autosampler, pump and column compartment feeding
+      the TSQ Quantis Plus mass spectrometer.
     detail: >-
       Acquired 2025 through the Canada Foundation for Innovation John
-      R. Evans Leaders Fund, for micropollutant quantification.
+      R. Evans Leaders Fund. Trace-level quantification of
+      micropollutants and transformation products, in our own lab
+      rather than in a queue somewhere else.
   - name: UV reactors and flow-through systems
     detail: >-
       Bench-scale collimated beam and flow-through cuvette systems for
