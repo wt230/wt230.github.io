@@ -126,18 +126,18 @@ const recent = publications.slice(0, 3);
 
   .hero__inner {
     display: grid;
-    gap: clamp(2.5rem, 5vw, 4.5rem);
+    gap: clamp(2rem, 4vw, 3rem);
     grid-template-columns: 1fr;
-    align-items: center;
   }
 
-  /* 46rem, not 64rem: on a high-DPI display a physically wide window is
-     often well under 1024 CSS pixels, and the hero was stacking there. */
-  @media (min-width: 46rem) {
-    .hero__inner {
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-      align-items: center;
-    }
+  /* One column: the text card and the figures below it both run the
+     full width of the page. */
+  .hero__text {
+    max-width: none;
+  }
+
+  .hero__text .lede {
+    max-width: 74ch;
   }
 
   .hero__actions {

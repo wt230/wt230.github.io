@@ -21,10 +21,7 @@
 
   <figure class="rig__cell">
     <canvas data-surface aria-hidden="true"></canvas>
-    <figcaption>
-      Representative micropollutant remaining after 500 mJ cm⁻²,
-      k·OH = 5 × 10⁹ M⁻¹ s⁻¹, A₂₅₄ = 0.1 cm⁻¹
-    </figcaption>
+    <figcaption>Micropollutant remaining after UV/H₂O₂ treatment</figcaption>
   </figure>
 
   <p class="rig__fallback" data-fallback hidden>
@@ -472,41 +469,64 @@
         gridH.position.y = -0.4;
         root.add(gridH);
 
-        // Axis lines as tubes. GL line width is capped at 1 px on most
-        // drivers, so a thin Line is not reliably visible.
+        // Axis frame. The two ground axes are drawn on the edges nearest
+        // the camera and the vertical one on the far corner, so nothing is
+        // ever read through the surface. Rebuilt each frame as it turns.
+        const UP = new THREE.Vector3(0, 1, 0);
         const axMat = new THREE.MeshBasicMaterial({ color: 0x7b8399 });
-        function axisRod(a, b, r) {
+        const ROD_R = 0.34;
+
+        function makeRod() {
+          const mesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(ROD_R, ROD_R, 1, 12), axMat
+          );
+          root.add(mesh);
+          return mesh;
+        }
+        function placeRod(mesh, a, b) {
           const va = new THREE.Vector3(a[0], a[1], a[2]);
           const vb = new THREE.Vector3(b[0], b[1], b[2]);
           const dir = new THREE.Vector3().subVectors(vb, va);
-          const rod = new THREE.Mesh(
-            new THREE.CylinderGeometry(r, r, dir.length(), 12), axMat
-          );
-          rod.position.copy(va).addScaledVector(dir, 0.5);
-          rod.quaternion.setFromUnitVectors(
-            new THREE.Vector3(0, 1, 0), dir.clone().normalize()
-          );
-          root.add(rod);
+          const len = dir.length();
+          mesh.position.copy(va).addScaledVector(dir, 0.5);
+          mesh.quaternion.setFromUnitVectors(UP, dir.clone().normalize());
+          mesh.scale.set(1, len, 1);
         }
-        const h = SPAN / 2;
-        const O = [-h, -0.4, h];
-        axisRod(O, [h, -0.4, h], 0.34);      // scavenging
-        axisRod(O, [-h, -0.4, -h], 0.34);    // H2O2 dose
-        axisRod(O, [-h, HGT, h], 0.34);      // C/C0
 
-        // Titles sit against the axis they belong to, offset just clear
-        // of the rod rather than floating off in space.
-        [
-          ["scavenging capacity", [0, -2.6, h + 3.4]],
-          ["H\u2082O\u2082 dose", [-h - 3.4, -2.6, 0]],
-          ["C / C\u2080", [-h - 3.0, HGT * 0.52, h + 1.0]],
-        ].forEach(([txt, at]) => {
+        const h = SPAN / 2;
+        const Y0 = -0.4;
+        const rods = { s: makeRod(), d: makeRod(), c: makeRod() };
+
+        function makeLabel(txt) {
           const sp = textSprite(txt, "#2f3947", 18);
           const sc = 3.0;
           sp.scale.set(sc * sp.userData.aspect, sc, 1);
-          sp.position.set(at[0], at[1], at[2]);
           root.add(sp);
-        });
+          return sp;
+        }
+        const labels = {
+          s: makeLabel("scavenging capacity"),
+          d: makeLabel("H\u2082O\u2082 dose"),
+          c: makeLabel("C / C\u2080"),
+        };
+
+        function layoutAxes() {
+          const sx = camera.position.x >= 0 ? 1 : -1;
+          const sz = camera.position.z >= 0 ? 1 : -1;
+
+          // scavenging runs along world X; put it on the near Z edge
+          placeRod(rods.s, [-h, Y0, sz * h], [h, Y0, sz * h]);
+          labels.s.position.set(0, Y0 - 2.8, sz * (h + 3.6));
+
+          // H2O2 dose runs along world Z; put it on the near X edge
+          placeRod(rods.d, [sx * h, Y0, -h], [sx * h, Y0, h]);
+          labels.d.position.set(sx * (h + 3.6), Y0 - 2.8, 0);
+
+          // C/C0 is vertical, parked on the far corner
+          placeRod(rods.c, [-sx * h, Y0, -sz * h], [-sx * h, HGT, -sz * h]);
+          labels.c.position.set(-sx * (h + 3.2), HGT * 0.52, -sz * (h + 1.2));
+        }
+        layoutAxes();
 
         const m = fitMetrics(root);
         const target = new THREE.Vector3(0, m.centreY, 0);
@@ -525,6 +545,7 @@
               target.z + dist * sp * Math.cos(az)
             );
             camera.lookAt(target);
+            layoutAxes();
           },
         };
       }
@@ -594,11 +615,11 @@
 
   .rig {
     display: grid;
-    gap: 0.75rem;
+    gap: clamp(1rem, 3vw, 2.5rem);
     grid-template-columns: 1fr;
   }
 
-  @container (min-width: 26rem) {
+  @container (min-width: 34rem) {
     .rig {
       grid-template-columns: 1fr 1fr;
     }
@@ -619,7 +640,7 @@
 
   .rig__cell canvas {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     display: block;
   }
 
