@@ -12,7 +12,8 @@
  */
 ---
 
-<div class="rig" data-rig>
+<div class="rig-outer">
+  <div class="rig" data-rig>
   <figure class="rig__cell">
     <canvas data-reactor aria-hidden="true"></canvas>
     <figcaption>Annular low-pressure UV reactor, shown in section</figcaption>
@@ -31,6 +32,7 @@
     micropollutant survives it as the water's radical scavenging capacity
     and UV absorbance change.
   </p>
+  </div>
 </div>
 
 <script>
@@ -90,25 +92,72 @@
       }
 
       function textSprite(text, color, px) {
+        // Draw at 4x and scale down: a sprite texture rendered at final
+        // size goes soft as soon as the camera moves toward it.
+        const SS = 4;
         const m = document.createElement("canvas").getContext("2d");
-        const font = `500 ${px}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+        const font = `500 ${px * SS}px ui-monospace, SFMono-Regular, Menlo, monospace`;
         m.font = font;
-        const w = Math.ceil(m.measureText(text).width) + 10;
-        const h = px + 12;
+        const w = Math.ceil(m.measureText(text).width) + 8 * SS;
+        const h = (px + 10) * SS;
         const cv = document.createElement("canvas");
         cv.width = w; cv.height = h;
         const ctx = cv.getContext("2d");
         ctx.font = font;
         ctx.fillStyle = color;
         ctx.textBaseline = "middle";
-        ctx.fillText(text, 4, h / 2);
+        ctx.textAlign = "center";
+        ctx.fillText(text, w / 2, h / 2);
         const tex = new THREE.CanvasTexture(cv);
-        tex.minFilter = THREE.LinearFilter;
+        tex.minFilter = THREE.LinearMipmapLinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.generateMipmaps = true;
+        tex.anisotropy = 4;
         const sp = new THREE.Sprite(
-          new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false })
+          new THREE.SpriteMaterial({
+            map: tex, transparent: true, depthTest: false, depthWrite: false,
+          })
         );
+        sp.renderOrder = 40;
         sp.userData.aspect = w / h;
         return sp;
+      }
+
+      /**
+       * Fit for an object spinning about Y. Width is set by its radius in
+       * the xz plane (constant under that rotation) and height by the box,
+       * checked against the horizontal and vertical fields of view
+       * separately. A bounding sphere would over-pull on a tall thin
+       * object like the reactor and leave it small in frame.
+       */
+      function fitMetrics(object) {
+        const box = new THREE.Box3().setFromObject(object);
+        let rxz = 0;
+        object.traverse((n) => {
+          const g = n.geometry;
+          if (!g || !g.attributes || !g.attributes.position) return;
+          g.computeBoundingBox();
+          const bb = g.boundingBox;
+          n.updateWorldMatrix(true, false);
+          for (const cx of [bb.min.x, bb.max.x])
+            for (const cy of [bb.min.y, bb.max.y])
+              for (const cz of [bb.min.z, bb.max.z]) {
+                const v = new THREE.Vector3(cx, cy, cz).applyMatrix4(n.matrixWorld);
+                rxz = Math.max(rxz, Math.hypot(v.x, v.z));
+              }
+        });
+        return {
+          rxz,
+          halfH: (box.max.y - box.min.y) / 2,
+          centreY: (box.max.y + box.min.y) / 2,
+        };
+      }
+
+      function fitDistance(camera, m, margin) {
+        const vHalf = (camera.fov * Math.PI) / 180 / 2;
+        const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
+        const need = Math.max(m.rxz / Math.tan(hHalf), m.halfH / Math.tan(vHalf));
+        return need * margin + m.rxz;
       }
 
       function mount(canvas, fov, near, far) {
@@ -145,7 +194,7 @@
         fl.position.set(30, -40, 60);
         scene.add(key, rimL, fl);
 
-        const grid = new THREE.GridHelper(300, 30, 0xb9c6d4, 0xdbe2ec);
+        const grid = new THREE.GridHelper(110, 11, 0xb9c6d4, 0xdbe2ec);
         grid.material.transparent = true;
         grid.material.opacity = 0.75;
         grid.position.y = -6;
@@ -324,8 +373,8 @@
 
         root.add(g);
 
-        const target = new THREE.Vector3(0, H / 2, 0);
-        const dist = Math.max(H * 1.75, DIAMETER * 2.6, 70);
+        const m = fitMetrics(g);
+        const target = new THREE.Vector3(0, m.centreY, 0);
         let az = 0.32;
         const polar = 1.16;
 
@@ -333,6 +382,7 @@
           renderer, scene, camera,
           step(dt) {
             az += dt * 0.28;
+            const dist = fitDistance(camera, m, 1.04);
             const sp = Math.sin(polar);
             camera.position.set(
               target.x + dist * sp * Math.sin(az),
@@ -447,19 +497,19 @@
         // Titles sit against the axis they belong to, offset just clear
         // of the rod rather than floating off in space.
         [
-          ["scavenging  10\u2074 \u2192 10\u2076 s\u207B\u00B9", [0, -0.4, h + 2.2]],
-          ["H\u2082O\u2082  0 \u2192 50 mg L\u207B\u00B9", [-h - 2.2, -0.4, 0]],
-          ["C / C\u2080", [-h - 1.8, HGT * 0.5, h + 0.6]],
+          ["scavenging capacity", [0, -2.6, h + 3.4]],
+          ["H\u2082O\u2082 dose", [-h - 3.4, -2.6, 0]],
+          ["C / C\u2080", [-h - 3.0, HGT * 0.52, h + 1.0]],
         ].forEach(([txt, at]) => {
-          const sp = textSprite(txt, "#5b6577", 18);
-          const sc = 2.9;
+          const sp = textSprite(txt, "#2f3947", 18);
+          const sc = 3.0;
           sp.scale.set(sc * sp.userData.aspect, sc, 1);
           sp.position.set(at[0], at[1], at[2]);
           root.add(sp);
         });
 
-        const target = new THREE.Vector3(0, HGT * 0.40, 0);
-        const dist = 96;
+        const m = fitMetrics(root);
+        const target = new THREE.Vector3(0, m.centreY, 0);
         let az = 0.9;
         const polar = 1.06;
 
@@ -467,6 +517,7 @@
           renderer, scene, camera,
           step(dt) {
             az += dt * 0.2;
+            const dist = fitDistance(camera, m, 1.06);
             const sp = Math.sin(polar);
             camera.position.set(
               target.x + dist * sp * Math.sin(az),
@@ -537,15 +588,27 @@
 </script>
 
 <style>
+  .rig-outer {
+    container-type: inline-size;
+  }
+
   .rig {
     display: grid;
     gap: 0.75rem;
     grid-template-columns: 1fr;
   }
 
-  @media (min-width: 30rem) {
+  @container (min-width: 26rem) {
     .rig {
       grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @supports not (container-type: inline-size) {
+    @media (min-width: 52rem) {
+      .rig {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   }
 

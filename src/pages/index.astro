@@ -131,8 +131,13 @@ const recent = publications.slice(0, 3);
     align-items: center;
   }
 
-  .hero__text {
-    max-width: 46rem;
+  /* 46rem, not 64rem: on a high-DPI display a physically wide window is
+     often well under 1024 CSS pixels, and the hero was stacking there. */
+  @media (min-width: 46rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: center;
+    }
   }
 
   .hero__actions {
