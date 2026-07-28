@@ -1,0 +1,187 @@
+---
+import "../styles/global.css";
+import fs from "node:fs";
+import yaml from "js-yaml";
+
+const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
+
+const { title, description = site.thesis, wide = false } = Astro.props;
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const nav = [
+  { href: "/research", label: "Research" },
+  { href: "/people", label: "People" },
+  { href: "/publications", label: "Publications" },
+  { href: "/facilities", label: "Facilities" },
+  { href: "/join", label: "Join us" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} — ${site.group_name}` : `${site.group_name} — ${site.tagline}`}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="masthead">
+      <div class="wrap masthead__inner">
+        <a class="wordmark" href="/">
+          <span class="wordmark__name">{site.group_name}</span>
+          <span class="wordmark__unit">{site.institution}</span>
+        </a>
+        <nav aria-label="Main">
+          <ul class="plain navlist">
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    aria-current={pathname === item.href ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class={wide ? "" : "measure-page"}>
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer__inner">
+        <div>
+          <p class="footer__name">{site.group_name}</p>
+          <p class="footer__addr">
+            {site.contact.office}<br />
+            <span set:html={site.contact.address.replace(/\n/g, "<br />")} />
+          </p>
+        </div>
+        <div>
+          <p>
+            <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
+            <span class="data">{site.contact.phone}</span>
+          </p>
+          <p class="footer__note">{site.funding_note}</p>
+        </div>
+      </div>
+    </footer>
+
+    <style>
+      .masthead {
+        border-bottom: 1px solid var(--rule);
+        background: var(--paper);
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+
+      .masthead__inner {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 2rem;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-block: 1.05rem;
+      }
+
+      .wordmark {
+        text-decoration: none;
+        display: block;
+      }
+
+      .wordmark__name {
+        display: block;
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 1.22rem;
+        letter-spacing: -0.02em;
+        font-variation-settings: "wdth" 88;
+      }
+
+      .wordmark__unit {
+        display: block;
+        font-family: var(--data);
+        font-size: 0.68rem;
+        letter-spacing: 0.07em;
+        color: var(--ink-45);
+        margin-top: 0.15rem;
+      }
+
+      .navlist {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 1.6rem;
+        font-family: var(--display);
+        font-size: 0.96rem;
+        font-weight: 500;
+      }
+
+      .navlist a {
+        text-decoration: none;
+        padding-bottom: 2px;
+        border-bottom: 2px solid transparent;
+      }
+
+      .navlist a:hover {
+        border-bottom-color: var(--mb-300);
+      }
+
+      .navlist a[aria-current="page"] {
+        border-bottom-color: var(--mb-700);
+      }
+
+      .footer {
+        border-top: 1px solid var(--rule);
+        background: var(--paper-sunk);
+        margin-top: var(--stack);
+        padding-block: 3rem 3.5rem;
+        font-size: 0.94rem;
+      }
+
+      .footer__inner {
+        display: grid;
+        gap: 2rem 4rem;
+        grid-template-columns: 1fr;
+      }
+
+      @media (min-width: 46rem) {
+        .footer__inner {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .footer__name {
+        font-family: var(--display);
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+      }
+
+      .footer__addr,
+      .footer__note {
+        color: var(--ink-70);
+        line-height: 1.5;
+      }
+
+      .footer__note {
+        font-size: 0.86rem;
+        max-width: 42ch;
+      }
+    </style>
+  </body>
+</html>

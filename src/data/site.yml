@@ -1,0 +1,121 @@
+# ---------------------------------------------------------------
+# Site copy that isn't people or publications.
+# Edit here; the templates read from this file.
+# ---------------------------------------------------------------
+
+group_name: Wang Group
+tagline: Water treatment and water chemistry
+institution: Department of Civil Engineering, University of Manitoba
+
+# The one-paragraph thesis. This is the first prose a prospective
+# student reads, so it is written for them, not for a reviewer.
+thesis: >-
+  We work on a deceptively simple question: when you put ultraviolet
+  light and an oxidant into water, what actually happens to the
+  contaminants, and what do you create along the way? Answering it
+  properly takes kinetics, analytical chemistry, reactor engineering,
+  and an increasing amount of code. Our group builds the measurement
+  methods and computational tools the field needs to get those
+  answers right.
+
+themes:
+  - slug: hrsc
+    title: Measuring what water does to radicals
+    blurb: >-
+      Every model of an advanced oxidation process depends on knowing
+      how quickly a given water quenches hydroxyl radicals. The
+      measurement is harder and less reproducible than the literature
+      admits. We developed one of the standard methods, and we are
+      running an inter-laboratory comparison across three groups to
+      find out how well it travels between labs.
+    detail: >-
+      TODO - two or three sentences on current directions, and what a
+      student joining this theme would actually do day to day.
+
+  - slug: aop
+    title: Predicting degradation before the reactor is built
+    blurb: >-
+      We maintain a kinetic database of hydroxyl radical rate
+      constants assembled from six decades of radiation chemistry
+      literature, and simulation tools that use it to predict
+      micropollutant removal under realistic water conditions.
+      Students here learn to write code.
+    detail: >-
+      TODO - confirm the compound count and describe the calculator
+      before this goes public.
+
+  - slug: dbp
+    title: The byproducts nobody was looking for
+    blurb: >-
+      Oxidation removes one problem and can create another. We study
+      what forms during and after treatment, and how operational
+      choices — quenching agent, chlorine dose, process sequence —
+      change the answer.
+    detail: >-
+      TODO
+
+  - slug: monitoring
+    title: Watching water in real time
+    blurb: >-
+      We are building water quality monitoring capability for the
+      Upper Nelson River watershed, which means field deployment in
+      genuinely difficult conditions and all the instrumentation and
+      data problems that come with it.
+    detail: >-
+      TODO
+
+# Shown on the Join page and the home page call to action.
+# Set `open: false` when nothing is available — an honest empty state
+# is better than a stale advertisement.
+openings:
+  open: true
+  positions:
+    - level: PhD or MSc
+      topic: Cost-efficiency of advanced oxidation processes
+      funded: true
+      start: TODO - confirm current start dates
+  background: >-
+    Environmental engineering, chemical engineering, water chemistry,
+    or a closely related field.
+  # What a first email should contain. Specific asks filter for the
+  # applicants who read the page.
+  email_expectations:
+    - Which of our research themes you want to work on, and why that one
+    - A CV, including any laboratory or programming experience
+    - Transcripts, unofficial is fine at this stage
+    - Your expected start date and whether you have applied to UM yet
+
+facilities:
+  - name: Triple quadrupole LC-MS/MS
+    detail: >-
+      Acquired 2025 through the Canada Foundation for Innovation John
+      R. Evans Leaders Fund, for micropollutant quantification.
+  - name: UV reactors and flow-through systems
+    detail: >-
+      Bench-scale collimated beam and flow-through cuvette systems for
+      controlled fluence experiments.
+  - name: ZetaView particle tracking
+    detail: >-
+      Nanoparticle tracking analysis for bioparticle and nanobubble
+      characterisation, via NSERC Research Tools and Instruments.
+  - name: Electrochemical oxidation cells
+    detail: TODO - describe the BDD electrode setup.
+  - name: Field monitoring instrumentation
+    detail: >-
+      Multi-parameter sondes and a prototype scavenging capacity
+      meter for deployment in the Nelson River watershed.
+
+funding_note: >-
+  The group is supported by NSERC Discovery, the Canada Foundation for
+  Innovation, Environment and Climate Change Canada, Research
+  Manitoba, and the Water Research Foundation.
+
+contact:
+  email: chengjin.wang@umanitoba.ca
+  office: Room E1-449 EITC
+  address: |-
+    15 Gillson Street
+    University of Manitoba, Fort Garry campus
+    Winnipeg, Manitoba R3T 5V6
+    Canada
+  phone: 204-474-8381

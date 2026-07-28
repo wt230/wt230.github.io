@@ -1,0 +1,136 @@
+# ---------------------------------------------------------------
+# Wang Group - People
+# Consumed by src/pages/people.astro
+#
+# TODO markers indicate fields I could not fill from the CV or the
+# roster. The `placement` field on alumni is the highest-value gap:
+# it is the single thing prospective students look for hardest.
+#
+# Ordering within each group is by role seniority, then by start
+# date once dates are known.
+# ---------------------------------------------------------------
+
+pi:
+  name: Chengjin Wang
+  role: Assistant Professor
+  credentials: Ph.D., P.Eng.
+  email: chengjin.wang@umanitoba.ca
+  office: E1-449 EITC
+  phone: 204-474-8381
+  scholar: https://scholar.google.com/citations?user=sNRhGZEAAAAJ&hl=en
+  photo: /images/people/chengjin-wang.jpg
+  bio_short: >-
+    TODO - two sentences, first person, for the People page.
+    The long-form version lives on the About page.
+
+current:
+  - name: Duy Khen Tran
+    short_name: Khen
+    role: PhD Student
+    co_advisor: Feiyue Wang
+    co_advisor_unit: Centre for Earth Observation Science
+    funding: UMGF
+    project: TODO - one line, plain language
+    photo: /images/people/khen-tran.jpg
+
+  - name: Chunyang Chen
+    role: PhD Student
+    project: TODO - one line, plain language
+    photo: /images/people/chunyang-chen.jpg
+
+  - name: Fateme Mohamadi
+    role: MSc Student
+    project: >-
+      Interferences in the external calibration method for hydroxyl
+      radical scavenging capacity measurement
+    highlight: First author, Environ. Sci.-Water Res. Technol. 2026
+    note: >-
+      TODO - defending 11 August 2026. Move to `alumni` after the
+      defence and add placement.
+    photo: /images/people/fateme-mohamadi.jpg
+
+  - name: Mateo Molina
+    role: MSc Student
+    co_advisor: Beata Gorczyca
+    co_advisor_unit: Civil Engineering, University of Manitoba
+    project: TODO - one line, plain language
+    photo: /images/people/mateo-molina.jpg
+
+  - name: Nasim Hoseini
+    role: MEng Student
+    project: TODO - one line, plain language
+    photo: /images/people/nasim-hoseini.jpg
+
+  - name: Jasmine DeCaire
+    role: Undergraduate Researcher
+    funding: NSERC USRA
+    project: TODO - one line, plain language
+    photo: /images/people/jasmine-decaire.jpg
+
+  - name: Isami Montero
+    role: Undergraduate Researcher
+    funding: Mitacs
+    project: TODO - one line, plain language
+    photo: /images/people/isami-montero.jpg
+
+  - name: Diego Isaac Torres Lopez
+    role: Undergraduate Researcher
+    funding: Mitacs
+    project: TODO - one line, plain language
+    photo: /images/people/diego-torres-lopez.jpg
+
+alumni:
+  - name: Wei Hu
+    role: Postdoctoral Fellow
+    years: TODO
+    placement: TODO - current position and organisation
+
+  - name: Hafiz Hamza
+    role: MSc
+    co_advisor: Qiuyan Yuan
+    years: TODO
+    thesis: TODO
+    placement: TODO
+
+  - name: Naveen Chaudhary
+    role: MEng
+    years: TODO
+    placement: TODO
+
+  - name: Eduardo Samuel Véliz-González
+    role: Visiting Graduate Student
+    home_institution: TODO
+    years: TODO
+    placement: TODO
+
+  - name: Taofeeq Bello
+    role: Research Technician
+    years: TODO
+    placement: TODO
+
+  - name: Fareedah Yahya
+    role: Undergraduate Researcher
+    years: TODO
+    placement: TODO
+
+  - name: Adejoke Kuye
+    role: Undergraduate Researcher
+    years: TODO
+    placement: TODO
+
+  - name: Selina Leung
+    role: Undergraduate Researcher
+    years: TODO
+    placement: TODO
+
+# ---------------------------------------------------------------
+# Collaborating supervisors at UM, for the co-advising note on the
+# Join Us page.
+# ---------------------------------------------------------------
+co_supervisors:
+  - name: Feiyue Wang
+    unit: Centre for Earth Observation Science
+  - name: Beata Gorczyca
+    unit: Civil Engineering
+  - name: Qiuyan Yuan
+    unit: Civil Engineering

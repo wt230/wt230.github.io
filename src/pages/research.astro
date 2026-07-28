@@ -1,0 +1,70 @@
+---
+import fs from "node:fs";
+import yaml from "js-yaml";
+import Base from "../layouts/Base.astro";
+import PubEntry from "../components/PubEntry.astro";
+import { byTheme, THEMES } from "../lib/bib.js";
+
+const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
+const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
+---
+
+<Base title="Research" wide={true}>
+  <section class="pagehead">
+    <div class="wrap">
+      <span class="label">Research</span>
+      <h1>Four questions</h1>
+      <p class="lede">{site.thesis}</p>
+    </div>
+  </section>
+
+  {
+    site.themes.map((theme) => {
+      const pubs = byTheme(theme.slug).slice(0, 4);
+      return (
+        <section class="section" id={theme.slug}>
+          <div class="wrap split">
+            <div>
+              <hr class="decay-rule" />
+              <h2>{theme.title}</h2>
+              <p class="theme__tag data">{THEMES[theme.slug]}</p>
+            </div>
+            <div>
+              <p class="theme__blurb">{theme.blurb}</p>
+              {!isTodo(theme.detail) && theme.detail ? <p>{theme.detail}</p> : null}
+              {pubs.length ? (
+                <div class="theme__pubs">
+                  <span class="label">Selected papers</span>
+                  <ul class="plain">
+                    {pubs.map((pub) => <PubEntry pub={pub} />)}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+</Base>
+
+<style>
+  .pagehead {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .theme__tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-45);
+  }
+  .theme__blurb {
+    font-size: 1.1rem;
+    line-height: 1.55;
+  }
+  .theme__pubs {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+</style>

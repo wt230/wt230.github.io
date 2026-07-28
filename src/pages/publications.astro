@@ -1,0 +1,135 @@
+---
+import Base from "../layouts/Base.astro";
+import PubEntry from "../components/PubEntry.astro";
+import { publications, byYear, byPrimaryTheme, THEMES } from "../lib/bib.js";
+
+const themeOrder = [
+  "hrsc",
+  "aop",
+  "dbp",
+  "uv-photochem",
+  "monitoring",
+  "defluorination",
+  "ospw",
+  "collab",
+];
+
+const themed = themeOrder
+  .map((slug) => ({ slug, label: THEMES[slug], pubs: byPrimaryTheme(slug) }))
+  .filter((t) => t.pubs.length);
+
+// Guard: every paper must land in exactly one theme section.
+const placed = themed.reduce((n, t) => n + t.pubs.length, 0);
+if (placed !== publications.length) {
+  throw new Error(
+    `Publications page drops ${publications.length - placed} paper(s). ` +
+      `Check that every 'keywords' first value appears in themeOrder.`
+  );
+}
+
+const years = byYear();
+---
+
+<Base title="Publications" wide={true}>
+  <section class="pagehead">
+    <div class="wrap">
+      <span class="label">Publications</span>
+      <h1>{publications.length} papers</h1>
+      <p class="lede">
+        Grouped by research theme, with a
+        <a href="#chronological">chronological index</a> at the end. Papers the
+        group led are marked.
+      </p>
+    </div>
+  </section>
+
+  {
+    themed.map((theme) => (
+      <section class="section" id={theme.slug}>
+        <div class="wrap split">
+          <div>
+            <hr class="decay-rule" />
+            <h2>{theme.label}</h2>
+            <p class="count data">
+              {theme.pubs.length} {theme.pubs.length === 1 ? "paper" : "papers"}
+            </p>
+          </div>
+          <div>
+            <ul class="plain">
+              {theme.pubs.map((pub) => <PubEntry pub={pub} />)}
+            </ul>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--sunk" id="chronological">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>By year</h2>
+      </div>
+      <div>
+        {
+          years.map(([year, pubs]) => (
+            <div class="yr">
+              <p class="yr__label data">{year}</p>
+              <ul class="plain yr__list">
+                {pubs.map((pub) => (
+                  <li>
+                    {pub.doi ? (
+                      <a href={`https://doi.org/${pub.doi}`}>{pub.title}</a>
+                    ) : (
+                      pub.title
+                    )}
+                    <span class="yr__journal data"> {pub.journal}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .count {
+    font-size: 0.74rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-45);
+  }
+  .yr {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1rem;
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .yr__label {
+    font-size: 0.86rem;
+    color: var(--mb-500);
+    margin: 0;
+    padding-top: 0.15rem;
+  }
+  .yr__list li {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin-bottom: 0.6rem;
+    max-width: 56ch;
+  }
+  .yr__list li:last-child {
+    margin-bottom: 0;
+  }
+  .yr__journal {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--ink-45);
+  }
+</style>

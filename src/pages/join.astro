@@ -1,0 +1,236 @@
+---
+import fs from "node:fs";
+import yaml from "js-yaml";
+import Base from "../layouts/Base.astro";
+import { pi, counts } from "../lib/people.js";
+
+const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
+const isTodo = (v) =>
+  typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
+const { openings } = site;
+---
+
+<Base
+  title="Join us"
+  description="Funded graduate positions in water treatment and water chemistry at the University of Manitoba."
+  wide={true}
+>
+  <section class="pagehead">
+    <div class="wrap">
+      <span class="label">Join us</span>
+      <h1>
+        {openings.open ? "We are hiring graduate students" : "Openings"}
+      </h1>
+      <p class="lede">
+        This page tells you what is available, what we look for, and what to
+        put in a first email. Reading it before you write will help both of us.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Open positions</h2>
+      </div>
+      <div>
+        {
+          openings.open ? (
+            <ul class="plain roles">
+              {openings.positions.map((role) => (
+                <li>
+                  <h3>{role.level}</h3>
+                  <p class="roles__topic">{role.topic}</p>
+                  <p class="roles__meta data">
+                    {role.funded ? "Funded position" : "Funding to be discussed"}
+                    {!isTodo(role.start) && role.start ? ` · Starting ${role.start}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              No positions are open at the moment. This page is kept current,
+              so if nothing is listed here, nothing is available.
+            </p>
+          )
+        }
+        <p class="roles__bg">
+          <strong>Useful background:</strong> {openings.background} Laboratory
+          experience helps. So does programming — several projects in the group
+          are as much computational as experimental.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sunk">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Funding and equipment</h2>
+      </div>
+      <div>
+        <p>
+          Graduate positions in the group are funded. The lab is supported by
+          an NSERC Discovery grant running to 2028, along with project funding
+          from Environment and Climate Change Canada, Research Manitoba, and
+          the Water Research Foundation.
+        </p>
+        <p>
+          Equipment matters as much as stipend. A triple quadrupole LC-MS/MS
+          was installed in 2025 through the Canada Foundation for Innovation,
+          which means micropollutant quantification happens in our own lab
+          rather than in a queue somewhere else. See the
+          <a href="/facilities">facilities page</a> for the rest.
+        </p>
+        <p>
+          Strong applicants are also nominated for the University of Manitoba
+          Graduate Fellowship. Undergraduate researchers in the group have been
+          funded through NSERC and Mitacs.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>What to put in a first email</h2>
+      </div>
+      <div>
+        <p>
+          Most of the messages we receive are sent to fifty labs at once, and
+          they are easy to spot. A short, specific email gets a real reply.
+          Include:
+        </p>
+        <ol class="asks">
+          {openings.email_expectations.map((item) => <li>{item}</li>)}
+        </ol>
+        <p class="asks__addr">
+          Send it to <a href={`mailto:${pi.email}`}>{pi.email}</a>.
+        </p>
+        <p class="asks__note">
+          You will also need to meet the admission requirements of the UM
+          Faculty of Graduate Studies, including the English language
+          requirement. Emailing first is worth doing before you pay an
+          application fee.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>What it is like here</h2>
+      </div>
+      <div>
+        <p>
+          This is a young group. The lab opened at the end of 2021, and
+          {" "}{counts.total} people have worked in it since. That has
+          consequences worth knowing before you apply, in both directions.
+        </p>
+        <p>
+          You will get more of your supervisor's time than you would in a large
+          established group, and more say in where your project goes. Several
+          of the tools the group uses were built by students. If you want to
+          arrive somewhere with the questions already settled and the methods
+          already working, this is the wrong lab. If you would rather help
+          decide what the questions are, it is a good one.
+        </p>
+        <p>
+          Students here are co-advised across three departments, so you are not
+          dependent on a single supervisor. The group is international, and has
+          been since it started.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sunk">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Undergraduates</h2>
+      </div>
+      <div>
+        <p>
+          We take undergraduate researchers most summers, funded through NSERC
+          Undergraduate Student Research Awards and Mitacs. If you are a UM
+          undergraduate in engineering or a related science and want to try
+          research before committing to graduate school, email in the winter
+          term — awards are decided early.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .roles li {
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+  .roles li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .roles h3 {
+    margin-bottom: 0.2rem;
+  }
+  .roles__topic {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+  }
+  .roles__meta {
+    font-size: 0.76rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mb-700);
+    margin: 0;
+  }
+  .roles__bg {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.98rem;
+    color: var(--ink-70);
+  }
+  .asks {
+    counter-reset: ask;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    max-width: var(--measure);
+  }
+  .asks li {
+    counter-increment: ask;
+    position: relative;
+    padding-left: 2.4rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--rule);
+  }
+  .asks li::before {
+    content: counter(ask);
+    position: absolute;
+    left: 0;
+    top: 0.85rem;
+    font-family: var(--data);
+    font-size: 0.78rem;
+    color: var(--mb-500);
+  }
+  .asks__addr {
+    font-size: 1.05rem;
+  }
+  .asks__note {
+    font-size: 0.9rem;
+    color: var(--ink-45);
+  }
+</style>

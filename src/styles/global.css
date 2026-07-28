@@ -1,0 +1,247 @@
+/* ===================================================================
+   Wang Group — design tokens
+
+   Palette is taken from the group's own measurement: methylene blue
+   fading as hydroxyl radicals consume it. Saturated MB at the top of
+   the scale, near-quenched at the bottom. Everything else is quiet.
+   =================================================================== */
+
+:root {
+  /* methylene blue, concentrated -> quenched */
+  --mb-900: #10265c;
+  --mb-700: #17357a;
+  --mb-500: #2c5fc4;
+  --mb-300: #7fa3e3;
+  --mb-100: #d7e2f7;
+
+  /* 254 nm marker — used once or twice, never as decoration */
+  --uv: #6d4ac8;
+
+  --ink: #0f1522;
+  --ink-70: #46506a;
+  --ink-45: #7b8399;
+
+  --paper: #fbfcfd;
+  --paper-sunk: #f2f5f9;
+  --rule: #dbe2ec;
+
+  --measure: 68ch;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --stack: clamp(3.5rem, 8vw, 7rem);
+
+  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --body: "Newsreader", ui-serif, Georgia, serif;
+  --data: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: clamp(1.0625rem, 0.4vw + 1rem, 1.1875rem);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- type ---------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  margin: 0 0 0.5em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 6.5vw, 5.2rem);
+  font-variation-settings: "wdth" 92;
+}
+
+h2 {
+  font-size: clamp(1.85rem, 3.4vw, 2.9rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  letter-spacing: -0.012em;
+}
+
+p {
+  margin: 0 0 1.15em;
+  max-width: var(--measure);
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--mb-300);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 0.15s ease;
+}
+
+a:hover {
+  text-decoration-color: var(--mb-500);
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--mb-500);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* eyebrow / label — the utility voice of the page */
+.label {
+  font-family: var(--data);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.lede {
+  font-size: clamp(1.2rem, 1.5vw, 1.45rem);
+  line-height: 1.5;
+  color: var(--ink-70);
+  max-width: 46ch;
+}
+
+.data {
+  font-family: var(--data);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- layout -------------------------------------------------------- */
+
+.wrap {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--stack);
+  border-top: 1px solid var(--rule);
+}
+
+.section--sunk {
+  background: var(--paper-sunk);
+}
+
+.split {
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 56rem) {
+  .split {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 99;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.6rem 1rem;
+  border-radius: 3px;
+}
+
+/* ---- shared bits --------------------------------------------------- */
+
+.cta {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  padding: 0.72rem 1.35rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.cta:hover {
+  background: var(--mb-700);
+  border-color: var(--mb-700);
+  color: #fff;
+}
+
+.cta--quiet {
+  background: transparent;
+  color: var(--ink);
+}
+
+.cta--quiet:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* the decay rule — a thin methylene-blue band that fades out.
+   Used as a section marker. It is the page's one recurring motif. */
+.decay-rule {
+  height: 3px;
+  border: 0;
+  margin: 0 0 2.5rem;
+  max-width: 22rem;
+  background: linear-gradient(
+    90deg,
+    var(--mb-700) 0%,
+    var(--mb-500) 34%,
+    var(--mb-300) 62%,
+    var(--mb-100) 84%,
+    transparent 100%
+  );
+}
+
+ul.plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

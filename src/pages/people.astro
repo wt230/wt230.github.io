@@ -1,0 +1,131 @@
+---
+import Base from "../layouts/Base.astro";
+import PersonCard from "../components/PersonCard.astro";
+import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.js";
+---
+
+<Base title="People" wide={true}>
+  <section class="pagehead">
+    <div class="wrap">
+      <span class="label">People</span>
+      <h1>Who is here</h1>
+      <p class="lede">
+        {counts.current} people are in the group now. {counts.total} have worked
+        here since the lab opened in 2021, from undergraduate researchers
+        through to a postdoctoral fellow.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Principal investigator</h2>
+      </div>
+      <div>
+        <h3 class="pi__name">{pi.name}</h3>
+        <p class="pi__role data">{pi.role}, {pi.credentials}</p>
+        {real(pi.bio_short) ? <p>{pi.bio_short}</p> : null}
+        <p class="pi__contact">
+          <a href={`mailto:${pi.email}`}>{pi.email}</a> · {pi.office} ·
+          <a href={pi.scholar}>Google Scholar</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Current members</h2>
+      </div>
+      <div>
+        <ul class="plain">
+          {current.map((p) => <PersonCard person={p} />)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sunk">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Alumni</h2>
+      </div>
+      <div>
+        <ul class="plain alumni">
+          {alumni.map((p) => <PersonCard person={p} alum={true} />)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Co-supervision</h2>
+      </div>
+      <div>
+        <p>
+          Several students in the group are co-advised with colleagues
+          elsewhere in the university, which means two supervisors, two
+          research groups, and access to a wider set of methods than any
+          one lab holds.
+        </p>
+        <ul class="plain cosup">
+          {coSupervisors.map((c) => (
+            <li>
+              <strong>{c.name}</strong>
+              <span class="data"> · {c.unit}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .pi__name {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .pi__role {
+    font-size: 0.8rem;
+    color: var(--ink-45);
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+  .pi__contact {
+    font-size: 0.92rem;
+    color: var(--ink-70);
+  }
+  .alumni {
+    columns: 2;
+    column-gap: 3rem;
+  }
+  @media (max-width: 42rem) {
+    .alumni {
+      columns: 1;
+    }
+  }
+  .alumni :global(.person) {
+    break-inside: avoid;
+  }
+  .cosup li {
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.96rem;
+  }
+  .cosup .data {
+    font-size: 0.78rem;
+    color: var(--ink-45);
+  }
+</style>

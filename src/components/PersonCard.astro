@@ -1,0 +1,94 @@
+---
+import { real } from "../lib/people.js";
+const { person, alum = false } = Astro.props;
+
+const initials = person.name
+  .split(/\s+/)
+  .filter((w) => /^[A-Z]/.test(w))
+  .slice(0, 2)
+  .map((w) => w[0])
+  .join("");
+
+const project = real(person.project);
+const placement = real(person.placement);
+const years = real(person.years);
+---
+
+<li class={alum ? "person person--alum" : "person"}>
+  {
+    !alum && (
+      <div class="person__photo" aria-hidden="true">
+        <span>{initials}</span>
+      </div>
+    )
+  }
+  <div class="person__body">
+    <h3 class="person__name">{person.short_name ?? person.name}</h3>
+    <p class="person__role data">
+      {person.role}{years ? <> · {years}</> : null}
+      {person.funding ? <> · {person.funding}</> : null}
+    </p>
+    {project ? <p class="person__project">{project}</p> : null}
+    {placement ? <p class="person__project">Now: {placement}</p> : null}
+    {
+      person.co_advisor ? (
+        <p class="person__co">Co-advised with {person.co_advisor}</p>
+      ) : null
+    }
+    {person.highlight ? <p class="person__hl">{person.highlight}</p> : null}
+  </div>
+</li>
+
+<style>
+  .person {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 4.5rem 1fr;
+    align-items: start;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .person--alum {
+    grid-template-columns: 1fr;
+    padding-block: 1rem;
+  }
+  .person__photo {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--mb-100);
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--mb-700);
+  }
+  .person__name {
+    font-size: 1.12rem;
+    margin: 0 0 0.2rem;
+  }
+  .person__role {
+    font-size: 0.76rem;
+    letter-spacing: 0.05em;
+    color: var(--ink-45);
+    margin: 0 0 0.5rem;
+    max-width: none;
+  }
+  .person__project,
+  .person__co,
+  .person__hl {
+    font-size: 0.94rem;
+    margin: 0 0 0.3rem;
+    color: var(--ink-70);
+    max-width: 52ch;
+  }
+  .person__co {
+    font-size: 0.86rem;
+    color: var(--ink-45);
+  }
+  .person__hl {
+    font-family: var(--data);
+    font-size: 0.76rem;
+    color: var(--mb-700);
+  }
+</style>

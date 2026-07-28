@@ -1,0 +1,69 @@
+---
+import fs from "node:fs";
+import yaml from "js-yaml";
+import Base from "../layouts/Base.astro";
+
+const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
+const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
+---
+
+<Base title="Facilities" wide={true}>
+  <section class="pagehead">
+    <div class="wrap">
+      <span class="label">Facilities</span>
+      <h1>What is in the lab</h1>
+      <p class="lede">
+        Experimental, computational, and field capability built since 2021.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Instrumentation</h2>
+      </div>
+      <div>
+        <ul class="plain kit">
+          {
+            site.facilities.map((f) => (
+              <li>
+                <h3>{f.name}</h3>
+                {!isTodo(f.detail) ? <p>{f.detail}</p> : null}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="fund">{site.funding_note}</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pagehead {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .kit li {
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .kit h3 {
+    margin-bottom: 0.35rem;
+  }
+  .kit p {
+    color: var(--ink-70);
+    font-size: 0.98rem;
+    margin: 0;
+  }
+  .fund {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--data);
+    font-size: 0.82rem;
+    color: var(--ink-45);
+    line-height: 1.6;
+  }
+</style>
