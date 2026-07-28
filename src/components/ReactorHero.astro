@@ -21,7 +21,8 @@
   <figure class="rig__cell">
     <canvas data-surface aria-hidden="true"></canvas>
     <figcaption>
-      Atrazine remaining after 500 mJ cm⁻², 10 mg L⁻¹ H₂O₂
+      Representative micropollutant remaining after 500 mJ cm⁻²,
+      k·OH = 5 × 10⁹ M⁻¹ s⁻¹, A₂₅₄ = 0.1 cm⁻¹
     </figcaption>
   </figure>
 
@@ -144,9 +145,9 @@
         fl.position.set(30, -40, 60);
         scene.add(key, rimL, fl);
 
-        const grid = new THREE.GridHelper(300, 30, 0x2a3a48, 0x18242e);
+        const grid = new THREE.GridHelper(300, 30, 0xb9c6d4, 0xdbe2ec);
         grid.material.transparent = true;
-        grid.material.opacity = 0.35;
+        grid.material.opacity = 0.75;
         grid.position.y = -6;
         scene.add(grid);
 
@@ -215,12 +216,12 @@
         tube.position.y = arcCentre;
         const arcMesh = new THREE.Mesh(
           new THREE.CylinderGeometry(0.92, 0.92, LAMP_ARC, 36),
-          new THREE.MeshBasicMaterial({ color: 0xdfe8ff })
+          new THREE.MeshBasicMaterial({ color: 0xb6a8ff })
         );
         arcMesh.position.y = arcCentre;
         const glow = new THREE.Mesh(
           new THREE.CylinderGeometry(1.9, 1.9, LAMP_ARC, 36, 1, true),
-          new THREE.MeshBasicMaterial({ color: 0x8f7bff, transparent: true, opacity: 0.26, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false })
+          new THREE.MeshBasicMaterial({ color: 0x8f7bff, transparent: true, opacity: 0.34, side: THREE.DoubleSide, depthWrite: false })
         );
         glow.position.y = arcCentre;
         g.add(tube, arcMesh, glow);
@@ -358,16 +359,21 @@
 
         const N = 56;
         const SPAN = 40;
-        const HGT = 22;
-        const logSmin = 4, logSmax = 6;
-        const Amin = 0.01, Amax = 0.6;
-        const atrazine = COMPOUNDS.find((c) => c.id === "atrazine");
+        const HGT = 24;
+        const logSmin = 4, logSmax = 6;      // scavenging capacity, s^-1
+        const Dmin = 0, Dmax = 50;           // H2O2 dose, mg/L
+        const A254 = 0.1;                    // held fixed
+
+        // Not a named compound: a typical micropollutant that is removed
+        // by the radical and does not photolyse appreciably at 254 nm.
+        const representative = { kOH: 5.0e9, eps: 0, phi: 0 };
 
         const zAt = (u, v) => {
           const S = Math.pow(10, logSmin + u * (logSmax - logSmin));
-          const A = Amin + v * (Amax - Amin);
+          const dose = Dmin + v * (Dmax - Dmin);
           return model({
-            doseMgL: 10, absorbance: A, scavenging: S, compound: atrazine,
+            doseMgL: dose, absorbance: A254,
+            scavenging: S, compound: representative,
           }).survival(500);
         };
 
@@ -403,47 +409,57 @@
         const wire = new THREE.Mesh(
           geo.clone(),
           new THREE.MeshBasicMaterial({
-            color: 0x0a1018, wireframe: true, transparent: true, opacity: 0.16,
+            color: 0x24303f, wireframe: true, transparent: true, opacity: 0.20,
           })
         );
         wire.rotation.x = -PI / 2;
         wire.position.y = 0.12;
         root.add(wire);
 
-        const gridH = new THREE.GridHelper(SPAN, 8, 0x33465a, 0x223040);
+        const gridH = new THREE.GridHelper(SPAN, 8, 0xb9c6d4, 0xdbe2ec);
         gridH.material.transparent = true;
-        gridH.material.opacity = 0.5;
+        gridH.material.opacity = 0.9;
         gridH.position.y = -0.4;
         root.add(gridH);
 
-        const axMat = new THREE.LineBasicMaterial({ color: 0x5f7488 });
+        // Axis lines as tubes. GL line width is capped at 1 px on most
+        // drivers, so a thin Line is not reliably visible.
+        const axMat = new THREE.MeshBasicMaterial({ color: 0x7b8399 });
+        function axisRod(a, b, r) {
+          const va = new THREE.Vector3(a[0], a[1], a[2]);
+          const vb = new THREE.Vector3(b[0], b[1], b[2]);
+          const dir = new THREE.Vector3().subVectors(vb, va);
+          const rod = new THREE.Mesh(
+            new THREE.CylinderGeometry(r, r, dir.length(), 12), axMat
+          );
+          rod.position.copy(va).addScaledVector(dir, 0.5);
+          rod.quaternion.setFromUnitVectors(
+            new THREE.Vector3(0, 1, 0), dir.clone().normalize()
+          );
+          root.add(rod);
+        }
         const h = SPAN / 2;
-        [
-          [[-h, -0.4, h], [h, -0.4, h]],
-          [[-h, -0.4, h], [-h, -0.4, -h]],
-          [[-h, -0.4, h], [-h, HGT, h]],
-        ].forEach(([a, b]) => {
-          const lg = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(a[0], a[1], a[2]),
-            new THREE.Vector3(b[0], b[1], b[2]),
-          ]);
-          root.add(new THREE.Line(lg, axMat));
-        });
+        const O = [-h, -0.4, h];
+        axisRod(O, [h, -0.4, h], 0.34);      // scavenging
+        axisRod(O, [-h, -0.4, -h], 0.34);    // H2O2 dose
+        axisRod(O, [-h, HGT, h], 0.34);      // C/C0
 
+        // Titles sit against the axis they belong to, offset just clear
+        // of the rod rather than floating off in space.
         [
-          ["scavenging  10\u2074 \u2192 10\u2076 s\u207B\u00B9", [0, -3.6, h + 3]],
-          ["A\u2082\u2085\u2084  0.01 \u2192 0.6 cm\u207B\u00B9", [-h - 3, -3.6, 0]],
-          ["C / C\u2080", [-h - 2, HGT + 3, h]],
+          ["scavenging  10\u2074 \u2192 10\u2076 s\u207B\u00B9", [0, -0.4, h + 2.2]],
+          ["H\u2082O\u2082  0 \u2192 50 mg L\u207B\u00B9", [-h - 2.2, -0.4, 0]],
+          ["C / C\u2080", [-h - 1.8, HGT * 0.5, h + 0.6]],
         ].forEach(([txt, at]) => {
-          const sp = textSprite(txt, "#9FB4C4", 26);
-          const s = 5.2;
-          sp.scale.set(s * sp.userData.aspect, s, 1);
+          const sp = textSprite(txt, "#5b6577", 18);
+          const sc = 2.9;
+          sp.scale.set(sc * sp.userData.aspect, sc, 1);
           sp.position.set(at[0], at[1], at[2]);
           root.add(sp);
         });
 
-        const target = new THREE.Vector3(0, HGT * 0.42, 0);
-        const dist = 92;
+        const target = new THREE.Vector3(0, HGT * 0.40, 0);
+        const dist = 96;
         let az = 0.9;
         const polar = 1.06;
 
@@ -523,15 +539,11 @@
 <style>
   .rig {
     display: grid;
-    gap: 1px;
+    gap: 0.75rem;
     grid-template-columns: 1fr;
-    background: #1e2a36;
-    border: 1px solid #1e2a36;
-    border-radius: 4px;
-    overflow: hidden;
   }
 
-  @media (min-width: 52rem) {
+  @media (min-width: 30rem) {
     .rig {
       grid-template-columns: 1fr 1fr;
     }
@@ -539,32 +551,29 @@
 
   .rig__cell {
     margin: 0;
-    background: #0a0e13;
-    padding: 0 0 0.9rem;
+    padding: 0;
   }
 
   .rig__cell canvas {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 5;
     display: block;
   }
 
   .rig__cell figcaption {
     font-family: var(--data);
-    font-size: 0.72rem;
-    line-height: 1.5;
-    color: #7e8f9c;
-    padding: 0 1.1rem;
-    max-width: 40ch;
+    font-size: 0.66rem;
+    line-height: 1.45;
+    color: var(--ink-45);
+    padding: 0.5rem 0 0;
+    border-top: 1px solid var(--rule);
   }
 
   .rig__fallback {
     grid-column: 1 / -1;
-    background: #0a0e13;
-    color: #7e8f9c;
+    color: var(--ink-45);
     font-family: var(--data);
     font-size: 0.8rem;
-    padding: 1.5rem;
     margin: 0;
   }
 </style>
