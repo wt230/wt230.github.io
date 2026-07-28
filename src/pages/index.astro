@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import yaml from "js-yaml";
 import Base from "../layouts/Base.astro";
-import DecayFigure from "../components/DecayFigure.astro";
+import ReactorHero from "../components/ReactorHero.astro";
 import PubEntry from "../components/PubEntry.astro";
 import { publications } from "../lib/bib.js";
 import { counts } from "../lib/people.js";
@@ -24,7 +24,7 @@ const recent = publications.slice(0, 3);
         </p>
       </div>
       <div class="hero__figure">
-        <DecayFigure />
+        <ReactorHero />
       </div>
     </div>
   </section>
@@ -131,10 +131,8 @@ const recent = publications.slice(0, 3);
     align-items: center;
   }
 
-  @media (min-width: 62rem) {
-    .hero__inner {
-      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-    }
+  .hero__text {
+    max-width: 46rem;
   }
 
   .hero__actions {

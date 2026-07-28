@@ -1,0 +1,526 @@
+---
+/**
+ * Rotating annular UV reactor, with the degradation curve it produces.
+ *
+ * The curve is computed live from src/lib/aop.js. The tint of the water
+ * in the annulus tracks the background absorbance slider, so the two
+ * halves of the figure are showing the same water.
+ *
+ * Three.js is imported dynamically and only once the figure scrolls
+ * into view, so it never blocks first paint.
+ */
+import { COMPOUNDS } from "../lib/aop.js";
+
+const defaults = {
+  dose: 10,
+  absorbance: 0.1,
+  scavenging: 1.0e5,
+  compound: "atrazine",
+};
+---
+
+<div class="rig" data-rig>
+  <div class="rig__stage">
+    <canvas data-reactor aria-hidden="true"></canvas>
+    <p class="rig__fallback" data-fallback hidden>
+      Annular UV reactor: a low-pressure lamp inside a quartz sleeve, with
+      water flowing through the surrounding gap.
+    </p>
+  </div>
+
+  <div class="rig__panel">
+    <svg
+      class="rig__plot"
+      viewBox="0 0 420 300"
+      role="img"
+      aria-labelledby="plot-title"
+      data-plot
+    >
+      <title id="plot-title">
+        Micropollutant degradation against UV fluence
+      </title>
+
+      <g class="rig__grid">
+        <line x1="54" y1="20" x2="54" y2="248"></line>
+        <line x1="54" y1="248" x2="406" y2="248"></line>
+        <line x1="54" y1="191" x2="406" y2="191" class="rig__gridline"></line>
+        <line x1="54" y1="134" x2="406" y2="134" class="rig__gridline"></line>
+        <line x1="54" y1="77" x2="406" y2="77" class="rig__gridline"></line>
+      </g>
+
+      <text x="46" y="24" class="rig__tick" text-anchor="end">1.0</text>
+      <text x="46" y="138" class="rig__tick" text-anchor="end">0.5</text>
+      <text x="46" y="252" class="rig__tick" text-anchor="end">0</text>
+      <text x="54" y="270" class="rig__tick">0</text>
+      <text x="406" y="270" class="rig__tick" text-anchor="end">1000</text>
+      <text x="230" y="288" class="rig__axis" text-anchor="middle">
+        UV fluence (mJ cm⁻²)
+      </text>
+      <text
+        x="0"
+        y="0"
+        class="rig__axis"
+        text-anchor="middle"
+        transform="translate(16,134) rotate(-90)">C / C₀</text>
+
+      <path class="rig__ref" data-ref fill="none"></path>
+      <path class="rig__curve" data-curve fill="none"></path>
+      <circle class="rig__marker" data-marker r="4"></circle>
+      <text class="rig__readout" data-readout x="406" y="42" text-anchor="end"
+      ></text>
+    </svg>
+
+    <div class="rig__controls">
+      <label>
+        <span class="rig__label">
+          Compound
+        </span>
+        <select data-compound>
+          {
+            COMPOUNDS.map((c) => (
+              <option value={c.id} selected={c.id === defaults.compound}>
+                {c.name}
+              </option>
+            ))
+          }
+        </select>
+      </label>
+
+      <label>
+        <span class="rig__label">
+          H₂O₂ dose <b data-out="dose">{defaults.dose} mg L⁻¹</b>
+        </span>
+        <input
+          type="range"
+          data-dose
+          min="0"
+          max="60"
+          step="1"
+          value={defaults.dose}
+        />
+      </label>
+
+      <label>
+        <span class="rig__label">
+          Background A₂₅₄ <b data-out="absorbance">{defaults.absorbance} cm⁻¹</b>
+        </span>
+        <input
+          type="range"
+          data-absorbance
+          min="0.01"
+          max="0.60"
+          step="0.01"
+          value={defaults.absorbance}
+        />
+      </label>
+
+      <label>
+        <span class="rig__label">
+          Scavenging capacity <b data-out="scavenging">1.0 × 10⁵ s⁻¹</b>
+        </span>
+        <input
+          type="range"
+          data-scavenging
+          min="4.3"
+          max="6.2"
+          step="0.02"
+          value={Math.log10(defaults.scavenging)}
+        />
+      </label>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { model, COMPOUNDS } from "../lib/aop.js";
+
+  const rig = document.querySelector("[data-rig]");
+  if (rig) {
+    const els = {
+      canvas: rig.querySelector("[data-reactor]"),
+      fallback: rig.querySelector("[data-fallback]"),
+      curve: rig.querySelector("[data-curve]"),
+      ref: rig.querySelector("[data-ref]"),
+      marker: rig.querySelector("[data-marker]"),
+      readout: rig.querySelector("[data-readout]"),
+      dose: rig.querySelector("[data-dose]"),
+      absorbance: rig.querySelector("[data-absorbance]"),
+      scavenging: rig.querySelector("[data-scavenging]"),
+      compound: rig.querySelector("[data-compound]"),
+      outDose: rig.querySelector('[data-out="dose"]'),
+      outAbs: rig.querySelector('[data-out="absorbance"]'),
+      outScav: rig.querySelector('[data-out="scavenging"]'),
+    };
+
+    const MAX_H = 1000;
+    const X0 = 54, X1 = 406, Y0 = 20, Y1 = 248;
+    const sx = (H) => X0 + (H / MAX_H) * (X1 - X0);
+    const sy = (v) => Y1 - v * (Y1 - Y0);
+
+    const state = () => ({
+      doseMgL: Number(els.dose.value),
+      absorbance: Number(els.absorbance.value),
+      scavenging: Math.pow(10, Number(els.scavenging.value)),
+      compound: COMPOUNDS.find((c) => c.id === els.compound.value),
+    });
+
+    function pathFor(fn) {
+      let d = "";
+      for (let i = 0; i <= 100; i++) {
+        const H = (MAX_H * i) / 100;
+        d += `${i ? "L" : "M"}${sx(H).toFixed(1)},${sy(fn(H)).toFixed(1)}`;
+      }
+      return d;
+    }
+
+    function sciNotation(v) {
+      const exp = Math.floor(Math.log10(v));
+      const mant = v / Math.pow(10, exp);
+      return `${mant.toFixed(1)} × 10${String(exp)
+        .split("")
+        .map((d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[Number(d)])
+        .join("")} s⁻¹`;
+    }
+
+    function render() {
+      const s = state();
+      const m = model(s);
+
+      els.curve.setAttribute("d", pathFor((H) => m.survival(H)));
+      // reference: the same water with no peroxide, i.e. photolysis alone
+      const bare = model({ ...s, doseMgL: 0 });
+      els.ref.setAttribute("d", pathFor((H) => bare.survival(H)));
+
+      const at500 = m.survival(500);
+      els.marker.setAttribute("cx", sx(500));
+      els.marker.setAttribute("cy", sy(at500));
+      els.readout.textContent = `${Math.round((1 - at500) * 100)}% removed at 500 mJ cm⁻²`;
+
+      els.outDose.textContent = `${s.doseMgL} mg L⁻¹`;
+      els.outAbs.textContent = `${s.absorbance.toFixed(2)} cm⁻¹`;
+      els.outScav.textContent = sciNotation(s.scavenging);
+
+      if (window.__reactorTint) window.__reactorTint(s.absorbance);
+    }
+
+    [els.dose, els.absorbance, els.scavenging, els.compound].forEach((el) =>
+      el.addEventListener("input", render)
+    );
+    render();
+
+    // ---- 3D reactor, loaded only when visible ----------------------
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    async function boot() {
+      let THREE;
+      try {
+        THREE = await import("three");
+      } catch {
+        els.canvas.hidden = true;
+        els.fallback.hidden = false;
+        return;
+      }
+
+      const canvas = els.canvas;
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          alpha: true,
+        });
+      } catch {
+        canvas.hidden = true;
+        els.fallback.hidden = false;
+        return;
+      }
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+      camera.position.set(0, 1.1, 8.2);
+      camera.lookAt(0, 0, 0);
+
+      const rig3d = new THREE.Group();
+      scene.add(rig3d);
+
+      const H = 3.4;
+
+      // water annulus — tinted by the absorbance slider
+      const waterMat = new THREE.MeshStandardMaterial({
+        color: 0x2c5fc4,
+        transparent: true,
+        opacity: 0.28,
+        roughness: 0.15,
+        metalness: 0,
+      });
+      const water = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.95, 0.95, H - 0.1, 64, 1, true),
+        waterMat
+      );
+      rig3d.add(water);
+
+      // outer wall
+      const wall = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.02, 1.02, H, 64, 1, true),
+        new THREE.MeshStandardMaterial({
+          color: 0xdbe6f5,
+          transparent: true,
+          opacity: 0.22,
+          roughness: 0.08,
+          metalness: 0.1,
+          side: THREE.DoubleSide,
+        })
+      );
+      rig3d.add(wall);
+
+      // quartz sleeve
+      const sleeve = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.38, 0.38, H + 0.2, 48, 1, true),
+        new THREE.MeshStandardMaterial({
+          color: 0xf2f7ff,
+          transparent: true,
+          opacity: 0.34,
+          roughness: 0.02,
+          side: THREE.DoubleSide,
+        })
+      );
+      rig3d.add(sleeve);
+
+      // lamp
+      const lamp = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.25, 0.25, H - 0.2, 40),
+        new THREE.MeshBasicMaterial({ color: 0xe4dcff })
+      );
+      rig3d.add(lamp);
+
+      const halo = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.33, 0.33, H - 0.15, 40, 1, true),
+        new THREE.MeshBasicMaterial({
+          color: 0x9d86ec,
+          transparent: true,
+          opacity: 0.35,
+          blending: THREE.AdditiveBlending,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      );
+      rig3d.add(halo);
+
+      // flanges and ports
+      const steel = new THREE.MeshStandardMaterial({
+        color: 0x8e9bb2,
+        roughness: 0.42,
+        metalness: 0.55,
+      });
+      [-1, 1].forEach((s) => {
+        const flange = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.12, 1.12, 0.16, 64),
+          steel
+        );
+        flange.position.y = (s * H) / 2;
+        rig3d.add(flange);
+
+        const port = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.16, 0.16, 0.85, 28),
+          steel
+        );
+        port.rotation.z = Math.PI / 2;
+        port.position.set(s * 1.35, (-s * H) / 2 + s * 0.5, 0);
+        rig3d.add(port);
+      });
+
+      scene.add(new THREE.AmbientLight(0xffffff, 1.15));
+      const key = new THREE.DirectionalLight(0xffffff, 1.5);
+      key.position.set(3, 5, 6);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(0xa9c2ee, 0.85);
+      rim.position.set(-5, -1, -4);
+      scene.add(rim);
+      scene.add(new THREE.PointLight(0xb9a6ff, 2.4, 8));
+
+      // absorbance -> how dark and how green-brown the water reads
+      window.__reactorTint = (a) => {
+        const t = Math.min(a / 0.6, 1);
+        waterMat.opacity = 0.18 + t * 0.5;
+        waterMat.color.setRGB(
+          0.17 + t * 0.28,
+          0.37 + t * 0.16,
+          0.77 - t * 0.5
+        );
+      };
+      window.__reactorTint(Number(els.absorbance.value));
+
+      function resize() {
+        const w = canvas.clientWidth || 1;
+        const h = canvas.clientHeight || 1;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      new ResizeObserver(resize).observe(canvas);
+      resize();
+
+      rig3d.rotation.x = 0.16;
+      let raf = null;
+      function frame() {
+        if (!reduced) rig3d.rotation.y += 0.0042;
+        renderer.render(scene, camera);
+        raf = requestAnimationFrame(frame);
+      }
+      frame();
+
+      // stop the loop when the figure is off screen
+      new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && raf === null) frame();
+          else if (!e.isIntersecting && raf !== null) {
+            cancelAnimationFrame(raf);
+            raf = null;
+          }
+        });
+      }).observe(canvas);
+    }
+
+    new IntersectionObserver((entries, obs) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        obs.disconnect();
+        boot();
+      }
+    }, { rootMargin: "200px" }).observe(rig);
+  }
+</script>
+
+<style>
+  .rig {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+
+  @media (min-width: 62rem) {
+    .rig {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+  }
+
+  .rig__stage {
+    position: relative;
+    aspect-ratio: 1 / 1.05;
+    min-height: 240px;
+  }
+
+  .rig__stage canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .rig__fallback {
+    font-family: var(--data);
+    font-size: 0.78rem;
+    color: var(--ink-45);
+    max-width: 32ch;
+  }
+
+  .rig__plot {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  .rig__grid line {
+    stroke: var(--ink-45);
+    stroke-width: 1;
+  }
+
+  .rig__gridline {
+    stroke: var(--rule);
+  }
+
+  .rig__tick,
+  .rig__axis {
+    font-family: var(--data);
+    font-size: 11px;
+    fill: var(--ink-45);
+  }
+
+  .rig__axis {
+    letter-spacing: 0.06em;
+  }
+
+  .rig__curve {
+    stroke: var(--mb-700);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+  }
+
+  .rig__ref {
+    stroke: var(--ink-45);
+    stroke-width: 1.4;
+    stroke-dasharray: 4 4;
+    opacity: 0.7;
+  }
+
+  .rig__marker {
+    fill: var(--paper);
+    stroke: var(--mb-700);
+    stroke-width: 2.4;
+  }
+
+  .rig__readout {
+    font-family: var(--data);
+    font-size: 12px;
+    fill: var(--mb-700);
+  }
+
+  .rig__controls {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .rig__controls {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem 2rem;
+    }
+  }
+
+  .rig__label {
+    display: block;
+    font-family: var(--data);
+    font-size: 0.7rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-45);
+    margin-bottom: 0.35rem;
+  }
+
+  .rig__label b {
+    color: var(--ink);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .rig__controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--mb-500);
+  }
+
+  .rig__controls select {
+    width: 100%;
+    font-family: var(--body);
+    font-size: 0.95rem;
+    padding: 0.35rem 0.4rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+</style>
