@@ -9,7 +9,7 @@ import yaml from "js-yaml";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 
-const { title, description = site.thesis, wide = false } = Astro.props;
+const { title, description = site.thesis } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 const nav = [
@@ -26,6 +26,7 @@ const nav = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title ? `${title} — ${site.group_name}` : `${site.group_name} — ${site.tagline}`}</title>
     <meta name="description" content={description} />
   </head>
@@ -57,7 +58,7 @@ const nav = [
       </div>
     </header>
 
-    <main id="main" class={wide ? "" : "measure-page"}>
+    <main id="main">
       <slot />
     </main>
 

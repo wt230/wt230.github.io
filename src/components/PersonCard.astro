@@ -2,6 +2,18 @@
 import { real } from "../lib/people.js";
 const { person, alum = false } = Astro.props;
 
+/**
+ * Headshots live in public/images/people/ and are referenced by the
+ * `photo:` field in people.yml. Anyone without a file falls back to
+ * initials, so a person who declines to be photographed leaves no gap.
+ */
+const photos = import.meta.glob("/public/images/people/*.{jpg,jpeg,png,webp}", {
+  eager: true,
+});
+const photoPath = real(person.photo);
+const hasPhoto =
+  photoPath && Object.keys(photos).some((f) => f.endsWith(photoPath));
+
 const initials = person.name
   .split(/\s+/)
   .filter((w) => /^[A-Z]/.test(w))
@@ -17,8 +29,12 @@ const years = real(person.years);
 <li class={alum ? "person person--alum" : "person"}>
   {
     !alum && (
-      <div class="person__photo" aria-hidden="true">
-        <span>{initials}</span>
+      <div class="person__photo">
+        {hasPhoto ? (
+          <img src={photoPath} alt={`${person.name}, ${person.role}`} loading="lazy" width="72" height="72" />
+        ) : (
+          <span aria-hidden="true">{initials}</span>
+        )}
       </div>
     )
   }
@@ -52,7 +68,15 @@ const years = real(person.years);
     grid-template-columns: 1fr;
     padding-block: 1rem;
   }
+  .person__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
   .person__photo {
+    overflow: hidden;
     aspect-ratio: 1;
     border-radius: 50%;
     background: var(--mb-100);

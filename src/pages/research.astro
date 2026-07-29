@@ -9,7 +9,7 @@ const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
 ---
 
-<Base title="Research" wide={true}>
+<Base title="Research">
   <section class="pagehead">
     <div class="wrap">
       <span class="label">Research</span>
