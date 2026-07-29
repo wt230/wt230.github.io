@@ -90,9 +90,16 @@
         return tex;
       }
 
-      function textSprite(text, color, px) {
-        // Draw at 4x and scale down: a sprite texture rendered at final
-        // size goes soft as soon as the camera moves toward it.
+      /**
+       * Text on a plane rather than a sprite. A sprite always faces the
+       * camera flat-on, which is why the labels used to sit at odd angles
+       * to the axes they belong to. A plane can be aligned with its axis
+       * and flipped when the view would otherwise show it back-to-front.
+       *
+       * Returns { holder, plate } — set holder.position and holder.rotation.y
+       * to place and aim it, and plate.rotation.z to flip the text.
+       */
+      function textPlate(text, color, px, height) {
         const SS = 4;
         const m = document.createElement("canvas").getContext("2d");
         const font = `500 ${px * SS}px ui-monospace, SFMono-Regular, Menlo, monospace`;
@@ -107,19 +114,25 @@
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         ctx.fillText(text, w / 2, h / 2);
+
         const tex = new THREE.CanvasTexture(cv);
         tex.minFilter = THREE.LinearMipmapLinearFilter;
         tex.magFilter = THREE.LinearFilter;
         tex.generateMipmaps = true;
         tex.anisotropy = 4;
-        const sp = new THREE.Sprite(
-          new THREE.SpriteMaterial({
-            map: tex, transparent: true, depthTest: false, depthWrite: false,
+
+        const aspect = w / h;
+        const plate = new THREE.Mesh(
+          new THREE.PlaneGeometry(height * aspect, height),
+          new THREE.MeshBasicMaterial({
+            map: tex, transparent: true, side: THREE.DoubleSide,
+            depthTest: false, depthWrite: false,
           })
         );
-        sp.renderOrder = 40;
-        sp.userData.aspect = w / h;
-        return sp;
+        plate.renderOrder = 40;
+        const holder = new THREE.Group();
+        holder.add(plate);
+        return { holder, plate };
       }
 
       /**
@@ -291,23 +304,6 @@
           pl.position.set(0, arcBottom + LAMP_ARC * f, 0);
           g.add(pl);
         });
-
-        // shutter, fully open (parked below the arc)
-        const shLen = LAMP_ARC + 3;
-        const shutterGroup = new THREE.Group();
-        shutterGroup.add(new THREE.Mesh(
-          new THREE.CylinderGeometry(1.95, 1.95, shLen, 48, 1, true, ts, tl),
-          new THREE.MeshStandardMaterial({ color: 0xa9b6c1, metalness: 0.9, roughness: 0.34, envMap: env, side: THREE.DoubleSide })
-        ));
-        const shRing = new THREE.Mesh(annulus(1.95, 2.45, 0.9, 0, PI * 2), steelDark);
-        shRing.position.y = -shLen / 2;
-        const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 16, 16), steelDark);
-        rod.position.y = -shLen / 2 - 8;
-        const knob = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 1.2, 24), steelDark);
-        knob.position.y = -shLen / 2 - 16;
-        shutterGroup.add(shRing, rod, knob);
-        shutterGroup.position.y = arcCentre - (shLen + 4);
-        g.add(shutterGroup);
 
         // quartz window
         const wW = Math.min(11, Math.max(5, R * 0.9));
@@ -499,18 +495,33 @@
         const Y0 = -0.4;
         const rods = { s: makeRod(), d: makeRod(), c: makeRod() };
 
-        function makeLabel(txt) {
-          const sp = textSprite(txt, "#2f3947", 18);
-          const sc = 3.0;
-          sp.scale.set(sc * sp.userData.aspect, sc, 1);
-          root.add(sp);
-          return sp;
+        function makeLabel(txt, flat) {
+          const { holder, plate } = textPlate(txt, "#2f3947", 18, 2.6);
+          // A flat label lies in the ground plane; the vertical one stands up.
+          if (flat) plate.rotation.x = -PI / 2;
+          root.add(holder);
+          return { holder, plate, flat };
         }
         const labels = {
-          s: makeLabel("scavenging capacity"),
-          d: makeLabel("H\u2082O\u2082 dose"),
-          c: makeLabel("C / C\u2080"),
+          s: makeLabel("scavenging capacity", true),
+          d: makeLabel("H\u2082O\u2082 dose", true),
+          c: makeLabel("C / C\u2080", false),
         };
+
+        /**
+         * Point a flat label along `dir` and flip it if, from where the
+         * camera currently is, the text would run right-to-left. Screen-space
+         * projection rather than case analysis on the octant, so it is
+         * correct at every angle by construction.
+         */
+        const tmpA = new THREE.Vector3();
+        const tmpB = new THREE.Vector3();
+        function aimFlat(label, yaw, dir) {
+          label.holder.rotation.y = yaw;
+          tmpA.copy(label.holder.position).project(camera);
+          tmpB.copy(label.holder.position).add(dir).project(camera);
+          label.plate.rotation.z = tmpB.x - tmpA.x < 0 ? PI : 0;
+        }
 
         function layoutAxes() {
           const sx = camera.position.x >= 0 ? 1 : -1;
@@ -518,16 +529,25 @@
 
           // scavenging runs along world X; put it on the near Z edge
           placeRod(rods.s, [-h, Y0, sz * h], [h, Y0, sz * h]);
-          labels.s.position.set(0, Y0 - 2.8, sz * (h + 3.6));
+          labels.s.holder.position.set(0, Y0 + 0.05, sz * (h + 3.4));
+          aimFlat(labels.s, 0, new THREE.Vector3(1, 0, 0));
 
           // H2O2 dose runs along world Z; put it on the near X edge
           placeRod(rods.d, [sx * h, Y0, -h], [sx * h, Y0, h]);
-          labels.d.position.set(sx * (h + 3.6), Y0 - 2.8, 0);
+          labels.d.holder.position.set(sx * (h + 3.4), Y0 + 0.05, 0);
+          aimFlat(labels.d, -PI / 2, new THREE.Vector3(0, 0, 1));
 
-          // C/C0 is vertical, parked on the far corner
+          // C/C0 is vertical, on the far corner, text running up the axis
           placeRod(rods.c, [-sx * h, Y0, -sz * h], [-sx * h, HGT, -sz * h]);
-          labels.c.position.set(-sx * (h + 3.2), HGT * 0.52, -sz * (h + 1.2));
+          labels.c.holder.position.set(
+            -sx * (h + 2.4), HGT * 0.5, -sz * (h + 0.4)
+          );
+          labels.c.holder.rotation.y = Math.atan2(
+            camera.position.x, camera.position.z
+          );
+          labels.c.plate.rotation.z = PI / 2;
         }
+
         layoutAxes();
 
         const m = fitMetrics(root);
