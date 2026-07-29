@@ -1,7 +1,20 @@
 ---
+import fs from "node:fs";
+import yaml from "js-yaml";
 import Base from "../layouts/Base.astro";
 import PubEntry from "../components/PubEntry.astro";
 import { allWorks } from "../lib/bib.js";
+
+const people = yaml.load(fs.readFileSync("./src/data/people.yml", "utf8"));
+
+/**
+ * Only work from the UM years is listed. Everything earlier is on Google
+ * Scholar; keeping it here buried the current output under a decade of
+ * chronology. Change the year to widen or narrow the window.
+ */
+const SINCE = 2022;
+const shown = allWorks.filter((w) => w.year >= SINCE);
+const hidden = allWorks.length - shown.length;
 ---
 
 <Base title="Publications">
@@ -9,15 +22,25 @@ import { allWorks } from "../lib/bib.js";
     <div class="wrap">
       <span class="label">Publications</span>
       <h1>Publications</h1>
-      <p class="lede">Newest first. Patents are marked.</p>
+      <p class="lede">Since {SINCE}, newest first. Patents are marked.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
       <ul class="plain list">
-        {allWorks.map((work) => <PubEntry pub={work} />)}
+        {shown.map((work) => <PubEntry pub={work} />)}
       </ul>
+
+      {
+        hidden > 0 ? (
+          <p class="more">
+            Earlier work, including papers from the University of Alberta and
+            the University of Toronto, is listed on
+            <a href={people.pi.scholar}>Google Scholar</a>.
+          </p>
+        ) : null
+      }
     </div>
   </section>
 </Base>
@@ -28,5 +51,15 @@ import { allWorks } from "../lib/bib.js";
   }
   .list {
     max-width: 58rem;
+  }
+  .more {
+    max-width: 58rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--data);
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: var(--ink-45);
   }
 </style>
