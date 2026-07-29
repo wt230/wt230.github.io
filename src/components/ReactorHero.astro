@@ -179,7 +179,7 @@
       /* ------------------------------------------------------- reactor */
 
       function buildReactor(canvas) {
-        const { renderer, scene, camera } = mount(canvas, 42, 0.5, 3000);
+        const { renderer, scene, camera } = mount(canvas, 30, 0.5, 3000);
         renderer.localClippingEnabled = true;
         renderer.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 1, 0), 1.2)];
         const env = makeEnvTexture();
@@ -375,13 +375,13 @@
         const m = fitMetrics(g);
         const target = new THREE.Vector3(0, m.centreY, 0);
         let az = 0.32;
-        const polar = 1.02;
+        const polar = 0.88;
 
         return {
           renderer, scene, camera,
           step(dt) {
             az += dt * 0.28;
-            const dist = fitDistance(camera, m, 0.92);
+            const dist = fitDistance(camera, m, 0.78);
             const sp = Math.sin(polar);
             camera.position.set(
               target.x + dist * sp * Math.sin(az),
@@ -396,7 +396,7 @@
       /* ----------------------------------------------- response surface */
 
       function buildSurface(canvas) {
-        const { renderer, scene, camera } = mount(canvas, 42, 0.1, 400);
+        const { renderer, scene, camera } = mount(canvas, 30, 0.1, 400);
         scene.add(new THREE.HemisphereLight(0x9fc4dd, 0x0b1016, 0.8));
         const key = new THREE.DirectionalLight(0xffffff, 1.05);
         key.position.set(50, 80, 60); scene.add(key);
@@ -653,12 +653,13 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: clamp(30rem, 48vh, 42rem);
+    min-height: clamp(36rem, 56vh, 50rem);
     overflow: hidden;
   }
 
   .rig__cell canvas {
     width: 100%;
+    height: 100%;
     flex: 1 1 auto;
     min-height: 0;
     display: block;
