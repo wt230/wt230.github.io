@@ -76,6 +76,21 @@ function photoFor(filename) {
       </div>
     </div>
   </section>
+
+  <section class="section section--sunk">
+    <div class="wrap split">
+      <div>
+        <hr class="decay-rule" />
+        <h2>Departmental facilities</h2>
+      </div>
+      <div>
+        <p>{site.shared_facilities.intro}</p>
+        <ul class="shared">
+          {site.shared_facilities.items.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>
@@ -119,6 +134,29 @@ function photoFor(filename) {
     color: var(--ink-45);
     margin-top: 0.65rem;
     max-width: 48ch;
+  }
+  .shared {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    max-width: var(--measure);
+  }
+  .shared li {
+    padding: 0.6rem 0 0.6rem 1.4rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.96rem;
+    color: var(--ink-70);
+    position: relative;
+  }
+  .shared li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mb-300);
   }
   .fund {
     margin-top: 2.5rem;

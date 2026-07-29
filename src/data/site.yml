@@ -113,6 +113,25 @@ facilities:
       Multi-parameter sondes and a prototype scavenging capacity
       meter for deployment in the Nelson River watershed.
 
+# Equipment in the departmental lab rather than the group's own space.
+shared_facilities:
+  intro: >-
+    Further instrumentation is available in the shared Environmental
+    Engineering Laboratory, including:
+  items:
+    - >-
+      Two gas chromatographs with thermal conductivity, flame ionization
+      and electron capture detectors, and headspace or liquid autosamplers
+    - Waters 2695 HPLC with a diode-array detector
+    - Two TOC analyzers
+    - A four-channel flow injection analyzer
+    - Three HACH spectrometers with four heating digesters
+    - Three microscopes with image processing software
+    - Three walk-in environmental chambers
+    - Two particle size counters
+    - A steam-fed autoclave
+    - A conductivity meter
+
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
   Innovation, Environment and Climate Change Canada, Research

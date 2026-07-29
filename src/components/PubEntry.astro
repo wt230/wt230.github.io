@@ -1,9 +1,6 @@
 ---
 const { pub } = Astro.props;
 
-// Mark the group's own authorship without a wall of bold.
-const isLed = ["first", "co-first", "corresponding"].includes(pub.role);
-
 function fmt(author) {
   return author;
 }
@@ -26,7 +23,6 @@ function fmt(author) {
     {pub.volume ? <> {pub.volume}</> : null}{pub.number ? <> ({pub.number})</> : null}{pub.pages ? <>, {pub.pages}</> : null}
     <span class="pub__year"> · {pub.year}</span>
     {pub.language === "chinese" ? <span class="pub__tag">in Chinese</span> : null}
-    {isLed ? <span class="pub__tag pub__tag--led">group-led</span> : null}
   </p>
   {pub.note ? <p class="pub__note">{pub.note}</p> : null}
 </li>
@@ -80,10 +76,6 @@ function fmt(author) {
     border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 0.1rem 0.4rem;
-  }
-  .pub__tag--led {
-    color: var(--mb-700);
-    border-color: var(--mb-300);
   }
   .pub__note {
     font-size: 0.86rem;
