@@ -1,6 +1,6 @@
 ---
 import { real } from "../lib/people.js";
-const { person, alum = false } = Astro.props;
+const { person, alum = false, lead = false } = Astro.props;
 
 /**
  * Headshots live in public/images/people/ and are referenced by the
@@ -26,7 +26,7 @@ const placement = real(person.placement);
 const years = real(person.years);
 ---
 
-<li class={alum ? "person person--alum" : "person"}>
+<li class={`person${alum ? " person--alum" : ""}${lead ? " person--lead" : ""}`}>
   {
     !alum && (
       <div class="person__photo">
@@ -52,6 +52,17 @@ const years = real(person.years);
       ) : null
     }
     {person.highlight ? <p class="person__hl">{person.highlight}</p> : null}
+    {
+      lead ? (
+        <p class="person__contact">
+          <a href={`mailto:${person.email}`}>{person.email}</a>
+          {person.office ? <> · {person.office}</> : null}
+          {person.scholar ? (
+            <> · <a href={person.scholar}>Google Scholar</a></>
+          ) : null}
+        </p>
+      ) : null
+    }
   </div>
 </li>
 
@@ -86,6 +97,18 @@ const years = real(person.years);
     font-weight: 700;
     font-size: 1.1rem;
     color: var(--mb-700);
+  }
+  .person--lead {
+    grid-template-columns: 7rem 1fr;
+    padding-bottom: 2rem;
+  }
+  .person--lead .person__name {
+    font-size: 1.4rem;
+  }
+  .person__contact {
+    font-size: 0.9rem;
+    color: var(--ink-70);
+    margin-top: 0.6rem;
   }
   .person__name {
     font-size: 1.12rem;

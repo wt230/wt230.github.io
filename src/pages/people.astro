@@ -1,7 +1,17 @@
 ---
 import Base from "../layouts/Base.astro";
 import PersonCard from "../components/PersonCard.astro";
-import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.js";
+import { pi, current, alumni, coSupervisors, real } from "../lib/people.js";
+
+// The PI is the first entry in the roster rather than a separate block.
+const roster = [{ ...pi, lead: true }, ...current];
+
+// Alphabetical by surname, taking the last word of the name. Change to
+// a.name.localeCompare(b.name) if you would rather sort by first name.
+const surname = (n) => n.trim().split(/\s+/).slice(-1)[0];
+const alumniSorted = [...alumni].sort((a, b) =>
+  surname(a.name).localeCompare(surname(b.name), "en")
+);
 ---
 
 <Base title="People">
@@ -9,11 +19,7 @@ import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.
     <div class="wrap">
       <span class="label">People</span>
       <h1>Who is here</h1>
-      <p class="lede">
-        {counts.current} people are in the group now. {counts.total} have worked
-        here since the lab opened in 2021, from undergraduate researchers
-        through to a postdoctoral fellow.
-      </p>
+
     </div>
   </section>
 
@@ -21,41 +27,11 @@ import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.
     <div class="wrap split">
       <div>
         <hr class="decay-rule" />
-        <h2>Principal investigator</h2>
-      </div>
-      <div class="pi">
-        {
-          real(pi.photo) ? (
-            <img
-              class="pi__photo"
-              src={pi.photo}
-              alt={`${pi.name}, ${pi.role}`}
-              width="176"
-              height="176"
-              loading="lazy"
-            />
-          ) : null
-        }
-        <h3 class="pi__name">{pi.name}</h3>
-        <p class="pi__role data">{pi.role}, {pi.credentials}</p>
-        {real(pi.bio_short) ? <p>{pi.bio_short}</p> : null}
-        <p class="pi__contact">
-          <a href={`mailto:${pi.email}`}>{pi.email}</a> · {pi.office} ·
-          <a href={pi.scholar}>Google Scholar</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap split">
-      <div>
-        <hr class="decay-rule" />
-        <h2>Current members</h2>
+        <h2>The group</h2>
       </div>
       <div>
         <ul class="plain">
-          {current.map((p) => <PersonCard person={p} />)}
+          {roster.map((p) => <PersonCard person={p} lead={p.lead} />)}
         </ul>
       </div>
     </div>
@@ -69,7 +45,7 @@ import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.
       </div>
       <div>
         <ul class="plain alumni">
-          {alumni.map((p) => <PersonCard person={p} alum={true} />)}
+          {alumniSorted.map((p) => <PersonCard person={p} alum={true} />)}
         </ul>
       </div>
     </div>
