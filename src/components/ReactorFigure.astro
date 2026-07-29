@@ -471,13 +471,18 @@
         // the camera and the vertical one on the far corner, so nothing is
         // ever read through the surface. Rebuilt each frame as it turns.
         const UP = new THREE.Vector3(0, 1, 0);
-        const axMat = new THREE.MeshBasicMaterial({ color: 0x7b8399 });
+        // depthTest off so the frame is never swallowed by the surface, and a
+// fixed corner so it never jumps between edges as the plot turns.
+        const axMat = new THREE.MeshBasicMaterial({
+          color: 0x7b8399, depthTest: false, depthWrite: false,
+        });
         const ROD_R = 0.34;
 
         function makeRod() {
           const mesh = new THREE.Mesh(
             new THREE.CylinderGeometry(ROD_R, ROD_R, 1, 12), axMat
           );
+          mesh.renderOrder = 30;
           root.add(mesh);
           return mesh;
         }
@@ -502,6 +507,7 @@
           const mesh = new THREE.Mesh(
             new THREE.ConeGeometry(ROD_R * 2.8, TIP_LEN, 16), axMat
           );
+          mesh.renderOrder = 30;
           root.add(mesh);
           return mesh;
         }
@@ -543,28 +549,30 @@
           label.plate.rotation.z = tmpB.x - tmpA.x < 0 ? PI : 0;
         }
 
+        // Fixed corner: front-left-bottom in world terms. The frame stays
+        // put and the plot turns inside it, which is steadier to look at
+        // than axes that hop to whichever edge faces the camera.
+        const CX = -1;   // x edge the vertical axis and dose axis sit on
+        const CZ = 1;    // z edge the scavenging axis sits on
+
+        placeRod(rods.s, [-h, Y0, CZ * h], [h + 1, Y0, CZ * h]);
+        placeTip(tips.s, [h + 1, Y0, CZ * h], DIR_S);
+
+        placeRod(rods.d, [CX * h, Y0, h], [CX * h, Y0, -h - 1]);
+        placeTip(tips.d, [CX * h, Y0, -h - 1], DIR_D);
+
+        placeRod(rods.c, [CX * h, Y0, CZ * h], [CX * h, HGT + 1, CZ * h]);
+        placeTip(tips.c, [CX * h, HGT + 1, CZ * h], DIR_C);
+
+        labels.s.holder.position.set(0, Y0 + 0.05, CZ * (h + 4.2));
+        labels.d.holder.position.set(CX * (h + 4.2), Y0 + 0.05, 0);
+        labels.c.holder.position.set(CX * (h + 3.0), HGT * 0.5, CZ * (h + 0.4));
+
         function layoutAxes() {
-          const sx = camera.position.x >= 0 ? 1 : -1;
-          const sz = camera.position.z >= 0 ? 1 : -1;
-
-          // scavenging runs along world X; put it on the near Z edge
-          placeRod(rods.s, [-h, Y0, sz * h], [h + 1, Y0, sz * h]);
-          placeTip(tips.s, [h + 1, Y0, sz * h], DIR_S);
-          labels.s.holder.position.set(0, Y0 + 0.05, sz * (h + 4.2));
+          // Only the text needs updating: keep it the right way round for
+          // wherever the camera has got to.
           aimFlat(labels.s, 0, DIR_S);
-
-          // H2O2 dose runs along world Z; put it on the near X edge
-          placeRod(rods.d, [sx * h, Y0, h], [sx * h, Y0, -h - 1]);
-          placeTip(tips.d, [sx * h, Y0, -h - 1], DIR_D);
-          labels.d.holder.position.set(sx * (h + 4.2), Y0 + 0.05, 0);
           aimFlat(labels.d, -PI / 2, DIR_D);
-
-          // C/C0 is vertical, on the far corner, text running up the axis
-          placeRod(rods.c, [-sx * h, Y0, -sz * h], [-sx * h, HGT + 1, -sz * h]);
-          placeTip(tips.c, [-sx * h, HGT + 1, -sz * h], DIR_C);
-          labels.c.holder.position.set(
-            -sx * (h + 3.0), HGT * 0.5, -sz * (h + 0.4)
-          );
           labels.c.holder.rotation.y = Math.atan2(
             camera.position.x, camera.position.z
           );
@@ -656,6 +664,10 @@
 <style>
   .rfig-outer {
     container-type: inline-size;
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: clamp(0.75rem, 2vw, 1.5rem);
+    background: var(--paper);
   }
 
   .rfig {
