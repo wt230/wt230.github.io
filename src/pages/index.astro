@@ -21,7 +21,7 @@ const photoFiles = import.meta.glob(
 const onDisk = (path) =>
   path && Object.keys(photoFiles).some((f) => f.endsWith(path)) ? path : null;
 
-const preview = [pi, ...current].slice(0, 6).map((person) => ({
+const preview = [pi, ...current].map((person) => ({
   name: person.short_name ?? person.name,
   role: person.role,
   photo: onDisk(real(person.photo)),
@@ -88,7 +88,7 @@ const preview = [pi, ...current].slice(0, 6).map((person) => ({
               <li class="roster__person">
                 <span class="roster__avatar">
                   {p.photo ? (
-                    <img src={p.photo} alt="" width="64" height="64" loading="lazy" />
+                    <img src={p.photo} alt="" width="72" height="72" loading="lazy" />
                   ) : (
                     <span aria-hidden="true">{p.initials}</span>
                   )}
@@ -219,8 +219,8 @@ const preview = [pi, ...current].slice(0, 6).map((person) => ({
   }
 
   .roster__avatar {
-    width: 4rem;
-    height: 4rem;
+    width: 4.5rem;
+    height: 4.5rem;
     border-radius: 50%;
     overflow: hidden;
     background: var(--mb-100);

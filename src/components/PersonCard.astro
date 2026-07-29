@@ -21,7 +21,8 @@ const initials = person.name
   .map((w) => w[0])
   .join("");
 
-const project = real(person.project);
+// The PI's text is in bio_short; everyone else uses project.
+const project = real(person.bio_short) ?? real(person.project);
 const placement = real(person.placement);
 const years = real(person.years);
 ---
