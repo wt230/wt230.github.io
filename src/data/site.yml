@@ -57,14 +57,11 @@ themes:
       TODO
 
   - slug: uv-photochem
-    title: Chemistry before engineering
+    title: Why reactions go where they go
     blurb: >-
-      We study how organic compounds absorb ultraviolet light and what
-      becomes of them when they do, where a radical chooses to attack a
-      given structure, and what the resulting fragments turn into. These
-      are questions about mechanism rather than performance — and getting
-      them right is what makes the engineering predictable rather than
-      empirical.
+      We study how organic compounds absorb ultraviolet light, where
+      radicals attack a given structure, and what the fragments become.
+      Knowing why a process works is what lets you predict when it won't.
     detail: >-
       TODO
 
