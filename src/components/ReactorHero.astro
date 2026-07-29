@@ -179,7 +179,7 @@
       /* ------------------------------------------------------- reactor */
 
       function buildReactor(canvas) {
-        const { renderer, scene, camera } = mount(canvas, 38, 0.5, 3000);
+        const { renderer, scene, camera } = mount(canvas, 42, 0.5, 3000);
         renderer.localClippingEnabled = true;
         renderer.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 1, 0), 1.2)];
         const env = makeEnvTexture();
@@ -375,13 +375,13 @@
         const m = fitMetrics(g);
         const target = new THREE.Vector3(0, m.centreY, 0);
         let az = 0.32;
-        const polar = 1.16;
+        const polar = 1.02;
 
         return {
           renderer, scene, camera,
           step(dt) {
             az += dt * 0.28;
-            const dist = fitDistance(camera, m, 1.04);
+            const dist = fitDistance(camera, m, 0.92);
             const sp = Math.sin(polar);
             camera.position.set(
               target.x + dist * sp * Math.sin(az),
@@ -396,7 +396,7 @@
       /* ----------------------------------------------- response surface */
 
       function buildSurface(canvas) {
-        const { renderer, scene, camera } = mount(canvas, 34, 0.1, 400);
+        const { renderer, scene, camera } = mount(canvas, 42, 0.1, 400);
         scene.add(new THREE.HemisphereLight(0x9fc4dd, 0x0b1016, 0.8));
         const key = new THREE.DirectionalLight(0xffffff, 1.05);
         key.position.set(50, 80, 60); scene.add(key);
@@ -502,9 +502,19 @@
         function makeLabel(txt) {
           const sp = textSprite(txt, "#2f3947", 18);
           const sc = 3.0;
-          sp.scale.set(sc * sp.userData.aspect, sc, 1);
-          root.add(sp);
-          return sp;
+          const mesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(sc * sp.userData.aspect, sc),
+            new THREE.MeshBasicMaterial({
+              map: sp.material.map,
+              transparent: true,
+              side: THREE.DoubleSide,
+              depthTest: true,
+            })
+          );
+          mesh.userData.aspect = sp.userData.aspect;
+          mesh.renderOrder = 40;
+          root.add(mesh);
+          return mesh;
         }
         const labels = {
           s: makeLabel("scavenging capacity"),
@@ -519,27 +529,30 @@
           // scavenging runs along world X; put it on the near Z edge
           placeRod(rods.s, [-h, Y0, sz * h], [h, Y0, sz * h]);
           labels.s.position.set(0, Y0 - 2.8, sz * (h + 3.6));
+          labels.s.rotation.set(0, 0, 0);
 
           // H2O2 dose runs along world Z; put it on the near X edge
           placeRod(rods.d, [sx * h, Y0, -h], [sx * h, Y0, h]);
           labels.d.position.set(sx * (h + 3.6), Y0 - 2.8, 0);
+          labels.d.rotation.set(0, sx >= 0 ? -PI / 2 : PI / 2, 0);
 
           // C/C0 is vertical, parked on the far corner
           placeRod(rods.c, [-sx * h, Y0, -sz * h], [-sx * h, HGT, -sz * h]);
           labels.c.position.set(-sx * (h + 3.2), HGT * 0.52, -sz * (h + 1.2));
+          labels.c.rotation.set(0, 0, 0);
         }
         layoutAxes();
 
         const m = fitMetrics(root);
         const target = new THREE.Vector3(0, m.centreY, 0);
         let az = 0.9;
-        const polar = 1.06;
+        const polar = 1.02;
 
         return {
           renderer, scene, camera,
           step(dt) {
             az += dt * 0.2;
-            const dist = fitDistance(camera, m, 1.06);
+            const dist = fitDistance(camera, m, 0.92);
             const sp = Math.sin(polar);
             camera.position.set(
               target.x + dist * sp * Math.sin(az),
