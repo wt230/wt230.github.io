@@ -41,24 +41,35 @@ function splitAuthors(str = "") {
 }
 
 const raw = fs.readFileSync(BIB_PATH, "utf8");
+const parsed = parseBib(raw);
 
-export const publications = parseBib(raw)
-  .map((e) => ({
-    key: e.key,
-    title: clean(e.title),
-    authors: splitAuthors(e.author),
-    journal: clean(e.journal),
-    year: Number(e.year),
-    volume: e.volume,
-    number: e.number,
-    pages: clean(e.pages),
-    doi: e.doi || null,
-    note: e.note ? clean(e.note) : null,
-    language: e.language || null,
-    role: e.role || "contributing",
-    venue: e.venue || null,
-    themes: (e.keywords || "").split(",").map((k) => k.trim()).filter(Boolean),
-  }))
+const shape = (e) => ({
+  key: e.key,
+  type: e.type,
+  title: clean(e.title),
+  authors: splitAuthors(e.author),
+  journal: clean(e.journal || ""),
+  year: Number(e.year),
+  volume: e.volume,
+  number: e.number ? clean(e.number) : null,
+  pages: clean(e.pages || ""),
+  doi: e.doi || null,
+  note: e.note ? clean(e.note) : null,
+  language: e.language || null,
+  role: e.role || "contributing",
+  venue: e.venue || null,
+  themes: (e.keywords || "").split(",").map((k) => k.trim()).filter(Boolean),
+});
+
+/** Patents are listed separately; they are not journal articles. */
+export const patents = parsed
+  .filter((e) => e.type === "patent")
+  .map(shape)
+  .sort((a, b) => b.year - a.year);
+
+export const publications = parsed
+  .filter((e) => e.type !== "patent")
+  .map(shape)
   .map((p) => ({ ...p, primary: p.themes[0] ?? "collab" }))
   .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
 
