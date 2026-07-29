@@ -181,7 +181,7 @@
       function buildReactor(canvas) {
         const { renderer, scene, camera } = mount(canvas, 30, 0.5, 3000);
         renderer.localClippingEnabled = true;
-        renderer.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 1, 0), 1.2)];
+        renderer.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 1, 0), 1.8)];
         const env = makeEnvTexture();
 
         scene.add(new THREE.HemisphereLight(0x9fc4dd, 0x0b1016, 0.55));
