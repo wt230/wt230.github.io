@@ -83,7 +83,6 @@ const slides = [
     padding: 0;
     display: none;
     flex-direction: column;
-    min-height: clamp(24rem, 44vh, 36rem);
     overflow: hidden;
     border-radius: 1rem;
     background: var(--ink-96);
@@ -94,15 +93,21 @@ const slides = [
     display: flex;
   }
 
+  /* A fixed aspect ratio, not a min-height. The three photos have
+     different native proportions (1.33, 1.57 and 2.01), so anything
+     that lets the image choose its own height makes the slides jump
+     as they cycle. Every slide is now the same box and the photo is
+     cropped to fit it. */
   .rig__cell img {
     width: 100%;
-    height: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     display: block;
-    flex: 1 1 auto;
-    min-height: 0;
   }
 
+  /* Two lines' worth reserved, so a caption that wraps differently
+     does not move the slide below it. */
   .rig__cell figcaption {
     font-family: var(--data);
     font-size: 0.66rem;
@@ -110,5 +115,6 @@ const slides = [
     color: var(--ink-45);
     padding: 0.9rem 1rem 1rem;
     border-top: 1px solid var(--rule);
+    min-height: 3.85rem;
   }
 </style>
