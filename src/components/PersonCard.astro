@@ -32,7 +32,7 @@ const years = real(person.years);
     !alum && (
       <div class="person__photo">
         {hasPhoto ? (
-          <img src={photoPath} alt={`${person.name}, ${person.role}`} loading="lazy" width="72" height="72" />
+          <img src={photoPath} alt={`${person.name}, ${person.role}`} loading="lazy" width="176" height="176" />
         ) : (
           <span aria-hidden="true">{initials}</span>
         )}
@@ -71,7 +71,7 @@ const years = real(person.years);
   .person {
     display: grid;
     gap: 1rem;
-    grid-template-columns: 4.5rem 1fr;
+    grid-template-columns: var(--avatar) 1fr;
     align-items: start;
     padding-block: 1.5rem;
     border-top: 1px solid var(--rule);
@@ -100,7 +100,6 @@ const years = real(person.years);
     color: var(--mb-700);
   }
   .person--lead {
-    grid-template-columns: 7rem 1fr;
     padding-bottom: 2rem;
   }
   .person--lead .person__name {

@@ -88,7 +88,7 @@ const preview = [pi, ...current].map((person) => ({
               <li class="roster__person">
                 <span class="roster__avatar">
                   {p.photo ? (
-                    <img src={p.photo} alt="" width="72" height="72" loading="lazy" />
+                    <img src={p.photo} alt="" width="176" height="176" loading="lazy" />
                   ) : (
                     <span aria-hidden="true">{p.initials}</span>
                   )}
@@ -207,7 +207,7 @@ const preview = [pi, ...current].map((person) => ({
 
   .roster {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--avatar), 1fr));
     gap: 1.75rem 1.25rem;
     margin: 0 0 2rem;
   }
@@ -219,8 +219,8 @@ const preview = [pi, ...current].map((person) => ({
   }
 
   .roster__avatar {
-    width: 4.5rem;
-    height: 4.5rem;
+    width: var(--avatar);
+    height: var(--avatar);
     border-radius: 50%;
     overflow: hidden;
     background: var(--mb-100);
@@ -229,8 +229,8 @@ const preview = [pi, ...current].map((person) => ({
     place-items: center;
     font-family: var(--display);
     font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 0.6rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.75rem;
   }
 
   .roster__avatar img {

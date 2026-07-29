@@ -25,6 +25,10 @@
   --paper-sunk: #f2f5f9;
   --rule: #dbe2ec;
 
+  /* Portrait size, shared by the People page cards and the home page
+     roster so the two always match. Scales down on narrow screens. */
+  --avatar: clamp(5.5rem, 17vw, 11rem);
+
   --measure: 68ch;
   --gutter: clamp(1.25rem, 5vw, 4rem);
   --stack: clamp(3.5rem, 8vw, 7rem);
