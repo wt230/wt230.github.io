@@ -150,7 +150,7 @@ funding_note: >-
 # Do Not Track. Fewer numbers, but it is the courteous default.
 # ---------------------------------------------------------------
 analytics:
-  goatcounter: ""
+  goatcounter: "chjwok"
   respect_dnt: true
 
 contact:
