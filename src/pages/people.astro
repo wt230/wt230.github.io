@@ -23,7 +23,19 @@ import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.
         <hr class="decay-rule" />
         <h2>Principal investigator</h2>
       </div>
-      <div>
+      <div class="pi">
+        {
+          real(pi.photo) ? (
+            <img
+              class="pi__photo"
+              src={pi.photo}
+              alt={`${pi.name}, ${pi.role}`}
+              width="176"
+              height="176"
+              loading="lazy"
+            />
+          ) : null
+        }
         <h3 class="pi__name">{pi.name}</h3>
         <p class="pi__role data">{pi.role}, {pi.credentials}</p>
         {real(pi.bio_short) ? <p>{pi.bio_short}</p> : null}
@@ -92,6 +104,15 @@ import { pi, current, alumni, coSupervisors, counts, real } from "../lib/people.
 <style>
   .pagehead {
     padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .pi__photo {
+    width: 11rem;
+    height: 11rem;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin-bottom: 1.25rem;
+    background: var(--mb-100);
   }
   .pi__name {
     font-size: 1.5rem;
