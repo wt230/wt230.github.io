@@ -517,6 +517,21 @@
           mesh.quaternion.setFromUnitVectors(UP, d);
         }
         const tips = { s: makeTip(), d: makeTip(), c: makeTip() };
+
+        // The full box, all twelve edges. Depth testing is left ON here so
+        // the far edges sit behind the surface and the cube reads as a
+        // volume; the three labelled axes above keep depthTest off so they
+        // stay readable whatever the surface is doing.
+        const boxEdges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(
+            new THREE.BoxGeometry(SPAN, HGT - Y0, SPAN)
+          ),
+          new THREE.LineBasicMaterial({
+            color: 0x17357a, transparent: true, opacity: 0.3,
+          })
+        );
+        boxEdges.position.set(0, (Y0 + HGT) / 2, 0);
+        root.add(boxEdges);
         const DIR_S = new THREE.Vector3(1, 0, 0);   // scavenging increases +X
         const DIR_D = new THREE.Vector3(0, 0, -1);  // dose increases -Z
         const DIR_C = new THREE.Vector3(0, 1, 0);   // C/C0 increases +Y
@@ -664,7 +679,7 @@
 <style>
   .rfig-outer {
     container-type: inline-size;
-    border: 1px solid var(--rule);
+    border: 1px solid var(--mb-900);
     border-radius: 5px;
     padding: clamp(0.75rem, 2vw, 1.5rem);
     background: var(--paper);
