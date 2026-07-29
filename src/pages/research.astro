@@ -3,6 +3,7 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import Base from "../layouts/Base.astro";
 import PubEntry from "../components/PubEntry.astro";
+import ReactorFigure from "../components/ReactorFigure.astro";
 import { byTheme, THEMES } from "../lib/bib.js";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
@@ -13,6 +14,12 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
   <section class="pagehead">
     <div class="wrap">
       <h1>Research</h1>
+    </div>
+  </section>
+
+  <section class="figure-band">
+    <div class="wrap">
+      <ReactorFigure />
     </div>
   </section>
 
@@ -53,7 +60,10 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
 
 <style>
   .pagehead {
-    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .figure-band {
+    padding-bottom: clamp(2rem, 5vw, 3.5rem);
   }
   .theme__tag {
     font-size: 0.72rem;

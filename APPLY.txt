@@ -1,0 +1,5 @@
+After unzipping, from the repo root:
+
+  npm install three     # required — it was removed in the audit
+  npm run build
+  git add -A && git commit -m "Reactor figure on research page" && git push
