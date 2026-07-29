@@ -4,18 +4,21 @@
 # ---------------------------------------------------------------
 
 group_name: Wang Group
-tagline: Water treatment and water chemistry
+# Quoted because the value contains a colon — unquoted, YAML reads
+# "Micropollutants" as a key and the build fails.
+tagline: "Micropollutants: Treatment and Chemistry"
 institution: Department of Civil Engineering, University of Manitoba
 
 # The one-paragraph thesis. This is the first prose a prospective
 # student reads, so it is written for them, not for a reviewer.
 thesis: >-
-  We work on a deceptively simple question: when you put ultraviolet
-  light and an oxidant into water, what actually happens to the
-  contaminants, and what do you create along the way? Answering it
-  properly takes kinetics, analytical chemistry, reactor engineering,
-  and an increasing amount of code. Our group builds the measurement
-  methods and computational tools the field needs to get those
+  Micropollutants occur at concentrations hundreds or thousands of times
+  lower than the bulk constituents of water. The cost of removing them
+  does not scale down to match — in most cases it is far higher. How do
+  we bring that cost down? Answering it properly takes kinetics,
+  analytical chemistry, reactor engineering, and an increasing amount of
+  computing. Our group builds the measurement methods, treatment
+  technologies, and computational tools the field needs to get those
   answers right.
 
 themes:
