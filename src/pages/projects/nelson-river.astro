@@ -3,7 +3,7 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import Base from "../../layouts/Base.astro";
 import PubEntry from "../../components/PubEntry.astro";
-import { byTheme } from "../../lib/bib.js";
+import { allWorks } from "../../lib/bib.js";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const project = yaml.load(
@@ -19,7 +19,12 @@ const facts = (project.facts ?? []).filter((f) => real(f.value));
 const updates = (project.updates ?? []).filter(
   (u) => real(u.date) && real(u.title)
 );
-const pubs = byTheme("monitoring");
+// Explicit keys, not a theme query: the monitoring tag also carries work
+// that belongs elsewhere on the site but not on this project page.
+const keys = project.publications ?? [];
+const pubs = keys
+  .map((k) => allWorks.find((w) => w.key === k))
+  .filter(Boolean);
 ---
 
 <Base title={project.title} description={project.summary}>

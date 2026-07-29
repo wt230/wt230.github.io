@@ -51,5 +51,10 @@ updates:
       what comes next. Field photographs work well here; put them in
       src/assets/projects/ and add a `photo:` line.
 
+# Papers to show under "Related publications", by their BibTeX key from
+# publications.bib. Leave the list empty and the section is hidden.
+# Example:  publications: [mohamadi2026interference]
+publications: []
+
 contact_note: >-
   Questions about the project, or interest in collaborating, are welcome.
