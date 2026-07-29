@@ -102,7 +102,7 @@
       function textPlate(text, color, px, height) {
         const SS = 4;
         const m = document.createElement("canvas").getContext("2d");
-        const font = `500 ${px * SS}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+        const font = `700 ${px * SS}px ui-monospace, SFMono-Regular, Menlo, monospace`;
         m.font = font;
         const w = Math.ceil(m.measureText(text).width) + 8 * SS;
         const h = (px + 10) * SS;
@@ -495,15 +495,35 @@
         const Y0 = -0.4;
         const rods = { s: makeRod(), d: makeRod(), c: makeRod() };
 
+        // Arrowheads, so each axis reads as a direction of increase
+        // rather than just a bounding line.
+        const TIP_LEN = ROD_R * 8;
+        function makeTip() {
+          const mesh = new THREE.Mesh(
+            new THREE.ConeGeometry(ROD_R * 2.8, TIP_LEN, 16), axMat
+          );
+          root.add(mesh);
+          return mesh;
+        }
+        function placeTip(mesh, at, dir) {
+          const d = dir.clone().normalize();
+          mesh.position.set(at[0], at[1], at[2]).addScaledVector(d, TIP_LEN / 2);
+          mesh.quaternion.setFromUnitVectors(UP, d);
+        }
+        const tips = { s: makeTip(), d: makeTip(), c: makeTip() };
+        const DIR_S = new THREE.Vector3(1, 0, 0);   // scavenging increases +X
+        const DIR_D = new THREE.Vector3(0, 0, -1);  // dose increases -Z
+        const DIR_C = new THREE.Vector3(0, 1, 0);   // C/C0 increases +Y
+
         function makeLabel(txt, flat) {
-          const { holder, plate } = textPlate(txt, "#2f3947", 18, 2.6);
+          const { holder, plate } = textPlate(txt, "#10265c", 26, 3.6);
           // A flat label lies in the ground plane; the vertical one stands up.
           if (flat) plate.rotation.x = -PI / 2;
           root.add(holder);
           return { holder, plate, flat };
         }
         const labels = {
-          s: makeLabel("scavenging capacity", true),
+          s: makeLabel("\u00B7OH scavenging capacity", true),
           d: makeLabel("H\u2082O\u2082 dose", true),
           c: makeLabel("C / C\u2080", false),
         };
@@ -528,19 +548,22 @@
           const sz = camera.position.z >= 0 ? 1 : -1;
 
           // scavenging runs along world X; put it on the near Z edge
-          placeRod(rods.s, [-h, Y0, sz * h], [h, Y0, sz * h]);
-          labels.s.holder.position.set(0, Y0 + 0.05, sz * (h + 3.4));
-          aimFlat(labels.s, 0, new THREE.Vector3(1, 0, 0));
+          placeRod(rods.s, [-h, Y0, sz * h], [h + 1, Y0, sz * h]);
+          placeTip(tips.s, [h + 1, Y0, sz * h], DIR_S);
+          labels.s.holder.position.set(0, Y0 + 0.05, sz * (h + 4.2));
+          aimFlat(labels.s, 0, DIR_S);
 
           // H2O2 dose runs along world Z; put it on the near X edge
-          placeRod(rods.d, [sx * h, Y0, -h], [sx * h, Y0, h]);
-          labels.d.holder.position.set(sx * (h + 3.4), Y0 + 0.05, 0);
-          aimFlat(labels.d, -PI / 2, new THREE.Vector3(0, 0, 1));
+          placeRod(rods.d, [sx * h, Y0, h], [sx * h, Y0, -h - 1]);
+          placeTip(tips.d, [sx * h, Y0, -h - 1], DIR_D);
+          labels.d.holder.position.set(sx * (h + 4.2), Y0 + 0.05, 0);
+          aimFlat(labels.d, -PI / 2, DIR_D);
 
           // C/C0 is vertical, on the far corner, text running up the axis
-          placeRod(rods.c, [-sx * h, Y0, -sz * h], [-sx * h, HGT, -sz * h]);
+          placeRod(rods.c, [-sx * h, Y0, -sz * h], [-sx * h, HGT + 1, -sz * h]);
+          placeTip(tips.c, [-sx * h, HGT + 1, -sz * h], DIR_C);
           labels.c.holder.position.set(
-            -sx * (h + 2.4), HGT * 0.5, -sz * (h + 0.4)
+            -sx * (h + 3.0), HGT * 0.5, -sz * (h + 0.4)
           );
           labels.c.holder.rotation.y = Math.atan2(
             camera.position.x, camera.position.z
