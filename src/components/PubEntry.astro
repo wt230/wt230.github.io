@@ -1,5 +1,6 @@
 ---
 const { pub } = Astro.props;
+const isPatent = pub.type === "patent";
 
 function fmt(author) {
   return author;
@@ -19,12 +20,21 @@ function fmt(author) {
     {pub.doi ? <a href={`https://doi.org/${pub.doi}`}>{pub.title}</a> : pub.title}
   </h3>
   <p class="pub__meta data">
-    <em>{pub.journal}</em>
-    {pub.volume ? <> {pub.volume}</> : null}{pub.number ? <> ({pub.number})</> : null}{pub.pages ? <>, {pub.pages}</> : null}
+    {isPatent ? <span class="pub__kind">Patent</span> : <em>{pub.journal}</em>}
+    {
+      isPatent ? (
+        <> {pub.number}</>
+      ) : (
+        <>
+          {pub.volume ? <> {pub.volume}</> : null}{pub.number ? <> ({pub.number})</> : null}{pub.pages ? <>, {pub.pages}</> : null}
+        </>
+      )
+    }
     <span class="pub__year"> · {pub.year}</span>
     {pub.language === "chinese" ? <span class="pub__tag">in Chinese</span> : null}
+    {isPatent && pub.note ? <span class="pub__tag">{pub.note}</span> : null}
   </p>
-  {pub.note ? <p class="pub__note">{pub.note}</p> : null}
+  {pub.note && !isPatent ? <p class="pub__note">{pub.note}</p> : null}
 </li>
 
 <style>
@@ -62,6 +72,13 @@ function fmt(author) {
     color: var(--ink-70);
     margin: 0;
     max-width: none;
+  }
+  .pub__kind {
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--mb-700);
   }
   .pub__year {
     color: var(--ink-45);

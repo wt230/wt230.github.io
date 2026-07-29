@@ -1,9 +1,9 @@
 ---
 import Base from "../layouts/Base.astro";
 import PubEntry from "../components/PubEntry.astro";
-import { publications, patents, byYear } from "../lib/bib.js";
+import { allWorks, byYear } from "../lib/bib.js";
 
-const years = byYear();
+const years = byYear(allWorks);
 ---
 
 <Base title="Publications">
@@ -14,42 +14,6 @@ const years = byYear();
       <p class="lede">Listed newest first.</p>
     </div>
   </section>
-
-  {
-    patents.length ? (
-      <section class="section">
-        <div class="wrap split">
-          <div>
-            <hr class="decay-rule" />
-            <h2>Patents</h2>
-          </div>
-          <div>
-            <ul class="plain">
-              {patents.map((pt) => (
-                <li class="patent">
-                  <p class="patent__authors">
-                    {pt.authors.map((a, i) => (
-                      <>
-                        <span class={a.startsWith("Wang, C") ? "patent__self" : ""}>
-                          {a}
-                        </span>{i < pt.authors.length - 1 ? "; " : ""}
-                      </>
-                    ))}
-                  </p>
-                  <h3 class="patent__title">{pt.title}</h3>
-                  <p class="patent__meta data">
-                    {pt.number}
-                    <span class="patent__year"> · {pt.year}</span>
-                    {pt.note ? <span class="patent__tag">{pt.note}</span> : null}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-    ) : null
-  }
 
   {
     years.map(([year, pubs]) => (

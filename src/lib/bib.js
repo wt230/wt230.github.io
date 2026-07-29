@@ -106,6 +106,11 @@ export function byYear(list = publications) {
   return [...groups.entries()].sort((a, b) => b[0] - a[0]);
 }
 
+/** Articles and patents together, newest first, for the Publications page. */
+export const allWorks = [...publications, ...patents].sort(
+  (a, b) => b.year - a.year || a.title.localeCompare(b.title)
+);
+
 export const stats = {
   total: publications.length,
   firstYear: Math.min(...publications.map((p) => p.year)),
