@@ -12,6 +12,11 @@ const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const { title, description = site.thesis } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 
+const analytics = site.analytics ?? {};
+const counterUrl = analytics.goatcounter
+  ? `https://${analytics.goatcounter}.goatcounter.com/count`
+  : null;
+
 const nav = [
   { href: "/research", label: "Research" },
   { href: "/people", label: "People" },
@@ -182,5 +187,29 @@ const nav = [
         max-width: 42ch;
       }
     </style>
+    {
+      counterUrl ? (
+        <script
+          is:inline
+          defer
+          data-goatcounter={counterUrl}
+          data-goatcounter-settings={JSON.stringify({
+            no_onload: false,
+            allow_local: false,
+          })}
+          src="//gc.zgo.at/count.js"
+        />
+      ) : null
+    }
+    {
+      counterUrl && analytics.respect_dnt ? (
+        <script is:inline>
+          {/* Skip counting anyone asking not to be tracked. */}
+          if (navigator.doNotTrack === "1" || navigator.globalPrivacyControl) {
+            window.goatcounter = { no_onload: true };
+          }
+        </script>
+      ) : null
+    }
   </body>
 </html>

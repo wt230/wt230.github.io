@@ -139,6 +139,20 @@ funding_note: >-
   Innovation, Environment and Climate Change Canada, Research
   Manitoba, and the Water Research Foundation.
 
+# ---------------------------------------------------------------
+# Visitor counting. Off until `goatcounter` is filled in.
+#
+# Sign up free at goatcounter.com, pick a code (e.g. wanggroup), then
+# put that code below. GoatCounter sets no cookies and stores no
+# personal data, so no consent banner is required.
+#
+# Set `respect_dnt: true` to skip counting anyone whose browser sends
+# Do Not Track. Fewer numbers, but it is the courteous default.
+# ---------------------------------------------------------------
+analytics:
+  goatcounter: ""
+  respect_dnt: true
+
 contact:
   email: Chengjin.Wang@umanitoba.ca
   office: Room E1-449 EITC
