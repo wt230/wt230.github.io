@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import yaml from "js-yaml";
 import Base from "../layouts/Base.astro";
-import ReactorHero from "../components/ReactorHero.astro";
+import HeroSlides from "../components/HeroSlides.astro";
 import PubEntry from "../components/PubEntry.astro";
 import { publications } from "../lib/bib.js";
 import { counts } from "../lib/people.js";
@@ -24,7 +24,7 @@ const recent = publications.slice(0, 3);
         </p>
       </div>
       <div class="hero__figure">
-        <ReactorHero />
+        <HeroSlides />
       </div>
     </div>
   </section>

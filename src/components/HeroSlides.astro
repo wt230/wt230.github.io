@@ -1,0 +1,114 @@
+---
+/**
+ * Photo slideshow for the hero.
+ *
+ * Images come from src/assets/hero/ rather than public/, so Astro
+ * resizes them and emits webp at build time. Dropping a 7 MB phone
+ * photo straight into public/ ships all 7 MB to every visitor.
+ *
+ * To change a slide: replace the file, or edit the list below.
+ */
+import { Image } from "astro:assets";
+import hero1 from "../assets/hero/hero-1.jpg";
+import hero2 from "../assets/hero/hero-2.jpg";
+import hero3 from "../assets/hero/hero-3.jpg";
+
+const slides = [
+  { src: hero1, caption: "Research team and equipment in the lab" },
+  { src: hero2, caption: "Lab instrumentation and workflow" },
+  { src: hero3, caption: "Field and team work snapshot" },
+];
+---
+
+<div class="rig-outer">
+  <div class="rig" data-rig>
+    {
+      slides.map((slide, i) => (
+        <figure class={i === 0 ? "rig__cell is-active" : "rig__cell"}>
+          <Image
+            src={slide.src}
+            alt={slide.caption}
+            widths={[640, 1000, 1600]}
+            sizes="(min-width: 64rem) 60rem, 94vw"
+            loading={i === 0 ? "eager" : "lazy"}
+            fetchpriority={i === 0 ? "high" : "auto"}
+          />
+          <figcaption>{slide.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const rig = document.querySelector("[data-rig]");
+  if (rig) {
+    const cells = Array.from(rig.querySelectorAll(".rig__cell"));
+    let index = 0;
+
+    const show = (nextIndex) => {
+      cells.forEach((cell, i) => {
+        cell.classList.toggle("is-active", i === nextIndex);
+      });
+    };
+
+    const cycle = () => {
+      index = (index + 1) % cells.length;
+      show(index);
+    };
+
+    show(index);
+
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced) {
+      setInterval(cycle, 5000);
+    }
+  }
+</script>
+
+<style>
+  .rig-outer {
+    container-type: inline-size;
+  }
+
+  .rig {
+    position: relative;
+    display: grid;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    grid-template-columns: 1fr;
+  }
+
+  .rig__cell {
+    margin: 0;
+    padding: 0;
+    display: none;
+    flex-direction: column;
+    min-height: clamp(24rem, 44vh, 36rem);
+    overflow: hidden;
+    border-radius: 1rem;
+    background: var(--ink-96);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  .rig__cell.is-active {
+    display: flex;
+  }
+
+  .rig__cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .rig__cell figcaption {
+    font-family: var(--data);
+    font-size: 0.66rem;
+    line-height: 1.45;
+    color: var(--ink-45);
+    padding: 0.9rem 1rem 1rem;
+    border-top: 1px solid var(--rule);
+  }
+</style>
