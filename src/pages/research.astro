@@ -12,9 +12,7 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
 <Base title="Research">
   <section class="pagehead">
     <div class="wrap">
-      <span class="label">Research</span>
-      <h1>Four questions</h1>
-      <p class="lede">{site.thesis}</p>
+      <h1>Research</h1>
     </div>
   </section>
 
@@ -32,6 +30,11 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
             <div>
               <p class="theme__blurb">{theme.blurb}</p>
               {!isTodo(theme.detail) && theme.detail ? <p>{theme.detail}</p> : null}
+              {theme.link ? (
+                <p class="theme__link">
+                  <a href={theme.link}>{theme.link_label ?? "Read more"} →</a>
+                </p>
+              ) : null}
               {pubs.length ? (
                 <div class="theme__pubs">
                   <span class="label">Selected papers</span>
@@ -61,6 +64,15 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
   .theme__blurb {
     font-size: 1.1rem;
     line-height: 1.55;
+  }
+  .theme__link {
+    font-family: var(--data);
+    font-size: 0.82rem;
+    margin-top: 1.1rem;
+  }
+  .theme__link a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--mb-300);
   }
   .theme__pubs {
     margin-top: 2.5rem;

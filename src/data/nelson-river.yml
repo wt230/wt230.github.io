@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------
+# Upper Nelson River monitoring project.
+#
+# To post an update, add an entry at the TOP of `updates:`. Newest
+# first — the page does not sort, it renders the order in this file.
+#
+# TODO fields are omitted from the rendered page rather than printed,
+# so this is safe to publish with gaps.
+# ---------------------------------------------------------------
+
+title: The Nelson River project
+subtitle: Continuous water quality monitoring in the Upper Nelson River watershed
+
+summary: >-
+  Water quality in a large northern river changes faster than a sampling
+  schedule can follow. Ice, distance and freshet all conspire against the
+  grab sample, and a monthly bottle tells you very little about a
+  contaminant that arrives over three days and is gone. This project is
+  building instrumentation that measures continuously and reports in real
+  time, so that the record reflects what the river actually did rather
+  than what it happened to be doing on sampling day.
+
+# Shown as a short definition list under the summary. Fill these in and
+# they appear; leave them as TODO and they are skipped.
+facts:
+  - label: Funder
+    value: Environment and Climate Change Canada
+  - label: Location
+    value: Upper Nelson River watershed, Manitoba
+  - label: Started
+    value: TODO - month and year
+  - label: Partners
+    value: TODO - collaborating organisations
+  - label: Instrumentation
+    value: >-
+      Multi-parameter sonde as a reference instrument, alongside a
+      prototype developed in the group
+
+# What the project is trying to establish, in plain language.
+aims:
+  - Measure water quality continuously rather than sample by sample
+  - Map the watershed at a resolution that reveals pollutant hotspots
+  - Establish how well a low-cost prototype tracks a reference instrument
+    under genuinely difficult field conditions
+
+updates:
+  - date: TODO - e.g. July 2026
+    title: TODO - short headline
+    body: >-
+      TODO - two or three sentences. What happened, what it means, and
+      what comes next. Field photographs work well here; put them in
+      src/assets/projects/ and add a `photo:` line.
+
+contact_note: >-
+  Questions about the project, or interest in collaborating, are welcome.
