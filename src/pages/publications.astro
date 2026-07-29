@@ -1,17 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import PubEntry from "../components/PubEntry.astro";
-import { allWorks, byYear } from "../lib/bib.js";
-
-/**
- * Work from the UM years is listed year by year; everything before that
- * is collapsed into one section, so the page leads with current output
- * rather than a decade of chronology. Move the cutoff to change the split.
- */
-const CUTOFF = 2022;
-
-const recentYears = byYear(allWorks.filter((w) => w.year >= CUTOFF));
-const earlier = allWorks.filter((w) => w.year < CUTOFF);
+import { allWorks } from "../lib/bib.js";
 ---
 
 <Base title="Publications">
@@ -19,62 +9,24 @@ const earlier = allWorks.filter((w) => w.year < CUTOFF);
     <div class="wrap">
       <span class="label">Publications</span>
       <h1>Publications</h1>
-      <p class="lede">Listed newest first.</p>
+      <p class="lede">Newest first. Patents are marked.</p>
     </div>
   </section>
 
-  {
-    recentYears.map(([year, works]) => (
-      <section class="section">
-        <div class="wrap split">
-          <div>
-            <hr class="decay-rule" />
-            <h2 class="yr">{year}</h2>
-          </div>
-          <div>
-            <ul class="plain">
-              {works.map((work) => <PubEntry pub={work} />)}
-            </ul>
-          </div>
-        </div>
-      </section>
-    ))
-  }
-
-  {
-    earlier.length ? (
-      <section class="section section--sunk">
-        <div class="wrap split">
-          <div>
-            <hr class="decay-rule" />
-            <h2>Earlier publications</h2>
-            <p class="count data">Before {CUTOFF}</p>
-          </div>
-          <div>
-            <ul class="plain">
-              {earlier.map((work) => <PubEntry pub={work} />)}
-            </ul>
-          </div>
-        </div>
-      </section>
-    ) : null
-  }
+  <section class="section">
+    <div class="wrap">
+      <ul class="plain list">
+        {allWorks.map((work) => <PubEntry pub={work} />)}
+      </ul>
+    </div>
+  </section>
 </Base>
 
 <style>
   .pagehead {
     padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
   }
-  .yr {
-    font-variant-numeric: tabular-nums;
-  }
-  .count {
-    font-size: 0.74rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--ink-45);
-  }
-  .section {
-    padding-block: clamp(2rem, 4vw, 3rem);
+  .list {
+    max-width: 58rem;
   }
 </style>
