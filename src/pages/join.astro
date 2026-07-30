@@ -8,6 +8,9 @@ const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const isTodo = (v) =>
   typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
 const { openings } = site;
+// The "useful background" note sits above the first entry-level position,
+// since it describes preparation an undergraduate will not have yet.
+const bgIndex = (openings.positions ?? []).findIndex((r) => r.entry_level);
 ---
 
 <Base
@@ -36,7 +39,13 @@ const { openings } = site;
         {
           openings.open ? (
             <ul class="plain roles">
-              {openings.positions.map((role) => (
+              {openings.positions.map((role, i) => (
+                <>
+                {i === bgIndex ? (
+                  <li class="roles__bg">
+                    <strong>Useful background:</strong> {openings.background}
+                  </li>
+                ) : null}
                 <li>
                   <h3>{role.level}</h3>
                   {role.topic ? <p class="roles__topic">{role.topic}</p> : null}
@@ -48,6 +57,7 @@ const { openings } = site;
                   ) : null}
                   {role.detail ? <p class="roles__detail">{role.detail}</p> : null}
                 </li>
+                </>
               ))}
             </ul>
           ) : (
@@ -57,9 +67,6 @@ const { openings } = site;
             </p>
           )
         }
-        <p class="roles__bg">
-          <strong>Useful background:</strong> {openings.background}
-        </p>
       </div>
     </div>
   </section>
@@ -126,11 +133,11 @@ const { openings } = site;
     max-width: 52ch;
   }
   .roles__bg {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    padding-block: 1.25rem;
     border-top: 1px solid var(--rule);
-    font-size: 0.98rem;
+    font-size: 0.96rem;
     color: var(--ink-70);
+    max-width: 56ch;
   }
   .asks {
     counter-reset: ask;

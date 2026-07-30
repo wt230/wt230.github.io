@@ -77,13 +77,18 @@ openings:
       topic: Micropollutant treatment and chemistry
       funded: true
       start: TODO - confirm current start dates
+      detail: >-
+        Funded means supported through research grants, scholarships, or a
+        combination of the two. See the next section for how to apply.
     - level: Postdoctoral researcher
-      topic: Micropollutant treatment and chemistry
       detail: >-
         We welcome postdoctoral researchers who hold their own fellowship,
         and are glad to support applications to funding schemes. Write with
         the scheme you have in mind and we can discuss a project.
     - level: Undergraduate researcher
+      # The background note above is placed before this entry: most
+      # undergraduate applicants will not have it yet.
+      entry_level: true
       detail: >-
         Undergraduate researchers in the group have been supported by NSERC
         Undergraduate Student Research Awards, Mitacs, and the University of
