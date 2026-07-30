@@ -150,8 +150,10 @@ facilities:
       alongside a prototype scavenging capacity meter developed in the
       group, for deployment in Manitoba waters.
 
-  - name: Electrochemical oxidation cells
-    detail: TODO - describe the BDD electrode setup.
+  - name: Stainless steel UV reactors
+    detail: >-
+      Annular reactors at 20 cm and 50 cm diameter, for work at a scale
+      where the fluence distribution stops being uniform.
 
 facilities_note: >-
   This is not an exhaustive list; ask if you are looking for something in
