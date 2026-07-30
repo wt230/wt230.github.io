@@ -25,6 +25,12 @@ const initials = person.name
 const project = real(person.bio_short) ?? real(person.project);
 const placement = real(person.placement);
 const years = real(person.years);
+
+// Other faculty are given their title. Set `co_advisor_title` on a person
+// if their co-supervisor should be styled differently.
+const coAdvisor = person.co_advisor
+  ? `${person.co_advisor_title ?? "Prof."} ${person.co_advisor}`
+  : null;
 ---
 
 <li class={`person${alum ? " person--alum" : ""}${lead ? " person--lead" : ""}`}>
@@ -49,7 +55,7 @@ const years = real(person.years);
     {placement ? <p class="person__project">Now: {placement}</p> : null}
     {
       person.co_advisor ? (
-        <p class="person__co">Co-advised with {person.co_advisor}</p>
+        <p class="person__co">Co-advised with {coAdvisor}</p>
       ) : null
     }
     {person.highlight ? <p class="person__hl">{person.highlight}</p> : null}

@@ -67,7 +67,7 @@ const alumniSorted = [...alumni].sort((a, b) =>
         <ul class="plain cosup">
           {coSupervisors.map((c) => (
             <li>
-              <strong>{c.name}</strong>
+              <strong>{c.title ?? "Prof."} {c.name}</strong>
               <span class="data"> · {c.unit}</span>
             </li>
           ))}
