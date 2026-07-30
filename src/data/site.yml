@@ -123,20 +123,39 @@ facilities:
       R. Evans Leaders Fund. Trace-level quantification of
       micropollutants and transformation products, in our own lab
       rather than in a queue somewhere else.
-  - name: UV reactors and flow-through systems
+
+  - name: UV light sources
     detail: >-
-      Bench-scale collimated beam and flow-through cuvette systems for
-      controlled fluence experiments.
-  - name: ZetaView particle tracking
+      Low-pressure and medium-pressure mercury lamps, an excimer source at
+      222 nm, and Violumas LEDs at 260 and 310 nm — enough of the spectrum
+      to separate what a wavelength does from what an oxidant does.
+
+  - name: Collimated beam and flow-through systems
     detail: >-
-      Nanoparticle tracking analysis for bioparticle and nanobubble
-      characterisation, via NSERC Research Tools and Instruments.
-  - name: Electrochemical oxidation cells
-    detail: TODO - describe the BDD electrode setup.
+      Bench-scale collimated beam apparatus and flow-through cuvette
+      systems for controlled fluence experiments, with radiometers for
+      fluence rate measurement.
+
+  - name: StellarNet portable UV-vis spectrometer
+    detail: Absorbance from 190 to 850 nm, in the lab or in the field.
+
+  - name: Micropollutant extraction system
+    detail: >-
+      Sample preparation and concentration for trace analysis, including
+      PFAS.
+
   - name: Field monitoring instrumentation
     detail: >-
-      Multi-parameter sondes and a prototype scavenging capacity
-      meter for deployment in the Nelson River watershed.
+      A YSI EXO1S multi-parameter sonde as a reference instrument,
+      alongside a prototype scavenging capacity meter developed in the
+      group, for deployment in Manitoba waters.
+
+  - name: Electrochemical oxidation cells
+    detail: TODO - describe the BDD electrode setup.
+
+facilities_note: >-
+  This is not an exhaustive list; ask if you are looking for something in
+  particular.
 
 # Equipment in the departmental lab rather than the group's own space.
 shared_facilities:
