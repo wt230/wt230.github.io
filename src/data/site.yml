@@ -136,8 +136,10 @@ facilities:
       systems for controlled fluence experiments, with radiometers for
       fluence rate measurement.
 
-  - name: StellarNet portable UV-vis spectrometer
-    detail: Absorbance from 190 to 850 nm, in the lab or in the field.
+  - name: UV-vis spectrometers
+    detail: >-
+      A VWR V-1200 benchtop instrument, and a StellarNet portable
+      spectrometer covering 190 to 850 nm for measurements in the field.
 
   - name: Micropollutant extraction system
     detail: >-
