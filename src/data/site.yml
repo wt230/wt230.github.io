@@ -77,9 +77,13 @@ openings:
       topic: Micropollutant treatment and chemistry
       funded: true
       start: TODO - confirm current start dates
-      detail: >-
-        Funded means supported through research grants, scholarships, or a
-        combination of the two. See the next section for how to apply.
+      # `detail` may be a single paragraph or a list of them.
+      detail:
+        - >-
+          The students will be supported through research grants,
+          scholarships, or a combination of the two. See the next section
+          for how to apply.
+        - We also welcome excellent MEng applicants.
     - level: Postdoctoral researcher
       detail: >-
         We welcome postdoctoral researchers who hold their own fellowship,

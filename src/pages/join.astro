@@ -55,7 +55,14 @@ const bgIndex = (openings.positions ?? []).findIndex((r) => r.entry_level);
                       {!isTodo(role.start) && role.start ? ` · Starting ${role.start}` : ""}
                     </p>
                   ) : null}
-                  {role.detail ? <p class="roles__detail">{role.detail}</p> : null}
+                  {
+                    (Array.isArray(role.detail)
+                      ? role.detail
+                      : role.detail
+                        ? [role.detail]
+                        : []
+                    ).map((para) => <p class="roles__detail">{para}</p>)
+                  }
                 </li>
                 </>
               ))}
@@ -91,8 +98,7 @@ const bgIndex = (openings.positions ?? []).findIndex((r) => r.entry_level);
           Graduate applicants also need to meet the admission requirements of
           the UM Faculty of Graduate Studies. These include an English
           language proficiency requirement, which applies to certain
-          international applicants. Emailing first is worth doing before you
-          pay an application fee.
+          international applicants.
         </p>
       </div>
     </div>
