@@ -74,19 +74,33 @@ openings:
   open: true
   positions:
     - level: PhD or MSc
-      topic: Cost-efficiency of advanced oxidation processes
+      topic: Micropollutant treatment and chemistry
       funded: true
       start: TODO - confirm current start dates
+    - level: Postdoctoral researcher
+      topic: Micropollutant treatment and chemistry
+      detail: >-
+        We welcome postdoctoral researchers who hold their own fellowship,
+        and are glad to support applications to funding schemes. Write with
+        the scheme you have in mind and we can discuss a project.
+    - level: Undergraduate researcher
+      detail: >-
+        Undergraduate researchers in the group have been supported by NSERC
+        Undergraduate Student Research Awards, Mitacs, and the University of
+        Manitoba Undergraduate Research Awards. Each has its own deadlines
+        and application process, so check the official procedures for the
+        one you are interested in, then get in touch.
   background: >-
-    Environmental engineering, chemical engineering, water chemistry,
-    or a closely related field.
+    A background in water treatment is the most useful preparation —
+    water and wastewater treatment, water chemistry, environmental
+    engineering, or chemical engineering with a water focus. Laboratory
+    experience helps.
   # What a first email should contain. Specific asks filter for the
   # applicants who read the page.
   email_expectations:
     - Which of our research themes you want to work on, and why that one
-    - A CV, including any laboratory or programming experience
+    - A CV, including any laboratory experience
     - Transcripts, unofficial is fine at this stage
-    - Your expected start date and whether you have applied to UM yet
 
 facilities:
   - name: Thermo Scientific TSQ Quantis Plus with Vanquish Flex LC
