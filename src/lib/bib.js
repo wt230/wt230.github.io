@@ -43,18 +43,6 @@ function splitAuthors(str = "") {
 const raw = fs.readFileSync(BIB_PATH, "utf8");
 const parsed = parseBib(raw);
 
-/**
- * A resolvable link for every entry. A DOI is preferred; without one we
- * fall back to a Google Scholar search on the exact title, which lands
- * the reader on the right paper without risking a wrong identifier.
- */
-function linkFor(doi, title) {
-  if (doi) return `https://doi.org/${doi}`;
-  return `https://scholar.google.com/scholar?q=${encodeURIComponent(
-    `"${clean(title)}"`
-  )}`;
-}
-
 const shape = (e) => ({
   key: e.key,
   type: e.type,
@@ -66,7 +54,6 @@ const shape = (e) => ({
   number: e.number ? clean(e.number) : null,
   pages: clean(e.pages || ""),
   doi: e.doi || null,
-  link: linkFor(e.doi, e.title || ""),
   note: e.note ? clean(e.note) : null,
   language: e.language || null,
   role: e.role || "contributing",
