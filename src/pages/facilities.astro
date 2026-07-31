@@ -70,8 +70,12 @@ function photoFor(filename) {
                 <li>
                   <h3>{f.name}</h3>
                   {f.short ? <p class="kit__short data">{f.short}</p> : null}
+                  {!isTodo(f.detail) ? <p>{f.detail}</p> : null}
                   {img ? (
-                    <figure class="kit__figure">
+                    <figure
+                      class="kit__figure"
+                      style={f.photo_width ? `--fig-w:${f.photo_width}%` : undefined}
+                    >
                       <Image
                         src={img}
                         alt={f.caption ?? f.name}
@@ -82,7 +86,6 @@ function photoFor(filename) {
                       {f.caption ? <figcaption>{f.caption}</figcaption> : null}
                     </figure>
                   ) : null}
-                  {!isTodo(f.detail) ? <p>{f.detail}</p> : null}
                 </li>
               );
             })
@@ -181,7 +184,8 @@ function photoFor(filename) {
     margin: 0;
   }
   .kit__figure {
-    margin: 0 0 1.1rem;
+    margin: 1.1rem 0 0;
+    width: var(--fig-w, 100%);
   }
   .kit__figure :global(img) {
     width: 100%;

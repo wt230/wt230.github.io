@@ -141,6 +141,11 @@ facilities:
       fluence rate measurement.
 
   - name: UV-vis spectrometers
+    photo: stellarnet.jpg
+    photo_width: 70
+    caption: >-
+      The StellarNet spectrometer and its matched deuterium-halogen
+      source.
     detail: >-
       A VWR V-1200 benchtop instrument, and a StellarNet portable
       spectrometer covering 190 to 850 nm for measurements in the field.
