@@ -30,7 +30,7 @@ facts:
   - label: Started
     value: TODO - month and year
   - label: Partners
-    value: TODO - collaborating organisations
+    value: TODO - collaborating organizations
   - label: Instrumentation
     value: >-
       Multi-parameter sonde as a reference instrument, alongside a

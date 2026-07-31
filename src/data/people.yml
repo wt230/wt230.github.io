@@ -12,8 +12,7 @@
 
 pi:
   name: Chengjin Wang
-  role: Assistant Professor, Ph.D., P.Eng.
-  credentials: Ph.D., P.Eng.
+  role: Assistant Professor, PhD, P.Eng.
   email: Chengjin.Wang@umanitoba.ca
   office: E1-449 EITC
   phone: 204-474-8381
@@ -84,7 +83,7 @@ alumni:
   - name: Wei Hu
     role: Postdoctoral Fellow
     years: TODO
-    placement: TODO - current position and organisation
+    placement: TODO - current position and organization
 
   - name: Hafiz Hamza
     role: MSc
