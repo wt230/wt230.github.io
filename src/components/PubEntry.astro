@@ -17,7 +17,13 @@ function fmt(author) {
     ))}
   </p>
   <h3 class="pub__title">
-    {pub.doi ? <a href={`https://doi.org/${pub.doi}`}>{pub.title}</a> : pub.title}
+    {
+      pub.link ? (
+        <a href={pub.link} rel={pub.doi ? null : "nofollow"}>{pub.title}</a>
+      ) : (
+        pub.title
+      )
+    }
   </h3>
   <p class="pub__meta data">
     {isPatent ? <span class="pub__kind">Patent</span> : <em>{pub.journal}</em>}
