@@ -46,11 +46,11 @@ function photoFor(filename) {
           src={photoFor(site.banner.photo)}
           alt={site.banner.caption}
           widths={[900, 1456, 2000]}
-          sizes="100vw"
+          sizes="(min-width: 76rem) 72rem, 94vw"
           loading="eager"
           fetchpriority="high"
         />
-        <figcaption class="wrap">{site.banner.caption}</figcaption>
+        <figcaption>{site.banner.caption}</figcaption>
       </figure>
     ) : null
   }
@@ -118,20 +118,19 @@ function photoFor(filename) {
   .pagehead {
     padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 3vw, 2.25rem);
   }
-  /* Full-bleed: escapes the page gutters to span the viewport. */
+  /* Constrained to the text column, not full-bleed. */
   .banner {
-    margin: 0 0 clamp(1.5rem, 4vw, 3rem);
-    width: 100vw;
-    margin-inline: calc(50% - 50vw);
+    margin: 0 auto clamp(1.5rem, 4vw, 3rem);
+    max-width: 76rem;
+    padding-inline: var(--gutter);
   }
-  /* Capped, or a 2.17:1 image spans nearly 900px tall on a wide screen
-     and pushes the whole list below the fold. Cropped, not letterboxed. */
+  /* No crop: the point of the photograph is the whole bench, from the
+     solvent bottles across to the monitor. */
   .banner :global(img) {
     width: 100%;
-    height: clamp(180px, 34vh, 460px);
-    object-fit: cover;
-    object-position: center;
+    height: auto;
     display: block;
+    border-radius: 4px;
   }
   .banner figcaption {
     font-family: var(--data);
