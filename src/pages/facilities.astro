@@ -39,6 +39,22 @@ function photoFor(filename) {
     </div>
   </section>
 
+  {
+    site.banner && photoFor(site.banner.photo) ? (
+      <figure class="banner">
+        <Image
+          src={photoFor(site.banner.photo)}
+          alt={site.banner.caption}
+          widths={[900, 1456, 2000]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <figcaption class="wrap">{site.banner.caption}</figcaption>
+      </figure>
+    ) : null
+  }
+
   <section class="section">
     <div class="wrap split">
       <div>
@@ -100,7 +116,30 @@ function photoFor(filename) {
 
 <style>
   .pagehead {
-    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 3vw, 2.25rem);
+  }
+  /* Full-bleed: escapes the page gutters to span the viewport. */
+  .banner {
+    margin: 0 0 clamp(1.5rem, 4vw, 3rem);
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+  /* Capped, or a 2.17:1 image spans nearly 900px tall on a wide screen
+     and pushes the whole list below the fold. Cropped, not letterboxed. */
+  .banner :global(img) {
+    width: 100%;
+    height: clamp(180px, 34vh, 460px);
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .banner figcaption {
+    font-family: var(--data);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--ink-45);
+    padding-top: 0.75rem;
+    max-width: 60ch;
   }
   .kit li {
     padding-block: 1.75rem;
