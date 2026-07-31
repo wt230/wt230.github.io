@@ -167,6 +167,10 @@ facilities_note: >-
 
 # Equipment in the departmental lab rather than the group's own space.
 shared_facilities:
+  photo: dept-instruments.jpg
+  caption: >-
+    Two GCs and one HPLC with a diode-array detector, in the Environmental
+    Engineering Laboratory.
   intro: >-
     Further instrumentation is available in the shared Environmental
     Engineering Laboratory, including:

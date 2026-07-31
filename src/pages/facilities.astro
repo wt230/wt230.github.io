@@ -99,17 +99,29 @@ function photoFor(filename) {
   </section>
 
   <section class="section section--sunk">
-    <div class="wrap split">
-      <div>
-        <hr class="decay-rule" />
-        <h2>Departmental facilities</h2>
-      </div>
-      <div>
-        <p>{site.shared_facilities.intro}</p>
-        <ul class="shared">
-          {site.shared_facilities.items.map((item) => <li>{item}</li>)}
-        </ul>
-      </div>
+    <div class="wrap">
+      <hr class="decay-rule" />
+      <h2>Departmental facilities</h2>
+
+      {
+        photoFor(site.shared_facilities.photo) ? (
+          <figure class="banner banner--flush">
+            <Image
+              src={photoFor(site.shared_facilities.photo)}
+              alt={site.shared_facilities.caption}
+              widths={[900, 1400, 2200]}
+              sizes="(min-width: 76rem) 68rem, 94vw"
+              loading="lazy"
+            />
+            <figcaption>{site.shared_facilities.caption}</figcaption>
+          </figure>
+        ) : null
+      }
+
+      <p class="shared__intro">{site.shared_facilities.intro}</p>
+      <ul class="shared">
+        {site.shared_facilities.items.map((item) => <li>{item}</li>)}
+      </ul>
     </div>
   </section>
 </Base>
@@ -131,6 +143,15 @@ function photoFor(filename) {
     height: auto;
     display: block;
     border-radius: 4px;
+  }
+  /* Already inside a .wrap, so it must not add its own gutters. */
+  .banner--flush {
+    max-width: none;
+    padding-inline: 0;
+    margin: 1.75rem 0;
+  }
+  .shared__intro {
+    max-width: var(--measure);
   }
   .banner figcaption {
     font-family: var(--data);
