@@ -3,6 +3,7 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import Base from "../../layouts/Base.astro";
 import PubEntry from "../../components/PubEntry.astro";
+import LogoStrip from "../../components/LogoStrip.astro";
 import { allWorks } from "../../lib/bib.js";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
@@ -129,7 +130,11 @@ const pubs = keys
 
   <section class="section">
     <div class="wrap">
-      <p class="contact">
+      <LogoStrip
+        funders={project.funders ?? []}
+        collaborators={project.collaborators ?? []}
+      />
+      <p class="contact contact--after-logos">
         {project.contact_note}{" "}
         <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
       </p>
@@ -226,5 +231,8 @@ const pubs = keys
   .pending,
   .contact {
     color: var(--ink-70);
+  }
+  .contact--after-logos {
+    margin-top: 2.5rem;
   }
 </style>

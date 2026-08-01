@@ -19,23 +19,20 @@ summary: >-
   produces a high-resolution profile along the river, revealing the
   pollution sources that degrade water quality and threaten fish habitat.
 
-objectives_intro: The specific objectives of this project are as follows.
+objectives_intro: The specific objectives are as follows.
 
 objectives:
   - >-
-    To develop and optimize a novel water quality monitoring tool in the
-    laboratory at the University of Manitoba.
+    To develop and optimize the monitoring tool in the laboratory.
   - >-
-    To apply the optimized prototype to produce a high-resolution water
-    quality map for the entire Upper Nelson River, and to identify
-    potential pollution sources.
+    To deploy it along the Upper Nelson River, mapping water quality at
+    high resolution and locating potential pollution sources.
   - >-
-    To collect water samples at those potential pollution sources for
-    extensive laboratory analysis, and to develop remedial measures that
-    protect fish habitat.
+    To sample those sources for detailed laboratory analysis, and to
+    develop remedial measures that protect fish habitat.
 
-# Shown as a short definition list under the summary. Fill these in and
-# they appear; leave them as TODO and they are skipped.
+# Shown as a short definition list. Fill these in and they appear; leave
+# them as TODO and they are skipped.
 facts:
   - label: Funder
     value: Environment and Climate Change Canada
@@ -43,8 +40,6 @@ facts:
     value: Upper Nelson River watershed, Manitoba
   - label: Started
     value: TODO - month and year
-  - label: Partners
-    value: TODO - collaborating organizations
   - label: Instrumentation
     value: >-
       A prototype based on fast radical reactions, alongside a
@@ -56,18 +51,26 @@ updates_pending: >-
   for summer and fall 2026; updates will be posted here as the project
   progresses.
 
-updates:
-  - date: TODO - e.g. July 2026
-    title: TODO - short headline
-    body: >-
-      TODO - two or three sentences. What happened, what it means, and
-      what comes next. Field photographs work well here; put them in
-      src/assets/projects/ and add a `photo:` line.
+updates: []
 
 # Papers to show under "Related publications", by their BibTeX key from
 # publications.bib. Leave the list empty and the section is hidden.
-# Example:  publications: [mohamadi2026interference]
 publications: []
+
+# Logo files live in src/assets/logos/, referenced by filename without
+# the extension. `height` is the rendered height in px.
+funders:
+  - name: Environment and Climate Change Canada
+    file: eccc
+    height: 46
+
+collaborators:
+  - name: Violumas
+    file: violumas
+    height: 34
+  - name: Save Our Seine
+    file: save-our-seine
+    height: 56
 
 contact_note: >-
   Questions about the project, or interest in collaborating, are welcome.

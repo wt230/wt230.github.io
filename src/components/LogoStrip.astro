@@ -1,0 +1,92 @@
+---
+import { Image } from "astro:assets";
+
+/**
+ * Partner and funder logos.
+ *
+ * Logos are trimmed of surrounding whitespace and normalised to a common
+ * rendered height, so a wide wordmark and a square badge sit together
+ * without one dwarfing the other.
+ */
+const { funders = [], collaborators = [] } = Astro.props;
+
+const files = import.meta.glob("../assets/logos/*.{png,jpg,jpeg,svg,webp}", {
+  eager: true,
+});
+
+function logo(name) {
+  const hit = Object.entries(files).find(([path]) =>
+    path.split("/").pop().replace(/\.\w+$/, "") === name
+  );
+  return hit ? hit[1].default : null;
+}
+
+const groups = [
+  { label: "Funded by", items: funders },
+  { label: "In collaboration with", items: collaborators },
+].filter((g) => g.items.some((i) => logo(i.file)));
+---
+
+{
+  groups.length ? (
+    <div class="logos">
+      {groups.map((g) => (
+        <div class="logos__group">
+          <span class="label">{g.label}</span>
+          <ul class="plain logos__row">
+            {g.items.map((item) =>
+              logo(item.file) ? (
+                <li>
+                  <Image
+                    src={logo(item.file)}
+                    alt={item.name}
+                    height={item.height ?? 52}
+                    densities={[1, 2]}
+                  />
+                </li>
+              ) : null
+            )}
+          </ul>
+        </div>
+      ))}
+    </div>
+  ) : null
+}
+
+<style>
+  .logos {
+    display: grid;
+    gap: 2rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (min-width: 46rem) {
+    .logos {
+      grid-template-columns: auto 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+  }
+
+  .logos__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem 2.5rem;
+    margin-top: 0.9rem;
+  }
+
+  .logos__row :global(img) {
+    width: auto;
+    display: block;
+    /* Logos arrive in different inks; a slight desaturation stops any
+       one of them shouting over the page. Full colour on hover. */
+    filter: saturate(0.85);
+    transition: filter 0.18s ease;
+  }
+
+  .logos__row :global(img):hover {
+    filter: saturate(1);
+  }
+</style>
