@@ -40,6 +40,10 @@ facts:
     value: Upper Nelson River watershed, Manitoba
   - label: Started
     value: TODO - month and year
+  - label: Field testing
+    value: >-
+      The Seine and Red Rivers in Winnipeg, ahead of deployment on the
+      Nelson
   - label: Instrumentation
     value: >-
       A prototype based on fast radical reactions, alongside a
