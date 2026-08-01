@@ -48,15 +48,14 @@ facts:
     value: TODO - collaborating organizations
   - label: Instrumentation
     value: >-
-      Multi-parameter sonde as a reference instrument, alongside a
-      prototype developed in the group
+      A prototype based on fast radical reactions, alongside a
+      multi-parameter sonde as a reference instrument
 
-# What the project is trying to establish, in plain language.
-aims:
-  - Measure water quality continuously rather than sample by sample
-  - Map the watershed at a resolution that reveals pollutant hotspots
-  - Establish how well a low-cost prototype tracks a reference instrument
-    under genuinely difficult field conditions
+# Shown until the first real update is posted.
+updates_pending: >-
+  Laboratory prototype development is under way, and field work is planned
+  for summer and fall 2026; updates will be posted here as the project
+  progresses.
 
 updates:
   - date: TODO - e.g. July 2026

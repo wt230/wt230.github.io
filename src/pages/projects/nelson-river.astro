@@ -102,10 +102,7 @@ const pubs = keys
               ))}
             </ol>
           ) : (
-            <p class="pending">
-              Field work is under way and updates will be posted here as the
-              project progresses.
-            </p>
+            <p class="pending">{project.updates_pending}</p>
           )
         }
       </div>
