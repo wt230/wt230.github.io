@@ -4,13 +4,13 @@ import yaml from "js-yaml";
 import Base from "../layouts/Base.astro";
 import PubEntry from "../components/PubEntry.astro";
 import ReactorFigure from "../components/ReactorFigure.astro";
-import { byTheme, THEMES } from "../lib/bib.js";
+import { byPrimaryTheme, THEMES } from "../lib/bib.js";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
 ---
 
-<Base title="Research">
+<Base title="Research" description="Research on micropollutant treatment, radical scavenging capacity, water quality monitoring, and UV photochemistry.">
   <section class="pagehead">
     <div class="wrap">
       <h1>Research</h1>
@@ -25,7 +25,7 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
 
   {
     site.themes.map((theme) => {
-      const pubs = byTheme(theme.slug).slice(0, 4);
+      const pubs = byPrimaryTheme(theme.slug).slice(0, 4);
       return (
         <section class="section" id={theme.slug}>
           <div class="wrap split">
