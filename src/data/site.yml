@@ -198,22 +198,22 @@ shared_facilities:
 funders:
   - name: Natural Sciences and Engineering Research Council of Canada
     file: nserc
-    height: 40
+    height: 44
   - name: Canada Foundation for Innovation
     file: cfi
-    height: 40
+    height: 34
   - name: Environment and Climate Change Canada
     file: eccc
-    height: 46
+    height: 34
   - name: Research Manitoba
     file: research-manitoba
-    height: 40
+    height: 43
   - name: The Water Research Foundation
     file: wrf
-    height: 40
+    height: 51
   - name: University of Manitoba
     file: umanitoba
-    height: 44
+    height: 47
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
