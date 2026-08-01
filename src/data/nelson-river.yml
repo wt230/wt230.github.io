@@ -9,16 +9,31 @@
 # ---------------------------------------------------------------
 
 title: The Nelson River project
-subtitle: Continuous water quality monitoring in the Upper Nelson River watershed
+subtitle: >-
+  Development of a novel water quality monitoring tool and its application
+  in the Upper Nelson River watershed
 
 summary: >-
-  Water quality in a large northern river changes faster than a sampling
-  schedule can follow. Ice, distance and freshet all conspire against the
-  grab sample, and a monthly bottle tells you very little about a
-  contaminant that arrives over three days and is gone. This project is
-  building instrumentation that measures continuously and reports in real
-  time, so that the record reflects what the river actually did rather
-  than what it happened to be doing on sampling day.
+  This project develops a novel water quality monitoring tool that responds
+  in real time to a range of species in water, both inorganic and organic.
+  Mounted on a boat, it can produce a high-resolution water quality profile
+  along the river, so that pollution sources which alter water quality and
+  affect fish habitat can be identified.
+
+objectives_intro: The specific objectives of this project are as follows.
+
+objectives:
+  - >-
+    To develop and optimize a novel water quality monitoring tool in the
+    laboratory at the University of Manitoba.
+  - >-
+    To apply the optimized prototype to produce a high-resolution water
+    quality map for the entire Upper Nelson River, and to identify
+    potential pollution sources.
+  - >-
+    To collect water samples at those potential pollution sources for
+    extensive laboratory analysis, and to develop remedial measures that
+    protect fish habitat.
 
 # Shown as a short definition list under the summary. Fill these in and
 # they appear; leave them as TODO and they are skipped.

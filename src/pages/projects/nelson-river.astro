@@ -45,10 +45,15 @@ const pubs = keys
       <div>
         <p class="summary">{project.summary}</p>
         {
-          project.aims?.length ? (
-            <ul class="aims">
-              {project.aims.map((aim) => <li>{aim}</li>)}
-            </ul>
+          project.objectives?.length ? (
+            <>
+              {project.objectives_intro ? (
+                <p class="aims__intro">{project.objectives_intro}</p>
+              ) : null}
+              <ol class="aims">
+                {project.objectives.map((o) => <li>{o}</li>)}
+              </ol>
+            </>
           ) : null
         }
       </div>
@@ -143,28 +148,33 @@ const pubs = keys
     font-size: 1.08rem;
     line-height: 1.6;
   }
+  .aims__intro {
+    margin-top: 1.5rem;
+    max-width: var(--measure);
+  }
   .aims {
+    counter-reset: obj;
     list-style: none;
-    margin: 1.75rem 0 0;
+    margin: 0.75rem 0 0;
     padding: 0;
     max-width: var(--measure);
   }
   .aims li {
+    counter-increment: obj;
     position: relative;
-    padding: 0.55rem 0 0.55rem 1.4rem;
+    padding: 0.7rem 0 0.7rem 2.2rem;
     border-top: 1px solid var(--rule);
     font-size: 0.96rem;
     color: var(--ink-70);
   }
   .aims li::before {
-    content: "";
+    content: counter(obj);
     position: absolute;
     left: 0;
-    top: 1rem;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--mb-300);
+    top: 0.82rem;
+    font-family: var(--data);
+    font-size: 0.8rem;
+    color: var(--mb-500);
   }
   .facts {
     display: grid;
