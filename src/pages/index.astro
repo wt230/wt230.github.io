@@ -5,6 +5,7 @@ import Base from "../layouts/Base.astro";
 import HeroSlides from "../components/HeroSlides.astro";
 import PubEntry from "../components/PubEntry.astro";
 import { publications } from "../lib/bib.js";
+import LogoStrip from "../components/LogoStrip.astro";
 import { pi, current, real } from "../lib/people.js";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
@@ -125,6 +126,16 @@ const preview = [pi, ...current].map((person) => ({
       </div>
     </div>
   </section>
+
+  {
+    site.funders?.length ? (
+      <section class="section section--sunk">
+        <div class="wrap">
+          <LogoStrip funders={site.funders} label="Supported by" />
+        </div>
+      </section>
+    ) : null
+  }
 
   {
     site.openings.open && (

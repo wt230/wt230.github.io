@@ -8,7 +8,11 @@ import { Image } from "astro:assets";
  * rendered height, so a wide wordmark and a square badge sit together
  * without one dwarfing the other.
  */
-const { funders = [], collaborators = [] } = Astro.props;
+const {
+  funders = [],
+  collaborators = [],
+  label = "Funded by",
+} = Astro.props;
 
 const files = import.meta.glob("../assets/logos/*.{png,jpg,jpeg,svg,webp}", {
   eager: true,
@@ -22,7 +26,7 @@ function logo(name) {
 }
 
 const groups = [
-  { label: "Funded by", items: funders },
+  { label, items: funders },
   { label: "In collaboration with", items: collaborators },
 ].filter((g) => g.items.some((i) => logo(i.file)));
 ---

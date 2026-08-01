@@ -144,11 +144,12 @@ facilities:
     photo: stellarnet.jpg
     photo_width: 70
     caption: >-
-      The StellarNet spectrometer and its matched deuterium-halogen
-      source.
+      One of the StellarNet spectrometers, with its matched
+      deuterium-halogen source.
     detail: >-
-      A VWR V-1200 benchtop instrument, and a StellarNet portable
-      spectrometer covering 190 to 850 nm for measurements in the field.
+      Four StellarNet portable spectrometers covering 190 to 850 nm, used
+      both in the lab and in the field, alongside a VWR V-1200 benchtop
+      instrument.
 
   - name: Micropollutant extraction system
     detail: >-
@@ -188,6 +189,31 @@ shared_facilities:
     image processing software, three walk-in environmental chambers, two
     particle size counters, a steam-fed autoclave, a conductivity meter,
     and more.
+
+# Funder logos for the home page. Each `file` is a filename in
+# src/assets/logos/ without its extension; entries whose file is missing
+# are skipped, so this list can be filled in one logo at a time.
+# `height` is the rendered height in px — set per logo, because a wide
+# wordmark and a square crest look mismatched at the same height.
+funders:
+  - name: Natural Sciences and Engineering Research Council of Canada
+    file: nserc
+    height: 40
+  - name: Canada Foundation for Innovation
+    file: cfi
+    height: 40
+  - name: Environment and Climate Change Canada
+    file: eccc
+    height: 46
+  - name: Research Manitoba
+    file: research-manitoba
+    height: 40
+  - name: The Water Research Foundation
+    file: wrf
+    height: 40
+  - name: University of Manitoba
+    file: umanitoba
+    height: 44
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
