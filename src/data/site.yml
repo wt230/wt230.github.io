@@ -123,10 +123,9 @@ facilities:
   - name: Thermo Scientific TSQ Quantis Plus with Vanquish Flex LC
     short: Triple quadrupole LC-MS/MS
     detail: >-
-      Acquired 2025 through the Canada Foundation for Innovation John
-      R. Evans Leaders Fund. Trace-level quantification of
-      micropollutants and transformation products, in our own lab
-      rather than in a queue somewhere else.
+      Acquired in 2025 through the Canada Foundation for Innovation John
+      R. Evans Leaders Fund, for trace-level quantification of
+      micropollutants and their transformation products.
 
   - name: UV light sources
     detail: >-
