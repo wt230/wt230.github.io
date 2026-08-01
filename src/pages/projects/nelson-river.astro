@@ -130,14 +130,16 @@ const pubs = keys
 
   <section class="section">
     <div class="wrap">
-      <LogoStrip
-        funders={project.funders ?? []}
-        collaborators={project.collaborators ?? []}
-      />
-      <p class="contact contact--after-logos">
+      <p class="contact">
         {project.contact_note}{" "}
         <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
       </p>
+      <div class="logos-after">
+        <LogoStrip
+          funders={project.funders ?? []}
+          collaborators={project.collaborators ?? []}
+        />
+      </div>
     </div>
   </section>
 </Base>
@@ -232,7 +234,7 @@ const pubs = keys
   .contact {
     color: var(--ink-70);
   }
-  .contact--after-logos {
+  .logos-after {
     margin-top: 2.5rem;
   }
 </style>
