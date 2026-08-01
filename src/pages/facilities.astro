@@ -121,10 +121,7 @@ function photoFor(filename) {
         ) : null
       }
 
-      <p class="shared__intro">{site.shared_facilities.intro}</p>
-      <ul class="shared">
-        {site.shared_facilities.items.map((item) => <li>{item}</li>)}
-      </ul>
+      <p class="shared__intro">{site.shared_facilities.paragraph}</p>
     </div>
   </section>
 </Base>

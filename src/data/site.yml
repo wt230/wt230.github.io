@@ -170,6 +170,7 @@ facilities_note: >-
   This is not an exhaustive list; ask if you are looking for something in
   particular.
 
+
 # Equipment in the departmental lab rather than the group's own space.
 shared_facilities:
   photo: dept-instruments.jpg
@@ -177,22 +178,16 @@ shared_facilities:
     In the Environmental Engineering Laboratory, from left to right: an
     Agilent 7890A GC with electron capture detection, an Agilent 7890B
     GC/5977B MSD, and a Waters 2695 HPLC with a diode-array detector.
-  intro: >-
+  # The GCs and the HPLC are named in the caption above, so they are not
+  # repeated in the paragraph.
+  paragraph: >-
     Further instrumentation is available in the shared Environmental
-    Engineering Laboratory, including:
-  items:
-    - >-
-      Two gas chromatographs with thermal conductivity, flame ionization
-      and electron capture detectors, and headspace or liquid autosamplers
-    - Waters 2695 HPLC with a diode-array detector
-    - Two TOC analyzers
-    - A four-channel flow injection analyzer
-    - Three HACH spectrometers with four heating digesters
-    - Three microscopes with image processing software
-    - Three walk-in environmental chambers
-    - Two particle size counters
-    - A steam-fed autoclave
-    - A conductivity meter
+    Engineering Laboratory: two TOC analyzers, a four-channel flow
+    injection analyzer, an ion chromatography (IC) system, three HACH
+    spectrometers with four heating digesters, three microscopes with
+    image processing software, three walk-in environmental chambers, two
+    particle size counters, a steam-fed autoclave, a conductivity meter,
+    and more.
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
