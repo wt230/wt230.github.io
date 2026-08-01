@@ -208,9 +208,6 @@ funders:
   - name: Research Manitoba
     file: research-manitoba
     height: 43
-  - name: The Water Research Foundation
-    file: wrf
-    height: 51
   - name: University of Manitoba
     file: umanitoba
     height: 47
