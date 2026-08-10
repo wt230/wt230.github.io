@@ -3,7 +3,6 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
-import LogoStrip from "../components/LogoStrip.astro";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const isTodo = (v) =>
@@ -20,22 +19,24 @@ const photos = import.meta.glob(
   { eager: true }
 );
 
+/** Accepts either "name.jpg" or a bare "name". */
 function photoFor(filename) {
   if (!filename) return null;
-  const hit = Object.entries(photos).find(([path]) =>
-    path.endsWith(`/${filename}`)
+  const stem = filename.replace(/\.\w+$/, "");
+  const hit = Object.entries(photos).find(
+    ([path]) => path.split("/").pop().replace(/\.\w+$/, "") === stem
   );
   return hit ? hit[1].default : null;
 }
 ---
 
-<Base title="Facilities" description="Instrumentation in the Wang Group lab and the shared Environmental Engineering Laboratory.">
+<Base title="Facilities">
   <section class="pagehead">
     <div class="wrap">
       <span class="label">Facilities</span>
       <h1>What is in the lab</h1>
       <p class="lede">
-        Experimental and field capability built since 2021.
+        Experimental, computational, and field capability built since 2021.
       </p>
     </div>
   </section>
@@ -97,6 +98,7 @@ function photoFor(filename) {
             <p class="kit__note">{site.facilities_note}</p>
           ) : null
         }
+        <p class="fund">{site.funding_note}</p>
       </div>
     </div>
   </section>
@@ -106,34 +108,28 @@ function photoFor(filename) {
       <hr class="decay-rule" />
       <h2>Departmental facilities</h2>
 
-      {
-        photoFor(site.shared_facilities.photo) ? (
-          <figure class="banner banner--flush">
-            <Image
-              src={photoFor(site.shared_facilities.photo)}
-              alt={site.shared_facilities.caption}
-              widths={[900, 1400, 2200]}
-              sizes="(min-width: 76rem) 68rem, 94vw"
-              loading="lazy"
-            />
-            <figcaption>{site.shared_facilities.caption}</figcaption>
-          </figure>
-        ) : null
-      }
+      <div class="pair">
+        {
+          site.shared_facilities.photos.map((ph) =>
+            photoFor(ph.file) ? (
+              <figure class="pair__item">
+                <Image
+                  src={photoFor(ph.file)}
+                  alt={ph.caption}
+                  widths={[600, 900, 1400]}
+                  sizes="(min-width: 46rem) 34rem, 94vw"
+                  loading="lazy"
+                />
+                <figcaption>{ph.caption}</figcaption>
+              </figure>
+            ) : null
+          )
+        }
+      </div>
 
       <p class="shared__intro">{site.shared_facilities.paragraph}</p>
     </div>
   </section>
-  {
-    site.funders?.length ? (
-      <section class="section">
-        <div class="wrap">
-          <LogoStrip funders={site.funders} label="Supported by" />
-        </div>
-      </section>
-    ) : null
-  }
-
 </Base>
 
 <style>
@@ -162,6 +158,34 @@ function photoFor(filename) {
   }
   .shared__intro {
     max-width: var(--measure);
+  }
+  .pair {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    margin: 1.75rem 0 2rem;
+  }
+  @media (min-width: 46rem) {
+    .pair {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+    }
+  }
+  .pair__item {
+    margin: 0;
+  }
+  .pair__item :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+  .pair__item figcaption {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--ink-45);
+    margin-top: 0.6rem;
   }
   .banner figcaption {
     font-family: var(--data);
@@ -239,5 +263,14 @@ function photoFor(filename) {
     border-top: 1px solid var(--rule);
     font-size: 0.94rem;
     color: var(--ink-70);
+  }
+  .fund {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--data);
+    font-size: 0.82rem;
+    color: var(--ink-45);
+    line-height: 1.6;
   }
 </style>

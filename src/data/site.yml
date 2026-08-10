@@ -174,46 +174,24 @@ facilities_note: >-
 
 # Equipment in the departmental lab rather than the group's own space.
 shared_facilities:
-  photo: dept-instruments.jpg
-  caption: >-
-    In the Environmental Engineering Laboratory, from left to right: an
-    Agilent 7890A GC with electron capture detection, an Agilent 7890B
-    GC/5977B MSD, and a Waters 2695 HPLC with a diode-array detector.
-  # The GCs and the HPLC are named in the caption above, so they are not
-  # repeated in the paragraph.
+  # Two photographs shown side by side; each carries its own caption.
+  photos:
+    - file: dept-gc
+      caption: >-
+        Agilent 7890A gas chromatograph with electron capture detection and
+        an autosampler.
+    - file: dept-hplc
+      caption: >-
+        Waters Alliance e2695 HPLC with a diode-array detector.
+  # The instruments above are named in the captions, so they are not
+  # repeated here.
   paragraph: >-
     Further instrumentation is available in the shared Environmental
     Engineering Laboratory: two TOC analyzers, a four-channel flow
-    injection analyzer, an ion chromatography (IC) system, three HACH
-    spectrometers with four heating digesters, three microscopes with
-    image processing software, three walk-in environmental chambers, two
-    particle size counters, a steam-fed autoclave, a conductivity meter,
-    and more.
-
-# Funder logos for the home page. Each `file` is a filename in
-# src/assets/logos/ without its extension; entries whose file is missing
-# are skipped, so this list can be filled in one logo at a time.
-# `height` is the rendered height in px — set per logo, because a wide
-# wordmark and a square crest look mismatched at the same height.
-funders:
-  - name: Natural Sciences and Engineering Research Council of Canada
-    file: nserc
-    height: 44
-  - name: Canada Foundation for Innovation
-    file: cfi
-    height: 34
-  - name: Environment and Climate Change Canada
-    file: eccc
-    height: 34
-  - name: Research Manitoba
-    file: research-manitoba
-    height: 43
-  - name: University of Manitoba
-    file: umanitoba
-    height: 47
-  - name: ECO Canada
-    file: eco-canada
-    height: 47
+    injection analyzer, three HACH spectrometers with four heating
+    digesters, three microscopes with image processing software, three
+    walk-in environmental chambers, two particle size counters, a
+    steam-fed autoclave, and more.
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
