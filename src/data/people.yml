@@ -33,7 +33,6 @@ current:
     role: PhD Student
     co_advisor: Feiyue Wang
     co_advisor_unit: Centre for Earth Observation Science
-    funding: UMGF
     project: TODO - one line, plain language
     photo: /images/people/khen-tran.jpg
 
@@ -127,11 +126,13 @@ alumni:
 
   - name: Fareedah Yahya
     role: Undergraduate Researcher
+    funding: UMSU Undergraduate Research Award
     years: TODO
     placement: TODO
 
   - name: Adejoke Kuye
     role: Undergraduate Researcher
+    funding: UMSU Undergraduate Research Award
     years: TODO
     placement: TODO
 
