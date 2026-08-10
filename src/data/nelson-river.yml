@@ -71,10 +71,10 @@ funders:
 collaborators:
   - name: Violumas
     file: violumas
-    height: 34
+    height: 37
   - name: Save Our Seine
     file: save-our-seine
-    height: 56
+    height: 75
 
 contact_note: >-
   Questions about the project, or interest in collaborating, are welcome.

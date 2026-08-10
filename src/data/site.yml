@@ -123,9 +123,10 @@ facilities:
   - name: Thermo Scientific TSQ Quantis Plus with Vanquish Flex LC
     short: Triple quadrupole LC-MS/MS
     detail: >-
-      Acquired in 2025 through the Canada Foundation for Innovation John
-      R. Evans Leaders Fund, for trace-level quantification of
-      micropollutants and their transformation products.
+      Acquired 2025 through the Canada Foundation for Innovation John
+      R. Evans Leaders Fund. Trace-level quantification of
+      micropollutants and transformation products, in our own lab
+      rather than in a queue somewhere else.
 
   - name: UV light sources
     detail: >-
@@ -207,17 +208,20 @@ funders:
   - name: Research Manitoba
     file: research-manitoba
     height: 43
+  - name: The Water Research Foundation
+    file: wrf
+    height: 51
   - name: University of Manitoba
     file: umanitoba
-    height: 47
+    height: 45
   - name: ECO Canada
     file: eco-canada
     height: 47
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
-  Innovation, Environment and Climate Change Canada, and Research
-  Manitoba.
+  Innovation, Environment and Climate Change Canada, Research
+  Manitoba, and the Water Research Foundation.
 
 # ---------------------------------------------------------------
 # Visitor counting. Off until `goatcounter` is filled in.
