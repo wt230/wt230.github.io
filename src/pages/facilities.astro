@@ -3,6 +3,7 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import LogoStrip from "../components/LogoStrip.astro";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const isTodo = (v) =>
@@ -98,7 +99,6 @@ function photoFor(filename) {
             <p class="kit__note">{site.facilities_note}</p>
           ) : null
         }
-        <p class="fund">{site.funding_note}</p>
       </div>
     </div>
   </section>
@@ -130,6 +130,16 @@ function photoFor(filename) {
       <p class="shared__intro">{site.shared_facilities.paragraph}</p>
     </div>
   </section>
+  {
+    site.funders?.length ? (
+      <section class="section">
+        <div class="wrap">
+          <LogoStrip funders={site.funders} label="Supported by" />
+        </div>
+      </section>
+    ) : null
+  }
+
 </Base>
 
 <style>
@@ -263,14 +273,5 @@ function photoFor(filename) {
     border-top: 1px solid var(--rule);
     font-size: 0.94rem;
     color: var(--ink-70);
-  }
-  .fund {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--rule);
-    font-family: var(--data);
-    font-size: 0.82rem;
-    color: var(--ink-45);
-    line-height: 1.6;
   }
 </style>
