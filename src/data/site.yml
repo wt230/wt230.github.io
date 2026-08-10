@@ -193,6 +193,30 @@ shared_facilities:
     walk-in environmental chambers, two particle size counters, a
     steam-fed autoclave, and more.
 
+# Funder logos for the home page. Each `file` is a filename in
+# src/assets/logos/ without its extension; entries whose file is missing
+# are skipped. `height` is the rendered height in px, set per logo so the
+# optical weight matches across different shapes.
+funders:
+  - name: Natural Sciences and Engineering Research Council of Canada
+    file: nserc
+    height: 44
+  - name: Canada Foundation for Innovation
+    file: cfi
+    height: 34
+  - name: Environment and Climate Change Canada
+    file: eccc
+    height: 34
+  - name: Research Manitoba
+    file: research-manitoba
+    height: 43
+  - name: University of Manitoba
+    file: umanitoba
+    height: 47
+  - name: ECO Canada
+    file: eco-canada
+    height: 47
+
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
   Innovation, Environment and Climate Change Canada, and Research
