@@ -210,6 +210,9 @@ funders:
   - name: University of Manitoba
     file: umanitoba
     height: 47
+  - name: ECO Canada
+    file: eco-canada
+    height: 47
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
