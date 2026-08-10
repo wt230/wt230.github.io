@@ -69,7 +69,12 @@ current:
   - name: Jasmine DeCaire
     role: Undergraduate Researcher
     funding: NSERC USRA
-    project: TODO - one line, plain language
+    bio_short: >-
+      Jasmine is an undergraduate student in Civil Engineering at the
+      University of Manitoba. Her research examines how hydroxyl radical
+      scavenging capacity relates to other water quality parameters,
+      including pH, total organic carbon, UV254 absorbance, and chlorine
+      demand.
     photo: /images/people/jasmine-decaire.jpg
 
   - name: Isami Montero
