@@ -49,6 +49,13 @@ current:
 
   - name: Fateme Mohamadi
     role: MSc Student
+    bio_short: >-
+      Fateme holds a BSc and an MSc in chemical engineering from Iran, with
+      a focus on wastewater treatment. Her research applies hydroxyl radical
+      scavenging capacity to surface water monitoring, with the aim of
+      detecting changes in water quality quickly and over large areas.
+      Outside research she reads, plays video games, and watches films,
+      science fiction especially.
     note: >-
       TODO - defending 11 August 2026. Move to `alumni` after the
       defence and add placement.
