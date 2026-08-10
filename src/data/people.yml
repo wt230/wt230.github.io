@@ -39,7 +39,12 @@ current:
 
   - name: Chunyang Chen
     role: PhD Student
-    project: TODO - one line, plain language
+    bio_short: >-
+      Chunyang received her bachelor's degree in environmental science from
+      Northeastern University in China, and her master's in environmental
+      engineering from Tongji University. Her research is on micropollutant
+      removal by advanced oxidation processes. Outside research she enjoys
+      exploring cuisines and travelling.
     photo: /images/people/chunyang-chen.jpg
 
   - name: Fateme Mohamadi
