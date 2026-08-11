@@ -64,7 +64,14 @@ current:
     role: MSc Student
     co_advisor: Beata Gorczyca
     co_advisor_unit: Civil Engineering, University of Manitoba
-    project: TODO - one line, plain language
+    bio_short: >-
+      Mateo studied biotechnology engineering in Ecuador, where his
+      bachelor's thesis was on synthesising photocatalytic nanomaterials to
+      remove emerging pollutants from water. His research now looks at
+      easing the fouling of nanofiltration membranes treating water high in
+      organic matter and hardness, using oxidation as a pre-treatment
+      before filtration. Outside the lab he hikes, bikes, and is still
+      looking for a mountain in flat Winnipeg.
     photo: /images/people/mateo-molina.jpg
 
   - name: Nasim Hoseini
