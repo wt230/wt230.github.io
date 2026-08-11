@@ -3,7 +3,7 @@
 # Edit here; the templates read from this file.
 # ---------------------------------------------------------------
 
-group_name: Wang Group
+group_name: Wang Water Group
 # Quoted because the value contains a colon — unquoted, YAML reads
 # "Micropollutants" as a key and the build fails.
 tagline: "Micropollutants: Treatment and Chemistry"

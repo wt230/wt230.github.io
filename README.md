@@ -1,4 +1,4 @@
-# Wang Group website
+# Wang Water Group website
 
 Static site built with [Astro](https://astro.build). Content lives in
 three data files; templates read from them, so adding a paper or a
