@@ -62,8 +62,8 @@ courses:
     level: Graduate
     years: 2023
     note: >-
-      A three-credit course for graduate students in Civil Engineering,
-      covering the same ground as CIVL 4500 T05 in greater depth: the
+      A three-credit graduate course, open to students across the
+      university, covering the same ground as CIVL 4500 T05 in greater depth: the
       fundamental principles of aquatic chemistry and how they govern the
       chemical processes in natural and engineered water systems — rivers,
       lakes, and treatment plants. Students also complete a term project
@@ -72,11 +72,11 @@ courses:
   - code: CIVL 7200 T09
     title: Photochemical Purification of Water and Air
     level: Graduate
-    years: 2023, 2024
+    years: 2023, 2024, 2026
     note: >-
-      A three-credit course for graduate students in Civil Engineering.
-      Students learn the fundamental principles and engineering
-      applications of photochemical processes in water and air
+      A three-credit graduate course, open to students across the
+      university. Students learn the fundamental principles and
+      engineering applications of photochemical processes in water and air
       purification, covering basic photochemistry, UV light sources, UV
       dose quantification, disinfection of water and wastewater, chemical
       transformation by direct photolysis, photooxidation and
