@@ -13,8 +13,7 @@ courses:
     level: Undergraduate
     years: 2022, 2023, 2024, 2025, 2026
     note: >-
-      A four-credit course for third- and fourth-year students in Civil
-      Engineering. Environmental engineering is a multidisciplinary field with roots in chemistry,
+      Environmental engineering is a multidisciplinary field with roots in chemistry,
       biology, civil engineering, public health, ecology, and ethics. The
       course introduces environmental engineering analysis, water quality
       parameters and guidelines, physical and chemical unit operations in
@@ -62,8 +61,7 @@ courses:
     level: Graduate
     years: 2023
     note: >-
-      A three-credit graduate course, open to students across the
-      university, covering the same ground as CIVL 4500 T05 in greater depth: the
+      A three-credit graduate course covering the same ground as CIVL 4500 T05 in greater depth: the
       fundamental principles of aquatic chemistry and how they govern the
       chemical processes in natural and engineered water systems — rivers,
       lakes, and treatment plants. Students also complete a term project
@@ -74,9 +72,8 @@ courses:
     level: Graduate
     years: 2023, 2024, 2026
     note: >-
-      A three-credit graduate course, open to students across the
-      university. Students learn the fundamental principles and
-      engineering applications of photochemical processes in water and air
+      A three-credit graduate course. Students learn the fundamental
+      principles and engineering applications of photochemical processes in water and air
       purification, covering basic photochemistry, UV light sources, UV
       dose quantification, disinfection of water and wastewater, chemical
       transformation by direct photolysis, photooxidation and
