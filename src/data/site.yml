@@ -123,22 +123,16 @@ facilities:
   - name: Thermo Scientific TSQ Quantis Plus with Vanquish Flex LC
     short: Triple quadrupole LC-MS/MS
     detail: >-
-      Acquired 2025 through the Canada Foundation for Innovation John
-      R. Evans Leaders Fund. Trace-level quantification of
-      micropollutants and transformation products, in our own lab
-      rather than in a queue somewhere else.
+      Acquired in 2025 through the Canada Foundation for Innovation John
+      R. Evans Leaders Fund, for trace-level quantification of
+      micropollutants and their transformation products.
 
-  - name: UV light sources
+  - name: UV sources and collimated beam systems
     detail: >-
       Low-pressure and medium-pressure mercury lamps, an excimer source at
-      222 nm, and Violumas LEDs at 260 and 310 nm — enough of the spectrum
-      to separate what a wavelength does from what an oxidant does.
-
-  - name: Collimated beam and flow-through systems
-    detail: >-
-      Bench-scale collimated beam apparatus and flow-through cuvette
-      systems for controlled fluence experiments, with radiometers for
-      fluence rate measurement.
+      222 nm, and Violumas LEDs at 260 and 310 nm, with bench-scale
+      collimated beam apparatus and radiometers for controlled fluence
+      experiments.
 
   - name: UV-vis spectrometers
     photo: stellarnet.jpg
@@ -151,21 +145,17 @@ facilities:
       both in the lab and in the field, alongside a VWR V-1200 benchtop
       instrument.
 
-  - name: Micropollutant extraction system
-    detail: >-
-      Sample preparation and concentration for trace analysis, including
-      PFAS.
-
   - name: Field monitoring instrumentation
     detail: >-
       A YSI EXO1S multi-parameter sonde as a reference instrument,
       alongside a prototype scavenging capacity meter developed in the
       group, for deployment in Manitoba waters.
 
-  - name: Stainless steel UV reactors
+  - name: Other instruments
     detail: >-
-      Annular reactors at 20 cm and 50 cm diameter, for work at a scale
-      where the fluence distribution stops being uniform.
+      Stainless steel annular UV reactors at 20 cm and 50 cm diameter, and
+      a micropollutant extraction system for sample preparation and
+      concentration, including PFAS.
 
 facilities_note: >-
   This is not an exhaustive list; ask if you are looking for something in
