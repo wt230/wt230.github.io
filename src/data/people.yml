@@ -33,8 +33,15 @@ current:
     role: PhD Student
     co_advisor: Feiyue Wang
     co_advisor_unit: Centre for Earth Observation Science
-    project: TODO - one line, plain language
-    photo: /images/people/khen-tran.jpg
+    bio_short: >-
+      Khen holds a bachelor's degree in materials engineering from Ho Chi
+      Minh City University of Technology in Vietnam, and a master's in
+      environmental sciences from Hallym University in South Korea, where
+      he developed catalysts for advanced oxidation in wastewater
+      treatment. His research now applies advanced oxidation to a water
+      quality monitoring device. Outside the lab he works out, cycles, and
+      plays musical instruments.
+    photo: /images/people/duy-khen-tran.jpg
 
   - name: Chunyang Chen
     role: PhD Student
