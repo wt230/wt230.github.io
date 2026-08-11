@@ -62,13 +62,12 @@ courses:
     level: Graduate
     years: 2023
     note: >-
-      A three-credit course for graduate students in Civil Engineering.
-      Students learn the fundamental principles of aquatic chemistry:
-      kinetics, acid-base equilibria, coordination chemistry, redox
-      chemistry, and chemistry at the water-solid and water-air interfaces.
-      The aim is a better understanding of the chemical processes in
-      natural and engineered water systems — rivers, lakes, and treatment
-      plants. Students present their term projects to the class.
+      A three-credit course for graduate students in Civil Engineering,
+      covering the same ground as CIVL 4500 T05 in greater depth: the
+      fundamental principles of aquatic chemistry and how they govern the
+      chemical processes in natural and engineered water systems — rivers,
+      lakes, and treatment plants. Students also complete a term project
+      and present it to the class.
 
   - code: CIVL 7200 T09
     title: Photochemical Purification of Water and Air
