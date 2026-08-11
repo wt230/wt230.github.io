@@ -32,7 +32,7 @@ current:
   - name: Duy Khen Tran
     role: PhD Student
     co_advisor: Feiyue Wang
-    co_advisor_unit: Centre for Earth Observation Science
+    co_advisor_unit: Environment and Geography
     bio_short: >-
       Khen holds a bachelor's degree in materials engineering from Ho Chi
       Minh City University of Technology in Vietnam, and a master's in
@@ -161,7 +161,7 @@ alumni:
 # ---------------------------------------------------------------
 co_supervisors:
   - name: Feiyue Wang
-    unit: Centre for Earth Observation Science
+    unit: Environment and Geography
   - name: Beata Gorczyca
     unit: Civil Engineering
   - name: Qiuyan Yuan
