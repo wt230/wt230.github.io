@@ -1,0 +1,138 @@
+---
+import fs from "node:fs";
+import yaml from "js-yaml";
+import Base from "../layouts/Base.astro";
+
+const teaching = yaml.load(fs.readFileSync("./src/data/teaching.yml", "utf8"));
+
+const levels = ["Undergraduate", "Graduate"];
+const grouped = levels
+  .map((level) => ({
+    level,
+    items: teaching.courses.filter((c) => c.level === level),
+  }))
+  .filter((g) => g.items.length);
+---
+
+<Base
+  title="Teaching"
+  description="Courses taught by Chengjin Wang in Civil Engineering at the University of Manitoba."
+>
+  <section class="pagehead">
+    <div class="wrap">
+      <span class="label">Teaching</span>
+      <h1>Courses</h1>
+      <p class="lede">{teaching.intro}</p>
+    </div>
+  </section>
+
+  {
+    grouped.map((g) => (
+      <section class="section">
+        <div class="wrap split">
+          <div>
+            <hr class="decay-rule" />
+            <h2>{g.level}</h2>
+          </div>
+          <div>
+            <ul class="plain courses">
+              {g.items.map((c) => (
+                <li>
+                  <p class="courses__code data">
+                    {c.code}
+                    <span class="courses__years"> · {c.years}</span>
+                    {c.new ? <span class="courses__tag">new course</span> : null}
+                  </p>
+                  <h3>{c.title}</h3>
+                  {c.note ? <p class="courses__note">{c.note}</p> : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    teaching.development?.length ? (
+      <section class="section section--sunk">
+        <div class="wrap split">
+          <div>
+            <hr class="decay-rule" />
+            <h2>Course development</h2>
+          </div>
+          <div>
+            <ul class="plain devlist">
+              {teaching.development.map((d) => (
+                <li>{d}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    ) : null
+  }
+</Base>
+
+<style>
+  .pagehead {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .courses li {
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .courses li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .courses__code {
+    font-size: 0.76rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mb-700);
+    margin: 0 0 0.3rem;
+  }
+  .courses__years {
+    color: var(--ink-45);
+  }
+  .courses__tag {
+    display: inline-block;
+    margin-left: 0.6rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.09em;
+    color: var(--mb-700);
+    border: 1px solid var(--mb-300);
+    border-radius: 2px;
+    padding: 0.1rem 0.4rem;
+  }
+  .courses h3 {
+    font-size: 1.12rem;
+    margin: 0 0 0.4rem;
+  }
+  .courses__note {
+    font-size: 0.96rem;
+    color: var(--ink-70);
+    margin: 0;
+    max-width: 54ch;
+  }
+  .devlist li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.4rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.96rem;
+    color: var(--ink-70);
+    max-width: var(--measure);
+  }
+  .devlist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mb-300);
+  }
+</style>
