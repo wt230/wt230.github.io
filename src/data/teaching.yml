@@ -1,7 +1,5 @@
 # ---------------------------------------------------------------
 # Teaching page. Add a year to a course's `years` as you teach it.
-# `outcomes` is optional; where present it renders as a numbered list
-# beneath the description.
 # ---------------------------------------------------------------
 
 intro: >-
@@ -13,11 +11,10 @@ courses:
   - code: CIVL 3690
     title: Environmental Engineering Analysis
     level: Undergraduate
-    years: 2022, 2023, 2024, 2025
+    years: 2022, 2023, 2024, 2025, 2026
     note: >-
       A four-credit course for third- and fourth-year students in Civil
-      Engineering and the Environmental Engineering option. Environmental
-      engineering is a multidisciplinary field with roots in chemistry,
+      Engineering. Environmental engineering is a multidisciplinary field with roots in chemistry,
       biology, civil engineering, public health, ecology, and ethics. The
       course introduces environmental engineering analysis, water quality
       parameters and guidelines, physical and chemical unit operations in
@@ -28,7 +25,7 @@ courses:
   - code: CIVL 4130
     title: Solid Waste Management
     level: Undergraduate
-    years: 2022, 2025
+    years: 2022, 2025, 2027
     note: >-
       Solid waste management is an essential component of modern civil
       infrastructure. The course introduces the principles and practice of
@@ -47,7 +44,6 @@ courses:
     title: Chemical Reactions in Water Treatment
     level: Undergraduate
     years: 2023
-    new: true
     note: >-
       A four-credit course for third- and fourth-year students in Civil
       Engineering. Students learn the fundamental principles of aquatic
@@ -65,7 +61,6 @@ courses:
     title: Chemistry for Water Treatment and Analysis
     level: Graduate
     years: 2023
-    new: true
     note: >-
       A three-credit course for graduate students in Civil Engineering.
       Students learn the fundamental principles of aquatic chemistry:
@@ -79,7 +74,6 @@ courses:
     title: Photochemical Purification of Water and Air
     level: Graduate
     years: 2023, 2024
-    new: true
     note: >-
       A three-credit course for graduate students in Civil Engineering.
       Students learn the fundamental principles and engineering
@@ -88,11 +82,3 @@ courses:
       dose quantification, disinfection of water and wastewater, chemical
       transformation by direct photolysis, photooxidation and
       photoreduction, and disinfection of air and surfaces.
-    outcomes:
-      - Understand key photochemical concepts and principles in
-        environmental engineering.
-      - Compare the advantages and disadvantages of each photochemical
-        process.
-      - Design photochemical processes for target pollutants and
-        microorganisms.
-      - Critically evaluate relevant photochemical processes and products.
