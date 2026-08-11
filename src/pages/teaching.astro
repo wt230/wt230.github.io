@@ -45,6 +45,14 @@ const grouped = levels
                   </p>
                   <h3>{c.title}</h3>
                   {c.note ? <p class="courses__note">{c.note}</p> : null}
+                  {c.outcomes?.length ? (
+                    <>
+                      <p class="courses__sub">On completing this course, students can</p>
+                      <ol class="courses__outcomes">
+                        {c.outcomes.map((o) => <li>{o}</li>)}
+                      </ol>
+                    </>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -54,25 +62,6 @@ const grouped = levels
     ))
   }
 
-  {
-    teaching.development?.length ? (
-      <section class="section section--sunk">
-        <div class="wrap split">
-          <div>
-            <hr class="decay-rule" />
-            <h2>Course development</h2>
-          </div>
-          <div>
-            <ul class="plain devlist">
-              {teaching.development.map((d) => (
-                <li>{d}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-    ) : null
-  }
 </Base>
 
 <style>
@@ -117,22 +106,36 @@ const grouped = levels
     margin: 0;
     max-width: 54ch;
   }
-  .devlist li {
-    position: relative;
-    padding: 0.6rem 0 0.6rem 1.4rem;
-    border-top: 1px solid var(--rule);
-    font-size: 0.96rem;
-    color: var(--ink-70);
-    max-width: var(--measure);
+  .courses__sub {
+    font-family: var(--data);
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-45);
+    margin: 1.1rem 0 0.4rem;
   }
-  .devlist li::before {
-    content: "";
+  .courses__outcomes {
+    counter-reset: oc;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 54ch;
+  }
+  .courses__outcomes li {
+    counter-increment: oc;
+    position: relative;
+    padding: 0.4rem 0 0.4rem 1.8rem;
+    font-size: 0.94rem;
+    color: var(--ink-70);
+    border-top: 0;
+  }
+  .courses__outcomes li::before {
+    content: counter(oc);
     position: absolute;
     left: 0;
-    top: 1.05rem;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--mb-300);
+    top: 0.5rem;
+    font-family: var(--data);
+    font-size: 0.76rem;
+    color: var(--mb-500, var(--mb-300));
   }
 </style>
