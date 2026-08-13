@@ -211,9 +211,9 @@ funders:
     height: 29
 
 funding_note: >-
-  The group is supported by NSERC Discovery, the Canada Foundation for
-  Innovation, Environment and Climate Change Canada, and Research
-  Manitoba.
+  The group is supported by NSERC, the Canada Foundation for Innovation,
+  Environment and Climate Change Canada, Research Manitoba, the University
+  of Manitoba, ECO Canada, and Mitacs.
 
 # ---------------------------------------------------------------
 # Visitor counting. Off until `goatcounter` is filled in.
