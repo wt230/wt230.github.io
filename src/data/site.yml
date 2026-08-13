@@ -206,6 +206,9 @@ funders:
   - name: ECO Canada
     file: eco-canada
     height: 47
+  - name: Mitacs
+    file: mitacs
+    height: 29
 
 funding_note: >-
   The group is supported by NSERC Discovery, the Canada Foundation for
