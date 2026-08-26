@@ -1,6 +1,7 @@
 ---
 import fs from "node:fs";
 import yaml from "js-yaml";
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import PubEntry from "../components/PubEntry.astro";
 import ReactorFigure from "../components/ReactorFigure.astro";
@@ -8,6 +9,17 @@ import { byPrimaryTheme, THEMES } from "../lib/bib.js";
 
 const site = yaml.load(fs.readFileSync("./src/data/site.yml", "utf8"));
 const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith("TODO");
+
+const themePhotos = import.meta.glob(
+  "../assets/research/*.{jpg,jpeg,png,webp}", { eager: true }
+);
+function themePhoto(name) {
+  if (!name) return null;
+  const hit = Object.entries(themePhotos).find(
+    ([path]) => path.split("/").pop().replace(/\.\w+$/, "") === name
+  );
+  return hit ? hit[1].default : null;
+}
 ---
 
 <Base title="Research" description="Research on micropollutant treatment, radical scavenging capacity, water quality monitoring, and UV photochemistry.">
@@ -35,6 +47,20 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
               <p class="theme__tag data">{THEMES[theme.slug]}</p>
             </div>
             <div>
+              {themePhoto(theme.photo) ? (
+                <figure class="theme__photo">
+                  <Image
+                    src={themePhoto(theme.photo)}
+                    alt={theme.photo_caption ?? theme.title}
+                    widths={[600, 900, 1400]}
+                    sizes="(min-width: 56rem) 44rem, 94vw"
+                    loading="lazy"
+                  />
+                  {theme.photo_caption ? (
+                    <figcaption>{theme.photo_caption}</figcaption>
+                  ) : null}
+                </figure>
+              ) : null}
               <p class="theme__blurb">{theme.blurb}</p>
               {!isTodo(theme.detail) && theme.detail ? <p>{theme.detail}</p> : null}
               {theme.link ? (
@@ -76,6 +102,22 @@ const isTodo = (v) => typeof v === "string" && v.trim().toUpperCase().startsWith
     letter-spacing: 0.09em;
     text-transform: uppercase;
     color: var(--ink-45);
+  }
+  .theme__photo {
+    margin: 0 0 1.5rem;
+  }
+  .theme__photo :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+  .theme__photo figcaption {
+    font-family: var(--data);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--ink-45);
+    margin-top: 0.6rem;
   }
   .theme__blurb {
     font-size: 1.1rem;

@@ -50,6 +50,8 @@ themes:
     title: Watching water in real time
     link: /projects/nelson-river
     link_label: Follow the Nelson River project
+    photo: monitoring-boat
+    photo_caption: Water quality monitoring for Manitoba's water bodies
     blurb: >-
       We are building instruments that measure water quality continuously
       and report it in real time. These are going into Manitoba waters —
