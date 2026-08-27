@@ -12,9 +12,10 @@ institution: Department of Civil Engineering, University of Manitoba
 # The one-paragraph thesis. This is the first prose a prospective
 # student reads, so it is written for them, not for a reviewer.
 thesis: >-
-  Micropollutants occur at concentrations hundreds or thousands of times
-  lower than the bulk constituents of water. The cost of removing them
-  does not scale down to match — in most cases it is far higher. How do
+  Micropollutants — pesticides, pharmaceuticals, PFAS — occur at
+  concentrations hundreds or thousands of times lower than the bulk
+  constituents of water. The cost of removing them does not scale down to
+  match; in most cases it is far higher. How do
   we bring that cost down? Answering it properly takes kinetics,
   analytical chemistry, reactor engineering, and an increasing amount of
   computing. Our group builds the measurement methods, treatment
