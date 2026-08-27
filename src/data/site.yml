@@ -23,11 +23,11 @@ thesis: >-
 
 themes:
   - slug: hrsc
-    title: Measuring what water does to radicals
+    title: Measuring how fast water consumes radicals
     blurb: >-
       Every model of an advanced oxidation process depends on knowing how
-      quickly a given water consumes hydroxyl radicals. Measuring that
-      rate is slow, and the numbers do not always reproduce. We are
+      quickly a given water consumes hydroxyl radicals — its hydroxyl
+      radical scavenging capacity. Measuring that rate is slow, and the numbers do not always reproduce. We are
       optimizing a real-time instrument to overcome both problems, and
       using it to examine how hydroxyl radicals interact with natural
       organic matter.
