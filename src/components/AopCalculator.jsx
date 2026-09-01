@@ -142,6 +142,16 @@ export default function AopCalculator() {
   const [p0, setP0] = useState("1");
   const [yMode, setYMode] = useState("linear");
 
+  /**
+   * Editing a constant makes the curve no longer that published compound,
+   * so a preset name is replaced with "Custom". A name the user typed
+   * themselves is left alone — clobbering it would be rude.
+   */
+  const untieFromPreset = () => {
+    if (EXAMPLES.some((ex) => ex.n === name)) setName("Custom");
+  };
+  const edit = (setter) => (v) => { setter(v); untieFromPreset(); };
+
   const r = useMemo(() => {
     const num = (v) => (v === "" || v == null ? 0 : parseFloat(v));
     const I = parseFloat(irr), t = parseFloat(time), aM = parseFloat(a254), L = parseFloat(depth),
@@ -244,10 +254,10 @@ export default function AopCalculator() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
               <CompoundField value={name} onChange={setName}
                 onPick={(ex) => { setName(ex.n); setK(ex.o); setKp(ex.p); setEp(ex.e); }} />
-              <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" step="0.1" value={k} onChange={setK} />
+              <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" step="0.1" value={k} onChange={edit(setK)} />
               <Field label="[P]₀" unit="µM" step="0.1" value={p0} onChange={setP0} />
-              <Field label="Photolysis k₂₅₄" unit="cm²·mJ⁻¹" step="0.0001" value={kp} onChange={setKp} hint="0 = no direct photolysis" />
-              <Field label="ε₂₅₄" unit="M⁻¹cm⁻¹" step="100" value={ep} onChange={setEp} hint="0 = ignore screening" />
+              <Field label="Photolysis k₂₅₄" unit="cm²·mJ⁻¹" step="0.0001" value={kp} onChange={edit(setKp)} hint="0 = no direct photolysis" />
+              <Field label="ε₂₅₄" unit="M⁻¹cm⁻¹" step="100" value={ep} onChange={edit(setEp)} hint="0 = ignore screening" />
             </div>
           </section>
 
