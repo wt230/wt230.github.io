@@ -3,6 +3,7 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import AopCalculator from "../components/AopCalculator.jsx";
 import PubEntry from "../components/PubEntry.astro";
 import ReactorFigure from "../components/ReactorFigure.astro";
 import { byPrimaryTheme, THEMES } from "../lib/bib.js";
@@ -82,6 +83,22 @@ function themePhoto(name) {
       );
     })
   }
+  <section class="section section--sunk" id="calculator">
+    <div class="wrap">
+      <hr class="decay-rule" />
+      <h2>Try the model</h2>
+      <p class="calc__intro">
+        The kinetics our work rests on, in a form you can push around. Change
+        the water, the peroxide dose or the compound, and see how far the
+        micropollutant actually degrades — and how much of that is the radical
+        rather than the light.
+      </p>
+    </div>
+    <div class="calc__wrap">
+      <AopCalculator client:visible />
+    </div>
+  </section>
+
 </Base>
 
 <style>
@@ -136,5 +153,14 @@ function themePhoto(name) {
     margin-top: 2.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--rule);
+  }
+  .calc__intro {
+    max-width: var(--measure);
+    margin-bottom: 1.75rem;
+  }
+  .calc__wrap {
+    max-width: 100rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 3vw, 2.5rem);
   }
 </style>
