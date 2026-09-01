@@ -221,14 +221,16 @@ export default function AopCalculator() {
         <div style={{ padding: "8px 11px", background: T.warnBg, border: "1px solid #EAD9A8", borderRadius: 8,
           fontSize: 12, color: T.warn, lineHeight: 1.5, marginBottom: 14 }}>
           <b>Enter your own rate constants.</b> The presets are a few well-known compounds included to show
-          contrasting behaviour, not a validated database. A teaching tool for building intuition, not a design tool.
+          contrasting behaviour, not a validated database. The model assumes a completely mixed batch, so it
+          works best for UV/H₂O₂ in a collimated beam system. A teaching tool for building intuition, not a
+          design tool.
         </div>
 
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
           <section style={{ flex: "1 1 340px", minWidth: 280, background: T.panel, border: `1px solid ${T.line}`, borderRadius: 10, padding: 16 }}>
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 10 }}>Reactor &amp; matrix</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
-              <Field label="Fluence rate, E₀" unit="mW·cm⁻²" step="0.01" value={irr} onChange={setIrr} />
+              <Field label="Incident fluence rate, E₀" unit="mW·cm⁻²" step="0.01" value={irr} onChange={setIrr} />
               <Field label="Exposure time, t" unit="s" step="30" value={time} onChange={setTime} />
               <Field label="Path length, L" unit="cm" step="0.1" value={depth} onChange={setDepth} />
               <Field label="H₂O₂ dose" unit="mg·L⁻¹" step="1" value={h2o2} onChange={setH2o2} />
