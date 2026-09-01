@@ -113,14 +113,14 @@ function niceTicks(max, target = 6) {
   return out;
 }
 
-function Field({ label, unit, value, onChange, hint, span }) {
+function Field({ label, unit, value, onChange, hint, span, step = "any" }) {
   return (
     <label style={{ display: "block", gridColumn: span ? "1 / -1" : undefined }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
         <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>{label}</span>
         <span style={{ fontSize: 10.5, color: T.sub, fontFamily: T.mono }}>{unit}</span>
       </div>
-      <input type="number" value={value} step="any" onChange={(e) => onChange(e.target.value)}
+      <input type="number" value={value} step={step} onChange={(e) => onChange(e.target.value)}
         style={{ width: "100%", boxSizing: "border-box", padding: "7px 9px", border: `1px solid ${T.line}`,
           borderRadius: 6, fontFamily: T.mono, fontSize: 13, color: T.ink, background: "#FCFDFD", outlineColor: T.uv }} />
       {hint && <div style={{ fontSize: 10.5, color: T.sub, marginTop: 3, lineHeight: 1.4 }}>{hint}</div>}
@@ -228,12 +228,12 @@ export default function AopCalculator() {
           <section style={{ flex: "1 1 340px", minWidth: 280, background: T.panel, border: `1px solid ${T.line}`, borderRadius: 10, padding: 16 }}>
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 10 }}>Reactor &amp; matrix</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
-              <Field label="Fluence rate, E₀" unit="mW·cm⁻²" value={irr} onChange={setIrr} />
-              <Field label="Exposure time, t" unit="s" value={time} onChange={setTime} />
-              <Field label="Path length, L" unit="cm" value={depth} onChange={setDepth} />
-              <Field label="H₂O₂ dose" unit="mg·L⁻¹" value={h2o2} onChange={setH2o2} />
-              <Field label="Matrix UV₂₅₄, a" unit="cm⁻¹" value={a254} onChange={setA254} hint="Matrix only — H₂O₂ added automatically." />
-              <Field label="·OH scavenging, S" unit="×10⁴ s⁻¹" value={scav} onChange={setScav} hint="Drinking waters ≈ 3–8." />
+              <Field label="Fluence rate, E₀" unit="mW·cm⁻²" step="0.01" value={irr} onChange={setIrr} />
+              <Field label="Exposure time, t" unit="s" step="30" value={time} onChange={setTime} />
+              <Field label="Path length, L" unit="cm" step="0.1" value={depth} onChange={setDepth} />
+              <Field label="H₂O₂ dose" unit="mg·L⁻¹" step="1" value={h2o2} onChange={setH2o2} />
+              <Field label="Matrix UV₂₅₄, a" unit="cm⁻¹" step="0.01" value={a254} onChange={setA254} hint="Matrix only — H₂O₂ added automatically." />
+              <Field label="·OH scavenging, S" unit="×10⁴ s⁻¹" step="0.5" value={scav} onChange={setScav} hint="Drinking waters ≈ 3–8." />
             </div>
 
             <div style={{ height: 1, background: T.line, margin: "6px 0 14px" }} />
@@ -242,10 +242,10 @@ export default function AopCalculator() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
               <CompoundField value={name} onChange={setName}
                 onPick={(ex) => { setName(ex.n); setK(ex.o); setKp(ex.p); setEp(ex.e); }} />
-              <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" value={k} onChange={setK} />
-              <Field label="[P]₀" unit="µM" value={p0} onChange={setP0} />
-              <Field label="Photolysis k₂₅₄" unit="cm²·mJ⁻¹" value={kp} onChange={setKp} hint="0 = no direct photolysis" />
-              <Field label="ε₂₅₄" unit="M⁻¹cm⁻¹" value={ep} onChange={setEp} hint="0 = ignore screening" />
+              <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" step="0.1" value={k} onChange={setK} />
+              <Field label="[P]₀" unit="µM" step="0.1" value={p0} onChange={setP0} />
+              <Field label="Photolysis k₂₅₄" unit="cm²·mJ⁻¹" step="0.0001" value={kp} onChange={setKp} hint="0 = no direct photolysis" />
+              <Field label="ε₂₅₄" unit="M⁻¹cm⁻¹" step="100" value={ep} onChange={setEp} hint="0 = ignore screening" />
             </div>
           </section>
 
