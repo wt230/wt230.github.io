@@ -254,7 +254,8 @@ export default function AopCalculator() {
                   <ResponsiveContainer>
                     <LineChart data={r.series} margin={{ top: 6, right: 14, bottom: 6, left: 0 }}>
                       <CartesianGrid stroke={T.line} strokeDasharray="3 3" />
-                      <XAxis dataKey="t" tickFormatter={(v) => v.toFixed(1)} tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }}
+                      <XAxis dataKey="t" tickFormatter={(v) => v.toFixed(1)} minTickGap={28} interval="preserveStartEnd"
+                        tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }}
                         label={{ value: "time (min)", position: "insideBottomRight", offset: -2, fontSize: 11, fill: T.sub }} />
                       <YAxis
                         domain={yMode === "ln" ? [r.lnMin, 0] : yMode === "log10" ? [r.log10Min, 0] : [0, 100]}
