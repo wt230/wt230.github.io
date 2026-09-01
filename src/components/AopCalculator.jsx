@@ -76,9 +76,10 @@ export default function AopCalculator() {
   const [p0, setP0] = useState("1");
   const [yMode, setYMode] = useState("linear");
 
+  // Fires on every keystroke; only acts when the text matches a preset.
   const loadExample = (n) => {
     const ex = EXAMPLES.find((e) => e.n === n);
-    if (ex) { setName(ex.n); setK(ex.o); setKp(ex.p); setEp(ex.e); }
+    if (ex) { setK(ex.o); setKp(ex.p); setEp(ex.e); }
   };
 
   const r = useMemo(() => {
@@ -119,10 +120,8 @@ export default function AopCalculator() {
     });
 
     const pShare = (kP * P0) / denom;
-    const logMin = Math.max(Math.pow(10, Math.floor(Math.log10(Math.max(Ct * 100, 1e-5))) - 1), 1e-5);
-
     return { OHss, avgI, kObs, Ct, photoFrac, series, t, aM, L, pShare,
-      logMin, lnMin: Math.min(-0.01, Math.log(Math.max(Ct, 1e-12))),
+      lnMin: Math.min(-0.01, Math.log(Math.max(Ct, 1e-12))),
       log10Min: Math.min(-0.005, Math.log10(Math.max(Ct, 1e-12))) };
   }, [irr, time, a254, depth, h2o2, scav, k, kp, ep, p0]);
 
@@ -136,13 +135,10 @@ export default function AopCalculator() {
       warnings.push("Direct photolysis dominates. Fluence-based k₂₅₄ values are pH- and matrix-dependent — check yours applies here.");
   }
 
-  const logTicks = r ? [1e-5, 1e-4, 1e-3, 0.01, 0.1, 1, 10, 100].filter((v) => v >= r.logMin) : [];
-
   // Decimals scaled to the span, so a shallow curve does not render every
   // tick as "-0.00".
   const tickFmt = (v) => {
     if (yMode === "linear") return v;
-    if (yMode === "log") return v < 0.01 ? v.toExponential(0) : String(v);
     const span = Math.abs(yMode === "ln" ? r.lnMin : r.log10Min);
     const d = span >= 1 ? 1 : span >= 0.1 ? 2 : span >= 0.01 ? 3 : 4;
     return v.toFixed(d);
@@ -179,22 +175,19 @@ export default function AopCalculator() {
 
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 10 }}>Compound</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
-              <label style={{ display: "block" }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Name</span>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Compound name"
+              <label style={{ display: "block", gridColumn: "1 / -1" }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Compound</span>
+                <input list="aop-examples" value={name} placeholder="Type a name, or pick an example"
+                  onChange={(e) => { setName(e.target.value); loadExample(e.target.value); }}
                   style={{ width: "100%", boxSizing: "border-box", marginTop: 4, padding: "7px 9px",
                     border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 13,
                     background: "#FCFDFD", color: T.ink, outlineColor: T.uv }} />
-              </label>
-              <label style={{ display: "block" }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Load an example</span>
-                <select value="" onChange={(e) => e.target.value && loadExample(e.target.value)}
-                  style={{ width: "100%", boxSizing: "border-box", marginTop: 4, padding: "7px 8px",
-                    border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 12.5,
-                    background: "#FFF", color: T.ink }}>
-                  <option value="">Choose…</option>
-                  {EXAMPLES.map((ex) => <option key={ex.n} value={ex.n}>{ex.n} — {ex.why}</option>)}
-                </select>
+                <datalist id="aop-examples">
+                  {EXAMPLES.map((ex) => <option key={ex.n} value={ex.n}>{ex.why}</option>)}
+                </datalist>
+                <div style={{ fontSize: 10.5, color: T.sub, marginTop: 3, lineHeight: 1.4 }}>
+                  Picking an example fills the constants below; edit them freely.
+                </div>
               </label>
               <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" value={k} onChange={setK} />
               <Field label="[P]₀" unit="µM" value={p0} onChange={setP0} />
@@ -214,7 +207,7 @@ export default function AopCalculator() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
                   <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.sub }}>Decay curve — C/C₀</div>
                   <div style={{ display: "flex", border: `1px solid ${T.line}`, borderRadius: 6, overflow: "hidden" }}>
-                    {[["Linear", "linear"], ["Log", "log"], ["ln", "ln"], ["log10", "log10"]].map(([lbl, val]) => (
+                    {[["Linear", "linear"], ["ln", "ln"], ["log10", "log10"]].map(([lbl, val]) => (
                       <button key={val} onClick={() => setYMode(val)}
                         style={{ border: "none", padding: "5px 10px", fontSize: 11.5, fontWeight: 600, cursor: "pointer",
                           fontFamily: T.sans, background: yMode === val ? T.uv : "#FFF", color: yMode === val ? "#FFF" : T.sub }}>{lbl}</button>
@@ -228,9 +221,8 @@ export default function AopCalculator() {
                       <XAxis dataKey="t" tickFormatter={(v) => v.toFixed(1)} tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }}
                         label={{ value: "time (min)", position: "insideBottomRight", offset: -2, fontSize: 11, fill: T.sub }} />
                       <YAxis
-                        scale={yMode === "log" ? "log" : "linear"}
-                        domain={yMode === "log" ? [r.logMin, 100] : yMode === "ln" ? [r.lnMin, 0] : yMode === "log10" ? [r.log10Min, 0] : [0, 100]}
-                        ticks={yMode === "log" ? logTicks : undefined} allowDataOverflow
+                        domain={yMode === "ln" ? [r.lnMin, 0] : yMode === "log10" ? [r.log10Min, 0] : [0, 100]}
+                        allowDataOverflow
                         tickFormatter={tickFmt}
                         tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }} width={58}
                         label={{ value: yMode === "ln" ? "ln(C/C0)" : yMode === "log10" ? "log10(C/C0)" : "C/C0 (%)",
