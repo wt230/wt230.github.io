@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -47,6 +47,60 @@ function fmt(x, digits = 3) {
   return `${Number(m.toPrecision(digits))}×10${sup(e)}`;
 }
 
+/**
+ * Text input with a preset list. Built by hand rather than with <datalist>,
+ * which filters its options against whatever is already typed — so a
+ * pre-filled field shows an empty or near-empty dropdown, and behaves
+ * differently in every browser.
+ */
+function CompoundField({ value, onChange, onPick }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const h = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} style={{ position: "relative", gridColumn: "1 / -1" }}>
+      <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Compound</span>
+      <div style={{ position: "relative", marginTop: 4 }}>
+        <input value={value} placeholder="Type a name, or pick an example"
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setOpen(true)}
+          style={{ width: "100%", boxSizing: "border-box", padding: "7px 30px 7px 9px",
+            border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 13,
+            background: "#FCFDFD", color: T.ink, outlineColor: T.uv }} />
+        <button type="button" aria-label="Show examples"
+          onClick={() => setOpen((o) => !o)}
+          style={{ position: "absolute", right: 1, top: 1, bottom: 1, width: 28, border: "none",
+            background: "transparent", cursor: "pointer", color: T.sub, fontSize: 11, lineHeight: 1 }}>
+          ▾
+        </button>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", zIndex: 30, top: "calc(100% + 3px)", left: 0, right: 0,
+          background: "#FFF", border: `1px solid ${T.line}`, borderRadius: 8,
+          boxShadow: "0 8px 22px rgba(0,0,0,0.12)", overflow: "hidden" }}>
+          {EXAMPLES.map((ex) => (
+            <div key={ex.n} onMouseDown={() => { onPick(ex); setOpen(false); }}
+              style={{ padding: "7px 10px", fontSize: 12.5, cursor: "pointer", display: "flex",
+                justifyContent: "space-between", gap: 10 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = T.uvSoft)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#FFF")}>
+              <span style={{ color: T.ink }}>{ex.n}</span>
+              <span style={{ color: T.sub, fontSize: 11, whiteSpace: "nowrap" }}>{ex.why}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{ fontSize: 10.5, color: T.sub, marginTop: 3, lineHeight: 1.4 }}>
+        Picking an example fills the constants below; edit them freely.
+      </div>
+    </div>
+  );
+}
+
 function Field({ label, unit, value, onChange, hint, span }) {
   return (
     <label style={{ display: "block", gridColumn: span ? "1 / -1" : undefined }}>
@@ -75,12 +129,6 @@ export default function AopCalculator() {
   const [ep, setEp] = useState("3680");
   const [p0, setP0] = useState("1");
   const [yMode, setYMode] = useState("linear");
-
-  // Fires on every keystroke; only acts when the text matches a preset.
-  const loadExample = (n) => {
-    const ex = EXAMPLES.find((e) => e.n === n);
-    if (ex) { setK(ex.o); setKp(ex.p); setEp(ex.e); }
-  };
 
   const r = useMemo(() => {
     const num = (v) => (v === "" || v == null ? 0 : parseFloat(v));
@@ -175,20 +223,8 @@ export default function AopCalculator() {
 
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 10 }}>Compound</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
-              <label style={{ display: "block", gridColumn: "1 / -1" }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Compound</span>
-                <input list="aop-examples" value={name} placeholder="Type a name, or pick an example"
-                  onChange={(e) => { setName(e.target.value); loadExample(e.target.value); }}
-                  style={{ width: "100%", boxSizing: "border-box", marginTop: 4, padding: "7px 9px",
-                    border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 13,
-                    background: "#FCFDFD", color: T.ink, outlineColor: T.uv }} />
-                <datalist id="aop-examples">
-                  {EXAMPLES.map((ex) => <option key={ex.n} value={ex.n}>{ex.why}</option>)}
-                </datalist>
-                <div style={{ fontSize: 10.5, color: T.sub, marginTop: 3, lineHeight: 1.4 }}>
-                  Picking an example fills the constants below; edit them freely.
-                </div>
-              </label>
+              <CompoundField value={name} onChange={setName}
+                onPick={(ex) => { setName(ex.n); setK(ex.o); setKp(ex.p); setEp(ex.e); }} />
               <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" value={k} onChange={setK} />
               <Field label="[P]₀" unit="µM" value={p0} onChange={setP0} />
               <Field label="Photolysis k₂₅₄" unit="cm²·mJ⁻¹" value={kp} onChange={setKp} hint="0 = no direct photolysis" />
