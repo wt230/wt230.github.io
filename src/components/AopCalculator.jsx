@@ -101,6 +101,18 @@ function CompoundField({ value, onChange, onPick }) {
   );
 }
 
+/** Round tick values on a 1-2-5 sequence, roughly `target` of them. */
+function niceTicks(max, target = 6) {
+  if (!isFinite(max) || max <= 0) return [0];
+  const raw = max / target;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / mag;
+  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+  const out = [];
+  for (let v = 0; v <= max + step * 1e-6; v += step) out.push(Number(v.toFixed(10)));
+  return out;
+}
+
 function Field({ label, unit, value, onChange, hint, span }) {
   return (
     <label style={{ display: "block", gridColumn: span ? "1 / -1" : undefined }}>
@@ -191,6 +203,11 @@ export default function AopCalculator() {
     const d = span >= 1 ? 1 : span >= 0.1 ? 2 : span >= 0.01 ? 3 : 4;
     return v.toFixed(d);
   };
+  const xMax = r ? r.t / 60 : 0;
+  const xTicks = niceTicks(xMax);
+  const xStep = xTicks.length > 1 ? xTicks[1] - xTicks[0] : 1;
+  const xDec = xStep >= 1 ? 0 : xStep >= 0.1 ? 1 : 2;
+
   const dataKey = yMode === "ln" ? "ln" : yMode === "log10" ? "log" : "pct";
 
   return (
@@ -254,7 +271,8 @@ export default function AopCalculator() {
                   <ResponsiveContainer>
                     <LineChart data={r.series} margin={{ top: 6, right: 14, bottom: 6, left: 0 }}>
                       <CartesianGrid stroke={T.line} strokeDasharray="3 3" />
-                      <XAxis dataKey="t" tickFormatter={(v) => v.toFixed(1)} minTickGap={28} interval="preserveStartEnd"
+                      <XAxis dataKey="t" type="number" domain={[0, xMax]} ticks={xTicks}
+                        tickFormatter={(v) => v.toFixed(xDec)} allowDataOverflow
                         tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }}
                         label={{ value: "time (min)", position: "insideBottomRight", offset: -2, fontSize: 11, fill: T.sub }} />
                       <YAxis
