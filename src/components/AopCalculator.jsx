@@ -21,7 +21,6 @@ const EXAMPLES = [
   { n: "NDMA",           o: "0.45", p: "2.42e-3", e: "1650",  why: "photolysis dominates" },
   { n: "pCBA",           o: "5.0",  p: "0",       e: "0",     why: "standard ·OH probe" },
   { n: "Carbamazepine",  o: "8.8",  p: "1.78e-5", e: "6070",  why: "fast with ·OH" },
-  { n: "Methylene blue", o: "10",   p: "1.4e-4",  e: "11800", why: "screens the lamp" },
 ];
 
 const U254 = 471528;   // J per einstein at 254 nm
@@ -48,9 +47,9 @@ function fmt(x, digits = 3) {
   return `${Number(m.toPrecision(digits))}×10${sup(e)}`;
 }
 
-function Field({ label, unit, value, onChange, hint }) {
+function Field({ label, unit, value, onChange, hint, span }) {
   return (
-    <label style={{ display: "block", marginBottom: 12 }}>
+    <label style={{ display: "block", gridColumn: span ? "1 / -1" : undefined }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
         <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>{label}</span>
         <span style={{ fontSize: 10.5, color: T.sub, fontFamily: T.mono }}>{unit}</span>
@@ -58,7 +57,7 @@ function Field({ label, unit, value, onChange, hint }) {
       <input type="number" value={value} step="any" onChange={(e) => onChange(e.target.value)}
         style={{ width: "100%", boxSizing: "border-box", padding: "7px 9px", border: `1px solid ${T.line}`,
           borderRadius: 6, fontFamily: T.mono, fontSize: 13, color: T.ink, background: "#FCFDFD", outlineColor: T.uv }} />
-      {hint && <div style={{ fontSize: 10.5, color: T.sub, marginTop: 3 }}>{hint}</div>}
+      {hint && <div style={{ fontSize: 10.5, color: T.sub, marginTop: 3, lineHeight: 1.4 }}>{hint}</div>}
     </label>
   );
 }
@@ -138,6 +137,16 @@ export default function AopCalculator() {
   }
 
   const logTicks = r ? [1e-5, 1e-4, 1e-3, 0.01, 0.1, 1, 10, 100].filter((v) => v >= r.logMin) : [];
+
+  // Decimals scaled to the span, so a shallow curve does not render every
+  // tick as "-0.00".
+  const tickFmt = (v) => {
+    if (yMode === "linear") return v;
+    if (yMode === "log") return v < 0.01 ? v.toExponential(0) : String(v);
+    const span = Math.abs(yMode === "ln" ? r.lnMin : r.log10Min);
+    const d = span >= 1 ? 1 : span >= 0.1 ? 2 : span >= 0.01 ? 3 : 4;
+    return v.toFixed(d);
+  };
   const dataKey = yMode === "ln" ? "ln" : yMode === "log10" ? "log" : "pct";
 
   return (
@@ -155,41 +164,46 @@ export default function AopCalculator() {
         </div>
 
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
-          <section style={{ flex: "1 1 280px", minWidth: 260, background: T.panel, border: `1px solid ${T.line}`, borderRadius: 10, padding: 16 }}>
-            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 12 }}>Reactor &amp; matrix</div>
-            <Field label="Fluence rate, E₀" unit="mW·cm⁻²" value={irr} onChange={setIrr} />
-            <Field label="Exposure time, t" unit="s" value={time} onChange={setTime} />
-            <Field label="Matrix UV₂₅₄, a" unit="cm⁻¹" value={a254} onChange={setA254} hint="Water matrix only — H₂O₂ added automatically." />
-            <Field label="Path length, L" unit="cm" value={depth} onChange={setDepth} />
-            <Field label="H₂O₂ dose" unit="mg·L⁻¹" value={h2o2} onChange={setH2o2} />
-            <Field label="·OH scavenging capacity, S" unit="×10⁴ s⁻¹" value={scav} onChange={setScav} hint="Drinking waters ≈ 3–8." />
+          <section style={{ flex: "1 1 340px", minWidth: 280, background: T.panel, border: `1px solid ${T.line}`, borderRadius: 10, padding: 16 }}>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 10 }}>Reactor &amp; matrix</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
+              <Field label="Fluence rate, E₀" unit="mW·cm⁻²" value={irr} onChange={setIrr} />
+              <Field label="Exposure time, t" unit="s" value={time} onChange={setTime} />
+              <Field label="Path length, L" unit="cm" value={depth} onChange={setDepth} />
+              <Field label="H₂O₂ dose" unit="mg·L⁻¹" value={h2o2} onChange={setH2o2} />
+              <Field label="Matrix UV₂₅₄, a" unit="cm⁻¹" value={a254} onChange={setA254} hint="Matrix only — H₂O₂ added automatically." />
+              <Field label="·OH scavenging, S" unit="×10⁴ s⁻¹" value={scav} onChange={setScav} hint="Drinking waters ≈ 3–8." />
+            </div>
 
             <div style={{ height: 1, background: T.line, margin: "6px 0 14px" }} />
 
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: T.sub, marginBottom: 10 }}>Compound</div>
-            <label style={{ display: "block", marginBottom: 12 }}>
-              <span style={{ fontSize: 11.5, color: T.sub }}>Load an example</span>
-              <select value="" onChange={(e) => e.target.value && loadExample(e.target.value)}
-                style={{ width: "100%", marginTop: 3, padding: "6px 8px", border: `1px solid ${T.line}`,
-                  borderRadius: 6, fontFamily: T.sans, fontSize: 12.5, background: "#FFF", color: T.ink }}>
-                <option value="">Choose…</option>
-                {EXAMPLES.map((ex) => <option key={ex.n} value={ex.n}>{ex.n} — {ex.why}</option>)}
-              </select>
-            </label>
-            <label style={{ display: "block", marginBottom: 12 }}>
-              <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Name</span>
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Compound name"
-                style={{ width: "100%", boxSizing: "border-box", marginTop: 4, padding: "7px 9px",
-                  border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 13,
-                  background: "#FCFDFD", color: T.ink, outlineColor: T.uv }} />
-            </label>
-            <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" value={k} onChange={setK} />
-            <Field label="Photolysis k₂₅₄ (0 = none)" unit="cm²·mJ⁻¹" value={kp} onChange={setKp} />
-            <Field label="ε₂₅₄ (0 = ignore)" unit="M⁻¹cm⁻¹" value={ep} onChange={setEp} />
-            <Field label="[P]₀" unit="µM" value={p0} onChange={setP0} />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px 14px" }}>
+              <label style={{ display: "block" }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Name</span>
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Compound name"
+                  style={{ width: "100%", boxSizing: "border-box", marginTop: 4, padding: "7px 9px",
+                    border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 13,
+                    background: "#FCFDFD", color: T.ink, outlineColor: T.uv }} />
+              </label>
+              <label style={{ display: "block" }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: T.ink }}>Load an example</span>
+                <select value="" onChange={(e) => e.target.value && loadExample(e.target.value)}
+                  style={{ width: "100%", boxSizing: "border-box", marginTop: 4, padding: "7px 8px",
+                    border: `1px solid ${T.line}`, borderRadius: 6, fontFamily: T.sans, fontSize: 12.5,
+                    background: "#FFF", color: T.ink }}>
+                  <option value="">Choose…</option>
+                  {EXAMPLES.map((ex) => <option key={ex.n} value={ex.n}>{ex.n} — {ex.why}</option>)}
+                </select>
+              </label>
+              <Field label="k(P + ·OH)" unit="×10⁹ M⁻¹s⁻¹" value={k} onChange={setK} />
+              <Field label="[P]₀" unit="µM" value={p0} onChange={setP0} />
+              <Field label="Photolysis k₂₅₄" unit="cm²·mJ⁻¹" value={kp} onChange={setKp} hint="0 = no direct photolysis" />
+              <Field label="ε₂₅₄" unit="M⁻¹cm⁻¹" value={ep} onChange={setEp} hint="0 = ignore screening" />
+            </div>
           </section>
 
-          <section style={{ flex: "2 1 420px", minWidth: 280 }}>
+          <section style={{ flex: "1 1 420px", minWidth: 300 }}>
             {!r ? (
               <div style={{ background: T.panel, border: `1px solid ${T.line}`, borderRadius: 10, padding: 22, color: T.sub, fontSize: 13.5, lineHeight: 1.6 }}>
                 Enter positive values for fluence rate, time, path length, H₂O₂ dose and starting concentration.
@@ -207,7 +221,7 @@ export default function AopCalculator() {
                     ))}
                   </div>
                 </div>
-                <div style={{ width: "100%", height: 300 }}>
+                <div style={{ width: "100%", height: 340 }}>
                   <ResponsiveContainer>
                     <LineChart data={r.series} margin={{ top: 6, right: 14, bottom: 6, left: 0 }}>
                       <CartesianGrid stroke={T.line} strokeDasharray="3 3" />
@@ -217,8 +231,8 @@ export default function AopCalculator() {
                         scale={yMode === "log" ? "log" : "linear"}
                         domain={yMode === "log" ? [r.logMin, 100] : yMode === "ln" ? [r.lnMin, 0] : yMode === "log10" ? [r.log10Min, 0] : [0, 100]}
                         ticks={yMode === "log" ? logTicks : undefined} allowDataOverflow
-                        tickFormatter={(v) => (yMode === "ln" ? v.toFixed(1) : yMode === "log10" ? v.toFixed(2) : yMode === "log" ? (v < 0.01 ? v.toExponential(0) : String(v)) : v)}
-                        tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }} width={52}
+                        tickFormatter={tickFmt}
+                        tick={{ fontSize: 11, fontFamily: T.mono, fill: T.sub }} width={58}
                         label={{ value: yMode === "ln" ? "ln(C/C0)" : yMode === "log10" ? "log10(C/C0)" : "C/C0 (%)",
                           angle: -90, position: "insideLeft", fontSize: 11, fill: T.sub, dy: 34 }} />
                       <Tooltip
