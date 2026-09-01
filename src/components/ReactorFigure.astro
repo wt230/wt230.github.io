@@ -23,10 +23,8 @@
 
   <figure class="rfig__cell">
     <canvas data-surface aria-hidden="true"></canvas>
-    <figcaption>
-      Micropollutant remaining after UV/H₂O₂ treatment —
-      <a class="fig__link" href="#calculator">play with it →</a>
-    </figcaption>
+    <figcaption>Micropollutant remaining after UV/H₂O₂ treatment</figcaption>
+      <a class="fig__cta" href="#calculator">Play with the model →</a>
   </figure>
 
   <p class="rfig__fallback" data-fallback hidden>
@@ -735,9 +733,23 @@
     font-size: 0.8rem;
     margin: 0;
   }
-  .fig__link {
-    color: var(--mb-700);
-    text-decoration-color: var(--mb-300);
-    white-space: nowrap;
+  .fig__cta {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.95rem;
+    font-family: var(--display);
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--paper);
+    background: var(--mb-700);
+    border: 1px solid var(--mb-700);
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.16s ease, border-color 0.16s ease;
+  }
+  .fig__cta:hover {
+    background: var(--mb-900);
+    border-color: var(--mb-900);
   }
 </style>
