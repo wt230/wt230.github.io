@@ -291,8 +291,6 @@ export default function AopCalculator() {
                 )}
 
                 <div style={{ fontSize: 11, color: T.sub, marginTop: 12, lineHeight: 1.6, borderTop: `1px solid ${T.line}`, paddingTop: 10 }}>
-                  <span style={{ fontFamily: T.mono }}>k′ = k<sub>P</sub>·[·OH]<sub>ss</sub> + k₂₅₄·E<sub>avg</sub></span>, with{" "}
-                  <span style={{ fontFamily: T.mono }}>[·OH]<sub>ss</sub> = r<sub>·OH</sub> / (S + k<sub>H₂O₂</sub>[H₂O₂] + k<sub>P</sub>[P]₀)</span>.
                   Completely mixed batch, roughly constant [H₂O₂], base-10 absorbances,
                   ε<sub>H₂O₂</sub> = {EPS_H2O2} M⁻¹cm⁻¹, Φ(·OH) = {PHI_OH}. Framework: Wang, Rosenfeldt, Li &amp; Hofmann,{" "}
                   <i>Environ. Sci. Technol.</i> 2020, <b>54</b>, 1929–1937.
